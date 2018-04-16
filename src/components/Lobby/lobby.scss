@@ -1,0 +1,32 @@
+.lobby {
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    background-color: #fff;
+    max-width: 320px;
+    border-radius: 5px;
+    margin: 0 auto;
+    padding: 20px 15px;
+    margin-top: 50px;
+    h3 {
+        margin: 0;
+    }
+    &__description {
+        font-size: 24px;
+    }
+    &__games {
+        list-style-type: none;
+        padding: 0;
+    }
+    &__action {
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+.game {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    &:hover {
+        background-color: #eee;
+    }
+}

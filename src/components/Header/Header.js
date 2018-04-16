@@ -5,9 +5,9 @@ import './header.scss';
 
 const Header = () => (
     <div className="header">
-        <div className="description">Nextiva Chess</div>
-        <div className="right">
-            <Button>Logout</Button>
+        <div className="header__description">Nextiva Chess</div>
+        <div className="header__right">
+            <Button kind="success">Logout</Button>
         </div>
     </div>
 )

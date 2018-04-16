@@ -1,0 +1,22 @@
+.signin {
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    background-color: #fff;
+    margin-top: 50px;
+    border-radius: 5px;
+    padding: 20px 15px;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    h3 {
+        font-size: 34px;
+        margin: 0;
+    }
+    p {
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+    &__credentials {
+        margin: 10px 0;
+    }
+}
