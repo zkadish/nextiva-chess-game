@@ -18,22 +18,32 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-  return db.createTable('users', {
+  return db.createTable('history', {
     id: {type: 'int', primaryKey: true, autoIncrement: true},
-    email: {type: 'string', notNull: true, unique: true},
-    username: {type: 'string', notNull: true},
-    token: {type: 'string', notNull: true},
-    hash: {type: 'string', notNull: true},
-    salt: {type: 'string', notNull: true}
+    game_id: {
+      type: 'int',
+      notNull: true,
+      foreignKey: {
+        name: 'history_game_id_fk',
+        table: 'games',
+        rules: {
+          onDelete: 'CASCADE',
+          onUpdate: 'RESTRICT'
+        },
+        mapping: 'id'
+      }
+    },
+    step: {type: 'string', notNull: true},
+    time: {type: 'string', notNull: true}
   }, () => {
     for (let w of defaultValues) {
-      db.insert('users', ['email', 'username', 'token', 'hash', 'salt'], w, callback);
+      db.insert('history', ['game_id', 'step', 'time'], w, callback);
     }
   });
 };
 
 exports.down = function(db) {
-  return db.dropTable('users');
+  return db.dropTable('history');
 };
 
 exports._meta = {
