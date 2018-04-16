@@ -6,13 +6,15 @@ import Header from './Header';
 import Lobby from './Lobby';
 
 import './App.scss';
+import Chessboard from './Chessboard/Chessboard';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
         <Header />
-        <Login />
+        {/* <Signup /> */}
+        {/* <Signin /> */}
         <Chessboard/>
         {/* <Lobby /> */}
       </div>
