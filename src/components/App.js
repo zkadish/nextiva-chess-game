@@ -12,9 +12,9 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        {/* <Signup /> */}
-        {/* <Signin /> */}
-        <Lobby />
+        <Login />
+        <Chessboard/>
+        {/* <Lobby /> */}
       </div>
     );
   }
