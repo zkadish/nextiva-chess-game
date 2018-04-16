@@ -5,6 +5,7 @@
     "password": "",
     "host": "localhost",
     "port": 5432,
-    "database": "chess"
+    "database": "chess",
+    "multipleStatements": true
   }
 }

@@ -1,7 +1,7 @@
 const config = require('../config/db.json');
 const { Pool } = require('pg');
 
-const pool = new Pool(config.env);
+const pool = new Pool(config.dev);
 
 module.exports = {
   query: async (text, params) => {
