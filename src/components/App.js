@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import Header from './Header';
-// import Signin from './Signin';
+import Signin from './Signin';
 // import Signup from './Signup';
-import Lobby from './Lobby';
+// import Lobby from './Lobby';
 
 import './App.scss';
 import ChessboardComponent from './Chessboard/ChessboardComponent';
@@ -13,10 +13,10 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        {/* <Signup /> */}
-        {/* <Signin /> */}
-        <ChessboardComponent/>
+        {/* <ChessboardComponent/> */}
+        <Signin />
         {/* <Lobby /> */}
+        {/* <Signup /> */}
       </div>
     );
   }
