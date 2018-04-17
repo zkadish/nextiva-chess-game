@@ -1,0 +1,3 @@
+{
+  "presets": ["./fe-architecture/javascript/packages/babel-preset"]
+}
