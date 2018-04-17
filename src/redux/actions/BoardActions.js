@@ -1,9 +1,17 @@
-import { INIT_START } from "../constants/ActionTypes";
+import { INIT_START, MAKE_MOVE } from "../constants/ActionTypes";
 
-//TODO: implement this instead direct dispatch
-export function initializeBoard() {
-  return (dispatch) => {
-    type: INIT_START
-  }
+export const initializeBoard = (page, value) => dispatch => {
+  dispatch({ type: INIT_START });
+};
+
+
+export const makeMove = (page, value) => dispatch => {
+  dispatch(move(page));
 }
 
+function move(value) {
+  return {
+    type: MAKE_MOVE,
+    payload: value
+  };
+}
