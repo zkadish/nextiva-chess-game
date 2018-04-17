@@ -23,3 +23,6 @@ yarn-error.log*
 # vs code and webstorm settings
 .vscode 
 .idea
+
+
+package-lock.json
