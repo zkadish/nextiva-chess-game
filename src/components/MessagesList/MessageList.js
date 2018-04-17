@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Message from './Message'
+import Message from '../Message'
 
 const MessagesList = ({ messages }) => (
   <section id="messages-list">

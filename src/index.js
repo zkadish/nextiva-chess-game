@@ -8,15 +8,21 @@ import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './redux/reducers'
-import handleNewMessage from './sagas'
+import handleNewMessage from './saga'
 import setupSocket from './sockets'
 import username from './utils/name'
 
+import {createLogger} from "redux-logger"
+
 const sagaMiddleware = createSagaMiddleware()
+
+const logger = createLogger({
+  collapsed: true
+});
 
 const store = createStore(
   reducers,
-  applyMiddleware(sagaMiddleware)
+  applyMiddleware(logger, sagaMiddleware)
 )
 
 const socket = setupSocket(store.dispatch, username)

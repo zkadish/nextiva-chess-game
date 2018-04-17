@@ -4,7 +4,7 @@ import * as types from '../redux/constants/ActionTypes'
 const handleNewMessage = function* handleNewMessage(params) {
   yield takeEvery(types.ADD_MESSAGE, (action) => {
     action.author = params.username
-    params.socket.send(JSON.stringify(action))
+    params.socket.emit('my other event', action)
   })
 }
 

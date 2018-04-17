@@ -5,6 +5,7 @@
   "dependencies": {
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
+    "chance": "^1.0.13",
     "cors": "^2.8.4",
     "db-migrate": "^0.11.1",
     "db-migrate-pg": "^0.4.0",
@@ -12,13 +13,15 @@
     "express-bearer-token": "^2.1.1",
     "jsonwebtoken": "^8.2.0",
     "pg": "^7.4.1",
-    "chance": "^1.0.13",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
     "react-redux": "^5.0.7",
     "react-scripts": "1.1.4",
     "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
     "redux-saga": "^0.16.0",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0",
     "ws": "^5.1.1"
   },
   "scripts": {
