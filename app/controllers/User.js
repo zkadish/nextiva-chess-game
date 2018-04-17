@@ -25,6 +25,17 @@ class User {
   }
 
 
+  static async permissionsToken(token) {
+    const { rows, err } = await db.query(GET_USER_DB('token'), [token]);
+
+    if (err) {
+      return {
+
+      };
+    }
+  }
+
+
   static async signUpUser(req, res) {
     const { body } = req;
     let answer = await User._conditionUser(body);

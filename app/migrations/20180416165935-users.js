@@ -5,6 +5,20 @@ var type;
 var seed;
 
 const defaultValues = [
+  [
+    'savtym@gmail.com',
+    'savtym',
+    'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
+    '$2a$10$PpbCvwiMz2LwfWe1fXwfcevfGXCWjoXK01KbfAIvfF9lkTNIpQBt.',
+    '$2a$10$PpbCvwiMz2LwfWe1fXwfce'
+  ],
+  [
+    'savtym1@asdfghj.com',
+    'savtym1',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTFAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTEiLCJpYXQiOjE1MjM4OTgwNTF9.7H219EsJs1XfTp4kFVxQSb2AxKJha9z8PL_fGf0429A',
+    '$2a$10$6rHLA.iSXu6GshCITIvQQO5xdSATFnQrOSxM5WJHupLjpu61Dh1me',
+    '$2a$10$6rHLA.iSXu6GshCITIvQQO'
+  ]
 ];
 
 /**
@@ -26,8 +40,8 @@ exports.up = function(db, callback) {
     hash: {type: 'string', notNull: true},
     salt: {type: 'string', notNull: true}
   }, () => {
-    for (let w of defaultValues) {
-      db.insert('users', ['email', 'username', 'token', 'hash', 'salt'], w, callback);
+    for (let u of defaultValues) {
+      db.insert('users', ['email', 'username', 'token', 'hash', 'salt'], u, callback);
     }
   });
 };

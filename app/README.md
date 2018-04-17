@@ -22,6 +22,8 @@ For authorization needs to add to headers:
 
 ###API
 
+You need to add `/api/v1` to route.
+
 For `user`:
 
 Route   | Params                                        | Return

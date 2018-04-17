@@ -5,6 +5,7 @@ var type;
 var seed;
 
 const defaultValues = [
+  [1, 2, Math.round((new Date()).getTime() / 1000)]
 ];
 
 /**
@@ -45,9 +46,10 @@ exports.up = function(db, callback) {
         mapping: 'id'
       }
     },
+    time: {type: 'string', notNull: true},
   }, () => {
-    for (let w of defaultValues) {
-      db.insert('games', ['first_player_id', 'second_player_id'], w, callback);
+    for (let game of defaultValues) {
+      db.insert('games', ['first_player_id', 'second_player_id', 'time'], game, callback);
     }
   });
 };

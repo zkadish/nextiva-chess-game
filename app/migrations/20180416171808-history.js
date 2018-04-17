@@ -34,7 +34,7 @@ exports.up = function(db, callback) {
       }
     },
     step: {type: 'string', notNull: true},
-    time: {type: 'string', notNull: true}
+    time: {type: 'string', notNull: true},
   }, () => {
     for (let w of defaultValues) {
       db.insert('history', ['game_id', 'step', 'time'], w, callback);
