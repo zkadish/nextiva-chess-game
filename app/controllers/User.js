@@ -17,7 +17,7 @@ class User {
     }
 
     if (rows.length === 0) {
-      res.status(401).json('');
+      res.status(401).json();
       return false;
     }
 

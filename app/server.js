@@ -1,6 +1,8 @@
 
 const routes = require('./routes');
 const cors = require('cors');
+const http = require('http');
+const io = require('socket.io');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -8,11 +10,13 @@ const bodyParser = require('body-parser');
 const bearerToken = require('express-bearer-token');
 
 // Constants
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 8080;
 const HOST = '0.0.0.0';
 
 // App
 const app = express();
+const server = http.Server(app);
+const socket = io(server);
 
 
 // CORS
@@ -29,7 +33,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // Add routes for API
-routes(app, '/api/v1');
+routes(app, socket, '/api/v1');
 
 app.listen(PORT, HOST);
 console.log(`Running on http://${HOST}:${PORT}`);

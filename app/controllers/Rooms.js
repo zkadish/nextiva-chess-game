@@ -23,10 +23,7 @@ WHERE time = (
 
 
 class Rooms {
-  static async getAllList({ token }) {
-    let per = await User.permissionsToken(token);
-    if (per.status) return;
-
+  static async getAllList() {
     let { rows, err } = await db.query(GET_ALL_LIST, []);
 
     if (err) {
@@ -101,11 +98,11 @@ class Rooms {
   }
 
 
-  static async connectToGameVisitor({ token, id }) {
+  static async connectToGameVisitor({ token, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return;
 
-    const game = Rooms._getGame(GET_GAME_BY_ID, id);
+    const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
     if (game.err) return game;
 
     if (!game) {
