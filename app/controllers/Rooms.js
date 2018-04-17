@@ -3,7 +3,7 @@ const User = require('./User');
 
 
 const GET_ALL_LIST = `SELECT * FROM games`;
-const CREATE_GAME = `INSERT INTO games (first_player_id) VALUES ($1)`;
+const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES ($1, $2)`;
 const GET_GAME_BY_ID = `SELECT * FROM games WHERE $1 = id`;
 const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
 const CONNECT_TO_GAME = `INSERT INTO games (second_player_id, time) VALUES ($1, $2)`;
@@ -40,7 +40,7 @@ class Rooms {
   }
 
 
-  static async createGame({ token }) {
+  static async createGame({ token, state }) {
     let per = await User.permissionsToken(token);
     if (per.status) return;
 
@@ -54,7 +54,7 @@ class Rooms {
       };
     }
 
-    let { err } = await db.query(CREATE_GAME, [per.id]);
+    let { err } = await db.query(CREATE_GAME, [per.id, state]);
 
     if (err) {
       return {
@@ -69,11 +69,11 @@ class Rooms {
   }
 
 
-  static async connectToGame({ token, id }) {
+  static async connectToGame({ token, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return;
 
-    const game = Rooms._getGame(GET_GAME_BY_ID, id);
+    const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
     if (game.err) return game;
 
     if (!game || game.second_player_id) {

@@ -32,3 +32,21 @@ Route   | Params                                        | Return
 /signin | email, password                               | username, token
 
 
+For socket:
+
+Route   | Params                                        | Return
+--------|-----------------------------------------------|------------------------
+/socket | token*                                        | *connection for socket on server
+
+####Socket
+
+Emit
+
+Route                       | Params                                        | Return
+----------------------------|-----------------------------------------------|------------------------
+connection (on)             |                                               | subscribe, *rooms emit
+rooms (emit)                |                                               | all rooms (array)
+room.create (on)            | token, state                                  | *rooms emit, status - 201
+room.connect (on)           | token, game_id                                | *rooms emit, status - 201
+room.connect-visitor (on)   | token, game_id                                | *rooms emit, status - 201
+disconnect (on)             |                                               | unsubscribe

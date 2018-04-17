@@ -20,7 +20,7 @@ class Socket {
   }
 
 
-  static async connectToGame(data) {
+  static async connectToGame(data, callback) {
     const res = await Rooms.connectToGame(data);
     curSocket.emit('/room/connect', res);
 
@@ -30,7 +30,7 @@ class Socket {
   }
 
 
-  static async connectToGameVisitor(data) {
+  static async connectToGameVisitor(data, callback) {
     const res = await Rooms.connectToGameVisitor(data);
     curSocket.emit('/room/connect-visitor', res);
   }
@@ -51,11 +51,11 @@ module.exports = (io) => {
     io.on('connection', (socket) => {
       curSocket = socket;
 
-      socket.emit('/rooms', Rooms.getAllList());
+      socket.emit('rooms', Rooms.getAllList());
 
-      socket.on('/room/create', Socket.createRoom);
-      socket.on('/room/connect', Socket.connectToGame);
-      socket.on('/room/connect-visitor', Socket.connectToGameVisitor);
+      socket.on('room.create', Socket.createRoom);
+      socket.on('room.connect', Socket.connectToGame);
+      socket.on('room.connect-visitor', Socket.connectToGameVisitor);
 
       socket.on('disconnect', () => {
         console.log('user disconnected');

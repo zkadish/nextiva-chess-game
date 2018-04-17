@@ -7,6 +7,7 @@ const addSalt = '‘ß˚ç';
 const GET_USER_DB = (param) => `SELECT * FROM users WHERE ${param} = $1`;
 const INSERT_USER_DB = 'INSERT INTO users (email, username, token, hash, salt) VALUES ($1, $2, $3, $4, $5)';
 
+
 class User {
   static async permissions(req, res) {
     const { rows, err } = await db.query(GET_USER_DB('token'), [req.token]);
