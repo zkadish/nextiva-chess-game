@@ -1,11 +1,11 @@
 import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM } from "../constants/ActionTypes";
 
-export function foobar(state = '', action) {
+export function playstate(state = '', action) {
   switch (action.type) {
 
     case CREATE_ROOM:
       //TODO: not implemented yet, need to discuss
-      return "WOW, DEFAULT foobar() from CREATE_ROOM";
+      return "WOW, DEFAULT playstate() from CREATE_ROOM";
 
     //mock, currently actions are same
     case WATCH_ROOM:

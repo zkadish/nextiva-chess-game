@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
 import { fen } from "./ChessboardReducer";
-import { foobar } from "./entranceReducer";
+import { playstate } from "./entranceReducer";
 
-export default combineReducers({ fen, foobar });
+export default combineReducers({ fen, playstate });

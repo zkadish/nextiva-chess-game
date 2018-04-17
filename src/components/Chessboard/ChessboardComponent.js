@@ -83,13 +83,13 @@ const mapStateToProps = state => {
     //current figure on board potion (including, which turn, turn count, etc) in simple string
     fen: state.fen,
     //player1 in this case always means white
-    player1: state.foobar.player1,
+    player1: state.playstate.player1,
     //player on the black side of board
-    player2: state.foobar.player2,
+    player2: state.playstate.player2,
     //array of watchers (simply for names displaying / chat / etc)
-    watchers: state.foobar.watchers,
+    watchers: state.playstate.watchers,
     //TODO: not sure, we need it
-    entranceType: state.foobar.entranceType,
+    entranceType: state.playstate.entranceType,
   };
 };
 
