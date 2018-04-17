@@ -5,6 +5,9 @@ var type;
 var seed;
 
 const defaultValues = [
+  [1, 1, '12', 2],
+  [1, 1, 'max', 22],
+  [1, 1, 'asdfgh', 1],
 ];
 
 /**
@@ -33,11 +36,24 @@ exports.up = function(db, callback) {
         mapping: 'id'
       }
     },
-    step: {type: 'string', notNull: true},
+    player_id: {
+      type: 'int',
+      notNull: true,
+      foreignKey: {
+        name: 'history_player_id_fk',
+        table: 'users',
+        rules: {
+          onDelete: 'CASCADE',
+          onUpdate: 'RESTRICT'
+        },
+        mapping: 'id'
+      }
+    },
+    state: {type: 'string', notNull: true},
     time: {type: 'string', notNull: true},
   }, () => {
     for (let w of defaultValues) {
-      db.insert('history', ['game_id', 'step', 'time'], w, callback);
+      db.insert('history', ['game_id', 'player_id', 'state', 'time'], w, callback);
     }
   });
 };

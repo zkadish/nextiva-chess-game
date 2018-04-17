@@ -30,9 +30,18 @@ class User {
 
     if (err) {
       return {
-
+        err: err.message,
+        status: 400,
       };
     }
+
+    if (err) {
+      return {
+        status: 401,
+      };
+    }
+
+    return rows[0];
   }
 
 

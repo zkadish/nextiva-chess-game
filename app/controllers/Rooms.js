@@ -2,17 +2,146 @@ const db = require('../db');
 const User = require('./User');
 
 
-const GET_ALL_LIST = `SELECT first_player_id, second_player_id `;
+const GET_ALL_LIST = `SELECT * FROM games`;
+const CREATE_GAME = `INSERT INTO games (first_player_id) VALUES ($1)`;
+const GET_GAME_BY_ID = `SELECT * FROM games WHERE $1 = id`;
+const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
+const CONNECT_TO_GAME = `INSERT INTO games (second_player_id, time) VALUES ($1, $2)`;
+const GET_LAST_STATE_BY_ID_GAME = `
+SELECT
+  player_id,
+  state, 
+  time
+FROM history 
+WHERE time = (
+  SELECT 
+    max(time) 
+    FROM history
+    WHERE game_id = $1
+  )
+`;
 
 
 class Rooms {
   static async getAllList({ token }) {
-    let per = await User.permissions(token);
-    if (!per) return;
+    let per = await User.permissionsToken(token);
+    if (per.status) return;
 
-    let { rows, err } = await db.query(GET_ALL_LIST, [per.id]);
+    let { rows, err } = await db.query(GET_ALL_LIST, []);
+
+    if (err) {
+      return {
+        err: err.message,
+        status: 400,
+      };
+    }
+
+    return {
+      data: rows,
+      status: 200,
+    };
+  }
 
 
+  static async createGame({ token }) {
+    let per = await User.permissionsToken(token);
+    if (per.status) return;
+
+    const game = Rooms._getGame(GET_GAME_BY_ID_PLAYER, per.id);
+    if (game.err) return game;
+
+    if (game) {
+      return {
+        err: 'You created a game.',
+        status: 409,
+      };
+    }
+
+    let { err } = await db.query(CREATE_GAME, [per.id]);
+
+    if (err) {
+      return {
+        err: err.message,
+        status: 400,
+      };
+    }
+
+    return {
+      status: 201,
+    }
+  }
+
+
+  static async connectToGame({ token, id }) {
+    let per = await User.permissionsToken(token);
+    if (per.status) return;
+
+    const game = Rooms._getGame(GET_GAME_BY_ID, id);
+    if (game.err) return game;
+
+    if (!game || game.second_player_id) {
+      return {
+        err: !game ? `The game doesn't exist.` : 'Game is busy.',
+        status: 409,
+      };
+    }
+
+    let { err } = await db.query(CONNECT_TO_GAME, [per.id, Math.round((new Date()).getTime() / 1000)]);
+
+    if (err) {
+      return {
+        err: err.message,
+        status: 400,
+      };
+    }
+
+    return {
+      status: 201,
+    }
+  }
+
+
+  static async connectToGameVisitor({ token, id }) {
+    let per = await User.permissionsToken(token);
+    if (per.status) return;
+
+    const game = Rooms._getGame(GET_GAME_BY_ID, id);
+    if (game.err) return game;
+
+    if (!game) {
+      return {
+        err: `The game doesn't exist.`,
+        status: 409,
+      };
+    }
+
+    const { rows, err } = db.query(GET_LAST_STATE_BY_ID_GAME, [game_id]);
+
+    if (err) {
+      return {
+        err: err.message,
+        status: 400,
+      };
+    }
+
+    return {
+      data: rows[0],
+      status: 200,
+    };
+  }
+
+
+  static async _getGame(request, id) {
+    const { rows, err } = await db.query(request, [id]);
+
+    if (err) {
+      return {
+        err: err.message,
+        status: 400,
+      };
+    }
+
+    return rows.length !== 0 ? rows[0] : null;
   }
 }
 
