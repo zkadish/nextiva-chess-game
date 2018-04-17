@@ -22,4 +22,11 @@
     &__credentials {
         margin: 10px 0;
     }
+    &__spinner {
+        margin: 15px auto;
+    }
+    &__error {
+        color: red;
+        margin-top: 10px;
+    }
 }
