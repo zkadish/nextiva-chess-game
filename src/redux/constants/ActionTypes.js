@@ -1,0 +1,1 @@
+export const INIT_START = 'INITIALIZE_FROM_START';
