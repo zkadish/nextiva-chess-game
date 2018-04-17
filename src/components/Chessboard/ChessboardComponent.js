@@ -2,7 +2,8 @@ import React from "react";
 import Chess from "chess.js";
 import { connect } from "react-redux";
 
-import Field from "./Field";
+import Tile from "./Tile";
+import './chessboard.scss';
 import { INIT_START } from "../../redux/constants/ActionTypes";
 import { initializeBoard } from "../../redux/actions/BoardActions";
 
@@ -11,53 +12,47 @@ import { initializeBoard } from "../../redux/actions/BoardActions";
 class ChessboardComp extends React.Component {
   constructor(props) {
     super(props);
+    this.chess = new Chess();
     this.state = {
       isInited: false
     };
 
-    this.handler = this.handler.bind(this);
   }
 
   //Making request to get default chessboard state with figures
-  componentDidMount() {
+  componentWillMount() {
     if (this.state.isInited === false) {
       this.props.initializeBoard();
     }
+
   }
 
-  handler(position = 'default value handler', figure = 'def') {
-    console.log("handler is called", position, figure);
+  tileHandler = (name) => {
+    console.log("any parent action", this);
+    console.log(name);
   }
 
-  createChessboardTiles(val) {
-    let rows = [];
-    for (let i = 0; i < val.length; i++) {
-      if (i % 8 === 0) {
-        rows.push(<br />);
-      }
-      rows.push(
-        <Field
-          handler={this.handler}
-          key={i}
-          position={val[i].position}
-          title={val[i].title}
-          color={val[i].color}
+
+  initTiles(value) {
+    let tiles = []
+    this.chess.load(value);
+    this.chess.SQUARES.forEach((element, index) => {
+      tiles.push(
+        <Tile
+          key={element}
+          name={element}
+          className={this.chess.square_color(element)}
+          handleClick={this.tileHandler}
+          piece={this.chess.get(element)}
         />
       );
-    }
-
-    return <div>{rows}</div>;
+    });
+    return tiles;
   }
-
   render() {
-    let arr = this.props.chessboard;
-
     return (
-      <div>
-        <div>Hello, I'm a chessboard</div>
-        <div>
-          {arr !== "prevent default type" && this.createChessboardTiles(arr)}
-        </div>
+      <div className="chessboard">
+        {this.initTiles(this.props.fen)}
       </div>
     );
   }
@@ -65,7 +60,7 @@ class ChessboardComp extends React.Component {
 
 const mapStateToProps = state => {
   return {
-    chessboard: state.chessboard
+    fen: state.fen
   };
 };
 

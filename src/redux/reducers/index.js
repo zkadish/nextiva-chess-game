@@ -1,4 +1,4 @@
 import { combineReducers } from "redux";
-import { chessboard } from "./ChessboardReducer";
+import { fen } from "./ChessboardReducer";
 
-export default combineReducers({ chessboard });
+export default combineReducers({ fen });

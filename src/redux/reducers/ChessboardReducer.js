@@ -7,23 +7,9 @@ import chessHelper from "../../utills/ChessHelper";
 const DEFAULT_STATE = undefined;
 const DEFAULT_FIGURES = [];
 
-function getDefaultTable(figures=[]) {
-  const letters = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
-
-  let finalArray = [];
-  for (let i = 0; i < letters.length; i++) {
-    for (let j = 0; j < numbers.length; j++) {
-      finalArray.push({
-        position: (letters[i] + numbers[j]).toString(),
-        title: "e",
-        color: "none"
-      });
-    }
-  }
-  
-
-  return finalArray;
+function getDefaultTable() {
+  console.log('getDefaultTable')
+  return 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2';
 }
 
 // chessHelper.putFigure("test");
@@ -34,10 +20,11 @@ function getDefaultTable(figures=[]) {
 // console.log(chess.ascii())
 // console.log(chess.fen())
 
-export function chessboard(state = DEFAULT_STATE, action) {
+export function fen(state, action) {
+  console.log('reducer - fen()', action)
   switch (action.type) {
     case INIT_START:
-      return getDefaultTable(DEFAULT_FIGURES);
+      return getDefaultTable();
 
     default:
       return "return default type";

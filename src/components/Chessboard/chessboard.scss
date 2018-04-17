@@ -1,9 +1,11 @@
 .chessboard {
     display: grid;
-    width: 500px;
-    height: 500px;
-    grid-template-columns: repeat(8 , 50px);
-    grid-template-rows: repeat(8 , 50px);
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 480px;
+    height: 480px;
+    grid-template-columns: repeat(8 , 60px);
+    grid-template-rows: repeat(8 , 60px);
 }
 
 .light {
