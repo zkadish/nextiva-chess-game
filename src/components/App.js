@@ -6,7 +6,7 @@ import Header from './Header';
 import Lobby from './Lobby';
 
 import './App.scss';
-import Chessboard from './Chessboard/Chessboard';
+import ChessboardComponent from './Chessboard/ChessboardComponent';
 
 class App extends Component {
   render() {
@@ -15,7 +15,7 @@ class App extends Component {
         <Header />
         {/* <Signup /> */}
         {/* <Signin /> */}
-        <Chessboard/>
+        <ChessboardComponent/>
         {/* <Lobby /> */}
       </div>
     );
