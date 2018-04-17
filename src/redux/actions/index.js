@@ -27,3 +27,20 @@ export const populateUsersList = users => ({
   type: types.USERS_LIST,
   users
 })
+
+export const signIn = () => {
+  const body = JSON.stringify({
+    "email" : "savtym1@asdfghj.com",
+    "password": "qwerty1234"
+  });
+
+  return dispatch => {
+    fetch("http://localhost:8080/api/v1/user/signin", {
+      method: 'POST',
+      body
+    }).then((response) => response.json()).then((data) => {
+      console.log("onLoaded", data)
+      dispatch({type: "SIGN_IN"})
+    })
+  };
+}

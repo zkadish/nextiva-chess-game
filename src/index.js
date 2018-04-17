@@ -13,6 +13,7 @@ import setupSocket from './sockets'
 import username from './utils/name'
 
 import {createLogger} from "redux-logger"
+import thunk from 'redux-thunk';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -22,7 +23,7 @@ const logger = createLogger({
 
 const store = createStore(
   reducers,
-  applyMiddleware(logger, sagaMiddleware)
+  applyMiddleware(logger, thunk, sagaMiddleware)
 )
 
 const socket = setupSocket(store.dispatch, username)

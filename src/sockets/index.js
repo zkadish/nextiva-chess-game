@@ -9,8 +9,21 @@ const setupSocket = (dispatch, username) => {
   const socket = io.connect('http://0.0.0.0:8080/');
   socket.on('news', function (data) {
     console.log(data);
+
+    switch (data.type) {
+      case types.ADD_MESSAGE:
+        dispatch(messageReceived(data.message, data.author))
+        break
+      case types.USERS_LIST:
+        dispatch(populateUsersList(data.users))
+        break
+      default:
+        break
+    }
+
     socket.emit('my other event', { my: 'data' });
   });
+
 
 
   // const socket = new WebSocket('ws://localhost:8989')
@@ -22,17 +35,17 @@ const setupSocket = (dispatch, username) => {
   //   }))
   // }
   // socket.onmessage = (event) => {
-  //   const data = JSON.parse(event.data)
-  //   switch (data.type) {
-  //     case types.ADD_MESSAGE:
-  //       dispatch(messageReceived(data.message, data.author))
-  //       break
-  //     case types.USERS_LIST:
-  //       dispatch(populateUsersList(data.users))
-  //       break
-  //     default:
-  //       break
-  //   }
+    // const data = JSON.parse(event.data)
+    // switch (data.type) {
+    //   case types.ADD_MESSAGE:
+    //     dispatch(messageReceived(data.message, data.author))
+    //     break
+    //   case types.USERS_LIST:
+    //     dispatch(populateUsersList(data.users))
+    //     break
+    //   default:
+    //     break
+    // }
   // }
 
   return socket
