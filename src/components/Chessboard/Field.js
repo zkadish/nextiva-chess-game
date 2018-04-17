@@ -9,14 +9,14 @@ class FieldBase extends React.Component {
   }
 
   handleClick(e) {
-    console.log("child is called", this.props);
-    //this.props.handler();
+    e.preventDefault();
+    this.props.handler(this.props.position, this.props.title);
   }
 
   render() {
     return (
       <div onClick={this.handleClick} style={{ display: "inline-block" }}>
-   |   {this.props.name}   |
+   |   {this.props.position} - {this.props.title}   |
       </div>
     );
   }
