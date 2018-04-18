@@ -15,7 +15,7 @@ class Socket {
     const res = await Rooms.createGame(data);
 
     if (!res.err) {
-      await Socket._handleRoom(res.room);
+      await Socket._handleRoom(res.room, true);
       curIo.emit('rooms', Rooms.getAllList());
     }
 
@@ -35,7 +35,20 @@ class Socket {
   }
 
 
-  static async _handleRoom(room) {
+  static async connectToGameVisitor(data, callback) {
+    const res = await Rooms.connectToGameVisitor(data);
+
+    if (res.err) {
+      curSocket.join(res.room);
+      curIo.sockets.in(res.room).on('room', console.log);
+    }
+
+    callback(res);
+  }
+
+
+
+  static async _handleRoom(room, isCreate = false) {
     curSocket.join(room);
     curIo.sockets.in(room)
       .on('room.move', async (data) => {
@@ -48,20 +61,14 @@ class Socket {
       .on('room.give-up', async () => {
 
       });
-  }
 
+    if (!isCreate) {
+      curIo.sockets.in(room)
+        .emit('room.connect', {
 
-  static async connectToGameVisitor(data, callback) {
-    const res = await Rooms.connectToGameVisitor(data);
-
-    if (res.err) {
-      curSocket.join(res.room);
-      curIo.sockets.in(res.room).on('room', console.log);
+        });
     }
-
-    callback(res);
   }
-
 
 }
 
@@ -79,6 +86,7 @@ module.exports = (io) => {
       curSocket = socket;
 
       socket.emit('rooms', Rooms.getAllList());
+      socket.on('test', (data) => console.log(data));
 
       socket.on('room.create', Socket.createRoom);
       socket.on('room.connect', Socket.connectToGame);

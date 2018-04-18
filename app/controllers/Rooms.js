@@ -98,6 +98,8 @@ class Rooms {
 
     return {
       data: {
+        // first_player:,
+        // second_player:,
         room: Helpers.getRoomStr(game_id),
       },
       status: 201,
