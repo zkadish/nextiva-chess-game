@@ -1,7 +1,5 @@
 import { fork, take, call, put, cancel, apply, spawn } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import * as types from '../redux/constants/ActionTypes'
-import * as actions from '../redux/actions'
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 
