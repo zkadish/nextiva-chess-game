@@ -30,4 +30,11 @@
         display: flex;
         justify-content: space-between;
     }
+    &__spinner {
+        margin: 15px auto 5px auto;
+    }
+    &__error {
+        color: red;
+        margin-top: 20px;
+    }
 }

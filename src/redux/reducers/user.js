@@ -11,6 +11,10 @@ const signIn = (state = { loaded: false, loading: false, error: false, data: nul
             }
             
         case SUCCESS: {
+            localStorage.setItem('username', action.data.username);
+            localStorage.setItem('email', action.data.email);
+            localStorage.setItem('token', action.data.token);
+            console.log(`UserReducer: ${JSON.stringify(action.data)}`);
             return {
                 ...state,
                 loading: false,

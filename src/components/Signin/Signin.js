@@ -38,14 +38,18 @@ class Signin extends React.Component {
                         kind='success'
                         type="submit"
                         className="signin__button"
-                        disabled={this.props.isLoading}
+                        disabled={
+                            this.props.isLoading ||
+                            !this.state.email ||
+                            !this.state.password
+                        }
                         onClick={() => this.props.signIn(this.state)}>
                         Sign in
                     </Button>
                     {this.props.isLoading && <Spinner className="signin__spinner" />}
-                    {this.props.loaded && this.props.data && console.log(`Data: ${JSON.stringify(this.props.data)}`) }
-                    {this.props.loaded && this.props.error && console.log(`Error: ${this.props.error}`) }
                     { this.props.error && <div className="signin__error">Some error was occurred! </div> }
+                    {/* {this.props.loaded && this.props.data && console.log(`Data: ${JSON.stringify(this.props.data)}`) } */}
+                    {/* {this.props.loaded && this.props.error && console.log(`Error: ${this.props.error}`) } */}
                     <a href=""><p>Lost you password?</p></a>
                 </form>
             </div>
