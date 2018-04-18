@@ -1,29 +1,28 @@
 import React from 'react';
 import { Button } from '@nextiva/next-ui';
+import { connect } from 'react-redux';
+
+import logOut from '../../redux/actions/logOut';
 
 import './header.scss';
 
-const Header = () => {
-    const logOut = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('email');
-        localStorage.removeItem('token') ;
-    }
-
-
+const Header = (props) => {
     return (
         <div className="header">
             <div className="header__description">Nextiva Chess</div>
             <div className="header__right">
-                <Button 
-                    kind="success"
-                    onClick={logOut}
-                >
-                    Logout
-                </Button>
+                { props.user && <Button kind="success" onClick={props.logOut}>Logout</Button> }
             </div>
         </div>
     )
 }
 
-export default Header;
+const mapStateToProps = ( state ) => ({
+    user: state.user.data
+});
+
+const mapDispatchToProps = ( dispatch ) => ({
+    logOut: () => logOut(dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
