@@ -5,7 +5,7 @@ export function playstate(state = '', action) {
 
     case CREATE_ROOM:
       //TODO: not implemented yet, need to discuss
-      return "WOW, DEFAULT playstate() from CREATE_ROOM";
+      return action.payload;
 
     //mock, currently actions are same
     case WATCH_ROOM:
