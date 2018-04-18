@@ -18,7 +18,7 @@ class User {
     }
 
     if (rows.length === 0) {
-      res.status(401).json();
+      res.status(401).json('');
       return false;
     }
 
@@ -29,15 +29,16 @@ class User {
   static async permissionsToken(token) {
     const { rows, err } = await db.query(GET_USER_DB('token'), [token]);
 
-    if (err) {
+    if (err || !token) {
       return {
-        err: err.message,
+        err: err ? err.message : 'You need to send token',
         status: 400,
       };
     }
 
-    if (err) {
+    if (rows.length === 0) {
       return {
+        err: 'Incorrect token.',
         status: 401,
       };
     }

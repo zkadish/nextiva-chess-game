@@ -14,7 +14,7 @@ class Game {
 
   static async moveFigure({ token, game_id, state, is_give_up = false }) {
     let per = await User.permissionsToken(token);
-    if (per.status) return;
+    if (per.status) return per;
 
     const time = Helpers.getUnixTimeNow();
 
