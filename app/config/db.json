@@ -1,0 +1,11 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "",
+    "host": "localhost",
+    "port": 5432,
+    "database": "chess",
+    "multipleStatements": true
+  }
+}
