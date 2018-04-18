@@ -109,12 +109,16 @@ class ChessboardComp extends React.Component {
   }
 
   onConfirmClick = () => {
-    console.log("dispatch and wait for an answer");
+    if (this.state.notConfirmedFEN) {
+      this.setNotConfirmedFEN();
+      this.props.makeMove(this.state.notConfirmedFEN);
+    }
   }
   render() {
     /* temporarty validation for nondefault FEN */
     this.tryToInit()
     return (
+
       <div>
         {/* buttons and methods for them just for debugging */}
         <button onClick={this.createRoom} a="asd">Create Room</button>
@@ -123,15 +127,15 @@ class ChessboardComp extends React.Component {
         <button onClick={this.makeMove.bind(this, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3')}>MakeMove</button>
 
 
-          <div className="chessboard_container">
-            <div className="chessboard_board">
-              {this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen)}
-            </div>
-            <div className="chessboard_buttons">
-              <Button kind='warning' onClick={this.onCancelClick}>Cancel</Button>
-              <Button kind='success' onClick={this.onConfirmClick}>Confirm</Button>
-            </div>
+        <div className="chessboard_container">
+          <div className="chessboard_board">
+            {this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen)}
           </div>
+          <div className="chessboard_buttons">
+            <Button kind='warning' onClick={this.onCancelClick}>Cancel</Button>
+            <Button kind='success' onClick={this.onConfirmClick}>Confirm</Button>
+          </div>
+        </div>
       </div>
     );
   }
