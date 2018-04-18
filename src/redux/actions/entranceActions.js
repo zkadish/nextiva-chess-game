@@ -1,19 +1,24 @@
 import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST } from "../constants/ActionTypes";
 
-//Temporartily added delay for server response delay simulation
-
-export const createRoomRequest = () => ({
+//TODO: implement in component to dispatch on click handler
+export const createRoomRequest = (creatorId) => ({
   type: CREATE_ROOM_REQUEST,
-  //player1 ???
-  payload: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  payload: {
+    fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    player1: creatorId
+  }
 });
 
-export const createJoinRequest = () => ({
+//TODO: implement in component to dispatch on click handler
+export const createJoinRequest = (room_id) => ({
   type: JOIN_ROOM_REQUEST,
+  payload: room_id
 })
 
-export const createWatchRoomRequest = () => ({
-  type: WATCH_ROOM_REQUEST
+//TODO: implement in component to dispatch on click handler
+export const createWatchRoomRequest = (room_id) => ({
+  type: WATCH_ROOM_REQUEST,
+  payload: room_id
 })
 
 export const createRoom = (fen) => ({
