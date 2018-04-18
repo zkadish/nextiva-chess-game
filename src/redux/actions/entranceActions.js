@@ -1,4 +1,4 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST } from "../constants/ActionTypes";
 
 //Temporartily added delay for server response delay simulation
 
