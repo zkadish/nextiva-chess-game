@@ -7,17 +7,7 @@ import registerServiceWorker from './registerServiceWorker'
 
 import store from "./redux/store/store"
 
-<<<<<<< HEAD
 window.store = store //only for debugging
-=======
-const store = createStore(
-  () => {},
-  enhancer
-)
-// window.store = store //only for debugging
-
-sagaMiddleware.run(rootSaga)
->>>>>>> server
 
 ReactDOM.render(
   <Provider store={store}>
