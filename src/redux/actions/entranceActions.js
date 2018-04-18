@@ -3,7 +3,7 @@ import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM } from "../constants/ActionTypes";
 //Temporartily added delay for server response delay simulation
 
 export const createRoom = (counter, value) => dispatch => {
-  setTimeout(() => {dispatch(create());}, 500);
+  setTimeout(() => {dispatch(create(counter));}, 500);
 };
 
 export const joinRoom = (counter, value) => dispatch => {
@@ -21,8 +21,10 @@ function watch(value) {
   }
 }
 function create(value) {
+  console.log('create', value)
   return {
     type:CREATE_ROOM,
+    payload: value
   }
 }
 function join(value) {

@@ -63,13 +63,13 @@ class ChessboardComp extends React.Component {
   }
 
   //Temporary functional. Mock for server resp
-  createRoom = name => { this.props.createRoom(); };
+  createRoom(param) { this.props.createRoom(param); };
   joinRoom = name => { this.props.joinRoom(); };
   watchRoom = name => { this.props.watchRoom(); };
   makeMove(param) { this.props.makeMove(param); }
 
   tryToInit() {
-    if (this.props.player1 && !this.state.isInited) {
+    if (this.props.player1 && this.props.player2 && !this.props.fen) {
       this.setState({ isInited: true })
       return this.props.initializeBoard()
     }
@@ -121,18 +121,27 @@ class ChessboardComp extends React.Component {
 
       <div>
         {/* buttons and methods for them just for debugging */}
-        <button onClick={this.createRoom} a="asd">Create Room</button>
+        <button onClick={this.createRoom.bind(this, {player1:'Tihs is me', time:0, token:'UNIMPLEMENTED_TOKEN'})}>Create Room</button>
         <button onClick={this.joinRoom}>Join Room</button>
         <button onClick={this.watchRoom}>As Watcher</button>
         <button onClick={this.makeMove.bind(this, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3')}>MakeMove</button>
 
 
         <div className="chessboard_container">
+          <div className="chessboard_buttons">
+            <Button kind='danger' onClick={this.onConfirmClick}>Give Up</Button>
+          {'Is my turn:'}{'me'}{/*TODO: implement player turn*/}
+            
+          </div>
           <div className="chessboard_board">
             {this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen)}
           </div>
           <div className="chessboard_buttons">
             <Button kind='warning' onClick={this.onCancelClick}>Cancel</Button>
+            {'player1: '}{this.props.player1 ? this.props.player1 : '...'}
+            <br/>
+            {'player2: '}{this.props.player2 ? this.props.player2 : '...'}
+            
             <Button kind='success' onClick={this.onConfirmClick}>Confirm</Button>
           </div>
         </div>
@@ -159,7 +168,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     //TODO: unimplemented yet
-    createRoom: () => dispatch(createRoom()),
+    createRoom: (params) => dispatch(createRoom(params)),
     //runs, when user enter in previously created room. should recieve player1, player2 - strings, watchers - array of strings
     joinRoom: () => dispatch(joinRoom()),
     //currently same as previous
