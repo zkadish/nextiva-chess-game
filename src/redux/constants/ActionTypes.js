@@ -1,8 +1,11 @@
 export const INIT_START = 'INITIALIZE_FROM_START';
 export const MAKE_MOVE = 'MAKE_TABLE_MOVE';
 export const GIVE_UP = 'GIVE_UP';
+
+export const JOIN_ROOM_REQUESRT = 'JOIN_ROOM_REQUESRT';
 export const JOIN_ROOM = 'JOIN_ROOM';
 
+export const WATCH_ROOM_REQUEST = 'WATCH_ROOM_REQUEST';
 export const WATCH_ROOM = 'WATCH_ROOM';
 
 export const CREATE_ROOM_REQUEST = 'CREATE_ROOM_REQUEST';
