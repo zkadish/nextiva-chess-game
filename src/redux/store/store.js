@@ -9,6 +9,6 @@ const logger = createLogger({
   collapsed: true
 });
 
-const store = createStore(rootReducer, applyMiddleware(logger, thunk ));
+const store = createStore(rootReducer, applyMiddleware(thunk, logger)); //NB: middleware arrangement is importrant
 
 export default store;

@@ -1,9 +1,28 @@
-import { INIT_START } from "../constants/ActionTypes";
+import { INIT_START, MAKE_MOVE, GIVE_UP } from "../constants/ActionTypes";
 
-//TODO: implement this instead direct dispatch
-export function initializeBoard() {
-  return (dispatch) => {
-    type: INIT_START
-  }
+export const initializeBoard = (counter, value) => dispatch => {
+  dispatch(initBoard());
+};
+
+export const makeMove = (counter, value) => dispatch => {
+  dispatch(move(counter));
 }
 
+export const giveUp = (counter, value) => dispatch => {
+   dispatch(giveU());
+}
+
+function giveU() {
+  return { type: GIVE_UP }
+}
+
+function initBoard() {
+  return { type: INIT_START }
+}
+
+function move(value) {
+  return {
+    type: MAKE_MOVE,
+    payload: value
+  };
+}

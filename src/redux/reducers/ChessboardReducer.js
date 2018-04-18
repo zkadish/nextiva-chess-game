@@ -1,32 +1,23 @@
-import { INIT_START } from '../constants/ActionTypes';
-import Chess from "chess.js";
-import chessHelper from "../../utills/ChessHelper";
-
-//TODO: need to describe DEFAULT_STATE better
-
-const DEFAULT_STATE = undefined;
-const DEFAULT_FIGURES = [];
+import { INIT_START, MAKE_MOVE, GIVE_UP } from "../constants/ActionTypes";
 
 function getDefaultTable() {
-  console.log('getDefaultTable')
-  return 'rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2';
+  return "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq f3 0 2";
 }
 
-// chessHelper.putFigure("test");
-
-// var chess = new Chess();
-// chess.clear();
-// chess.put({ type: chess.PAWN, color: chess.BLACK }, 'e2') // put a black pawn on a5
-// console.log(chess.ascii())
-// console.log(chess.fen())
-
-export function fen(state, action) {
-  console.log('reducer - fen()', action)
+export function fen(state = "", action) {
   switch (action.type) {
+    //TODO: unimplemented yet
+    case GIVE_UP:
+      return state
+
     case INIT_START:
       return getDefaultTable();
 
+    case MAKE_MOVE:
+      //console.log("MAKE_MOVE:ChessboardReducer ", state, action.payload);
+      return action.payload;
+
     default:
-      return "return default type";
+      return state;
   }
 }
