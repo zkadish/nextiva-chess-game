@@ -2,9 +2,11 @@ import { fork, take, call, put, cancel, apply, spawn } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
+import * as actions from "../redux/actions/entranceActions"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
+  window.socket = socket
   return new Promise(resolve => {
     socket.on('connect', () => {
       resolve(socket);
@@ -18,7 +20,7 @@ function subscribe(socket) {
       console.log("NEWS RECEIVED", data)
       // emit(actions.addUser({ username }));
     });
-    socket.on('users.logout', ({ username }) => {
+    socket.on('room.', ({ username }) => {
       // emit(removeUser({ username }));
     });
     socket.on('messages.new', ({ message }) => {
@@ -40,13 +42,19 @@ function* read(socket) {
 }
 
 function* write(socket) {
-  yield spawn(createRoom, socket)
+  yield fork(createRoom, socket)
 }
 
 function* createRoom(socket) {
   while (true) {
-    const { payload } = yield take("room.create")
-    yield apply(socket, socket.emit, ['room.create', { username: "payload.username" }])//token, state
+    const action= yield take("room.create")
+    socket.emit("room.create", {}, (data) => {
+      debugger
+    })
+    // yield apply(socket, socket.emit, ['room.create', { username: "payload.username" }, (data) => {
+    //   debugger
+    // }])//token, state
+
   }
 }
 
@@ -56,7 +64,7 @@ function* handleIO(socket) {
 }
 
 function* flow() {
-  while (true) {
+  // while (true) {
     // let { payload } = yield take(`${login}`);
     const user = "user"
     const password = "user"
@@ -73,7 +81,7 @@ function* flow() {
     // let action = yield take(`${logout}`);
     // yield cancel(task);
     // socket.emit('logout');
-  }
+  // }
 }
 
 /* function* authorize(user, password) {

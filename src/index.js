@@ -2,28 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
-import rootSaga from './saga'
-import {createLogger} from "redux-logger"
 
-const sagaMiddleware = createSagaMiddleware()
+import store from "./redux/store/store"
 
-const logger = createLogger({
-  collapsed: true
-});
-
-const enhancer = applyMiddleware(sagaMiddleware, logger)
-
-const store = createStore(
-  () => {},
-  enhancer
-)
-// window.store = store //only for debugging
-
-//sagaMiddleware.run(rootSaga)
+window.store = store //only for debugging
 
 ReactDOM.render(
   <Provider store={store}>
@@ -32,3 +16,6 @@ ReactDOM.render(
   document.getElementById('root')
 );
 registerServiceWorker()
+
+
+// store.dispatch({type:"room.create"})
