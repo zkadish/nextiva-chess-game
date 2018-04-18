@@ -6,8 +6,8 @@ import Signin from './Signin';
 import Signup from './Signup';
 import Lobby from './Lobby';
 
-import './App.scss';
-import ChessboardComponent from './Chessboard/ChessboardComponent';
+// import './App.scss';
+// import ChessboardComponent from './Chessboard/ChessboardComponent';
 
 class App extends Component {
   constructor(props){

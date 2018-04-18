@@ -14,14 +14,14 @@ class Signup extends React.Component {
             username: '',
             email: '',
             password: '',
-            passwordConfirm: ''
+            repeat_password: ''
         }
     }
 
     handleChangeUsername = (event, value) => this.setState({ username: value });
     handleChangeEmail = (event, value) => this.setState({ email: value });
     handleChangePassword = (event, value) => this.setState({ password: value });
-    handleChangeConfirmPass = (event, value) => this.setState({ confirmPassword: value });
+    handleChangeConfirmPass = (event, value) => this.setState({ repeat_password: value });
 
     render(){
         return (
@@ -47,7 +47,7 @@ class Signup extends React.Component {
                     <TextField 
                         className="signup__credentials"
                         type="password"
-                        value={this.state.confirmPassword}
+                        value={this.state.repeat_password}
                         placeholder={'Confirm password'}
                         onChange={this.handleChangeConfirmPass} />
                     <div className="signup__bottom">
@@ -60,7 +60,7 @@ class Signup extends React.Component {
                                 !this.state.username ||
                                 !this.state.email ||
                                 !this.state.password ||
-                                (this.state.password !== this.state.confirmPassword)
+                                (this.state.password !== this.state.repeat_password)
                             }
                             onClick={() => this.props.signUp(this.state)}>
                             Sign up
