@@ -9,8 +9,11 @@ export const makeMove = (counter, value) => dispatch => {
 }
 
 export const giveUp = (counter, value) => dispatch => {
-  //TODO: unimplemented yet
-  // dispatch()
+   dispatch(giveU());
+}
+
+function giveU() {
+  return { type: GIVE_UP }
 }
 
 function initBoard() {

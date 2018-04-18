@@ -6,7 +6,7 @@ import Tile from "./Tile";
 import "./chessboard.scss";
 
 import { createRoom, joinRoom, watchRoom } from "../../redux/actions/entranceActions";
-import { initializeBoard, makeMove } from "../../redux/actions/BoardActions";
+import { initializeBoard, makeMove, giveUp } from "../../redux/actions/BoardActions";
 
 class ChessboardComp extends React.Component {
   constructor(props) {
@@ -105,7 +105,9 @@ const mapDispatchToProps = dispatch => {
     //create basic figure set on start position (runs one time)
     initializeBoard: () => dispatch(initializeBoard()),
     //sends to store move, which was confirmed by player by pressing the button
-    makeMove: (param) => dispatch(makeMove(param))
+    makeMove: (param) => dispatch(makeMove(param)),
+    //TODO: unimplemented yet
+    giveUp: () => dispatch(giveUp())
   };
 };
 
