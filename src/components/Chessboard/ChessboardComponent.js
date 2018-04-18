@@ -7,6 +7,8 @@ import "./chessboard.scss";
 
 import { createRoom, joinRoom, watchRoom } from "../../redux/actions/entranceActions";
 import { initializeBoard, makeMove, giveUp } from "../../redux/actions/BoardActions";
+import { Button } from '@nextiva/next-ui';
+
 
 class ChessboardComp extends React.Component {
   constructor(props) {
@@ -16,20 +18,33 @@ class ChessboardComp extends React.Component {
     this.chess.clear();
 
     this.state = {
-      isInited: false
+      isInited: false,
+      selectedTileID: '',
+      notConfirmedFEN: ''
     };
   }
 
-  tileHandler = name => {
-    console.log(name);
-  };
+  // componentWillMount() {
+  //   if (this.state.isInited === false) {
+  //     this.props.initializeBoard();
+  //   }
+
+  // }
+
+
+  getSimpleMoves(tileID) {
+    let movesSet = new Set();
+    this.chess.moves({ square: tileID, verbose: true }).forEach((element) => { movesSet.add(element.to) });
+    return movesSet;
+  }
+
+
 
   initTiles(value) {
     let tiles = [];
 
     this.chess.load(value);
-    console.log(this.chess.ascii());
-
+    let movesSet = this.getSimpleMoves(this.state.selectedTileID);
     this.chess.SQUARES.forEach((element, index) => {
       tiles.push(
         <Tile
@@ -38,26 +53,67 @@ class ChessboardComp extends React.Component {
           className={this.chess.square_color(element)}
           handleClick={this.tileHandler}
           piece={this.chess.get(element)}
+          move={movesSet.has(element)}
+          selected={this.state.selectedTileID == element}
         />
       );
     });
+
     return tiles;
   }
 
   //Temporary functional. Mock for server resp
-  createRoom = name => {this.props.createRoom();};
-  joinRoom = name => {this.props.joinRoom();};
-  watchRoom = name => {this.props.watchRoom();};
-  makeMove(param) {this.props.makeMove(param);}
+  createRoom = name => { this.props.createRoom(); };
+  joinRoom = name => { this.props.joinRoom(); };
+  watchRoom = name => { this.props.watchRoom(); };
+  makeMove(param) { this.props.makeMove(param); }
 
-tryToInit() {
-  if(this.props.player1 && !this.state.isInited) {
-    this.setState({isInited:true})
-    return  this.props.initializeBoard()
-  } 
-  return
-}
+  tryToInit() {
+    if (this.props.player1 && !this.state.isInited) {
+      this.setState({ isInited: true })
+      return this.props.initializeBoard()
+    }
+    return
+  }
+  tileHandler = (name) => {
+    console.log(name);
+
+    if (!this.state.selectedTileID && this.chess.get(name)) {
+      let moves = this.getSimpleMoves(name);
+      if (moves.size > 0) {
+        this.selectTile(name);
+        console.log("selectedTileID", name);
+      }
+    }
+    else if (this.state.selectedTileID) {
+      let moves = this.getSimpleMoves(this.state.selectedTileID);
+      if (moves.size > 0 && moves.has(name)) {
+
+        this.chess.move({ from: this.state.selectedTileID, to: name });
+        this.setNotConfirmedFEN(this.chess.fen());
+        this.selectTile();
+      } else {
+        this.selectTile();
+      }
+    }
+  }
+  setNotConfirmedFEN(FEN) {
+    this.setState({ notConfirmedFEN: FEN });
+  }
+  selectTile(ID) {
+    this.setState({ selectedTileID: ID });
+  }
+  onCancelClick = () => {
+    this.selectTile();
+    this.setNotConfirmedFEN();
+  }
+
+  onConfirmClick = () => {
+    console.log("dispatch and wait for an answer");
+  }
   render() {
+    /* temporarty validation for nondefault FEN */
+    this.tryToInit()
     return (
       <div>
         {/* buttons and methods for them just for debugging */}
@@ -65,14 +121,17 @@ tryToInit() {
         <button onClick={this.joinRoom}>Join Room</button>
         <button onClick={this.watchRoom}>As Watcher</button>
         <button onClick={this.makeMove.bind(this, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3')}>MakeMove</button>
-        
-        <div className="chessboard">
-          {/* temporarty validation for nondefault FEN */}
-          {this.tryToInit()}
 
-          {/* TODO: propose: remove initTiles to updateTiles */}
-          {this.initTiles(this.props.fen)}
-        </div>
+
+          <div className="chessboard_container">
+            <div className="chessboard_board">
+              {this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen)}
+            </div>
+            <div className="chessboard_buttons">
+              <Button kind='warning' onClick={this.onCancelClick}>Cancel</Button>
+              <Button kind='success' onClick={this.onConfirmClick}>Confirm</Button>
+            </div>
+          </div>
       </div>
     );
   }
