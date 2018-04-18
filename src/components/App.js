@@ -6,7 +6,7 @@ import Signin from './Signin';
 // import Lobby from './Lobby';
 
 import './App.scss';
-// import ChessboardComponent from './Chessboard/ChessboardComponent';
+import ChessboardComponent from './Chessboard/ChessboardComponent';
 
 class App extends Component {
   render() {
