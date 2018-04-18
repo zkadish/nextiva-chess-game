@@ -4,24 +4,25 @@ var dbm;
 var type;
 var seed;
 
+const Helpers = require('../utils/helpers');
+
 const defaultValues = [
-  [1, 2, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'],
-  [2],
+  // [1, 2, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', Helpers.getUnixTimeNow()],
 ];
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+exports.setup = function (options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
 };
 
-exports.up = function(db, callback) {
+exports.up = function (db, callback) {
   return db.createTable('games', {
-    id: {type: 'int', primaryKey: true, autoIncrement: true},
+    id: { type: 'int', primaryKey: true, autoIncrement: true },
     first_player_id: {
       type: 'int',
       notNull: true,
@@ -47,8 +48,8 @@ exports.up = function(db, callback) {
         mapping: 'id'
       }
     },
-    initial_state: 'string',
-    time: 'string',
+    initial_state: { type: 'string', notNull: true },
+    time: { type: 'string', notNull: true }
   }, () => {
     const columns = ['first_player_id', 'second_player_id', 'initial_state', 'time'];
     for (let game of defaultValues) {
@@ -57,7 +58,7 @@ exports.up = function(db, callback) {
   });
 };
 
-exports.down = function(db) {
+exports.down = function (db) {
   return db.dropTable('games');
 };
 

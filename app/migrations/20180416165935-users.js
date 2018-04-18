@@ -18,6 +18,13 @@ const defaultValues = [
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTFAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTEiLCJpYXQiOjE1MjM4OTgwNTF9.7H219EsJs1XfTp4kFVxQSb2AxKJha9z8PL_fGf0429A',
     '$2a$10$6rHLA.iSXu6GshCITIvQQO5xdSATFnQrOSxM5WJHupLjpu61Dh1me',
     '$2a$10$6rHLA.iSXu6GshCITIvQQO'
+  ],
+  [
+    'savtym2@asdfghj.com',
+    'savtym2',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTJAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTIiLCJpYXQiOjE1MjQwNzEwMjR9.myGXVdOWqOq65etoQxYUv5CmDbjjfumxx0YyoS9fJNg',
+    '$2a$10$Tfn4xqmZoKWBBO5aa081re1dyLWJ969f3amq4FExpdHTDbkTgbVTa',
+    '$2a$10$Tfn4xqmZoKWBBO5aa081re'
   ]
 ];
 

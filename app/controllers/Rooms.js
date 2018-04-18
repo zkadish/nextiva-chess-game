@@ -16,20 +16,26 @@ SELECT
 FROM games AS g
 JOIN users AS uf ON uf.id = g.first_player_id
 `;
-const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES ($1, $2) RETURNING id`;
+const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state, time) VALUES ($1, $2, $3) RETURNING id`;
+const GET_GAME_BY_PLAYER_ID = `SELECT * FROM games WHERE first_player_id = $1`;
 const GET_GAME_BY_ID = `
 SELECT 
 	g.id,
 	g.initial_state,
+	g.time,
 	uf.username AS first_player,
-	us.username AS second_player
-FROM games AS g 
+	(
+    SELECT 
+      username 
+    FROM users
+    WHERE id = g.second_player_id
+  ) AS second_player
+FROM games AS g
 JOIN users AS uf ON uf.id = g.first_player_id
-JOIN users AS us ON us.id = g.second_player_id
 WHERE g.id = $1
 `;
 const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
-const CONNECT_TO_GAME = `INSERT INTO games (second_player_id, time) VALUES ($1, $2)`;
+const CONNECT_TO_GAME = `UPDATE games SET second_player_id = $1, time = $2 WHERE id = $3`;
 const GET_LAST_STATE_BY_ID_GAME = `
 SELECT
   u.username,
@@ -77,7 +83,6 @@ class Rooms {
       };
     }
 
-
     if (game) {
       return {
         err: 'You created a game.',
@@ -85,7 +90,8 @@ class Rooms {
       };
     }
 
-    let { rows, err } = await db.query(CREATE_GAME, [per.id, state]);
+    const time = Helpers.getUnixTimeNow();
+    let { rows, err } = await db.query(CREATE_GAME, [per.id, state, time]);
 
     if (err) {
       return {
@@ -105,19 +111,44 @@ class Rooms {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
-    const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
-    if (game.err) return game;
+    const game = await Rooms._getGame(GET_GAME_BY_ID, game_id);
+    if (game && game.err) return game;
 
-    if (!game || game.second_player_id) {
+
+    if (!game || game.second_player) {
       return {
         err: !game ? `The game doesn't exist.` : 'Game is busy.',
         status: 409,
       };
     }
 
+
+    if (game.first_player === per.id) {
+      return {
+        err: `You can't play with themselves.`,
+        status: 409,
+      };
+    }
+
+    const gameOfPlayer = await db.query(GET_GAME_BY_PLAYER_ID, [per.id]);
+
+    if (gameOfPlayer.err) {
+      return {
+        err: gameOfPlayer.err.message,
+        status: 400,
+      };
+    }
+
+    if (gameOfPlayer.rows.length !== 0) {
+      return {
+        err: `You have a game.`,
+        status: 409,
+      };
+    }
+
     const time = Helpers.getUnixTimeNow();
 
-    let { err } = await db.query(CONNECT_TO_GAME, [per.id, time]);
+    let { err } = await db.query(CONNECT_TO_GAME, [per.id, time, game_id]);
 
     if (err) {
       return {
@@ -131,7 +162,7 @@ class Rooms {
         time,
         state: game.initial_state,
         first_player: game.first_player,
-        second_player: game.second_player,
+        second_player: per.username,
       },
       room: Helpers.getRoomStr(game_id),
       status: 201,
@@ -143,7 +174,8 @@ class Rooms {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
-    const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
+
+    const game = await Rooms._getGame(GET_GAME_BY_ID, game_id);
     if (game.err) return game;
 
     if (!game) {
@@ -153,7 +185,8 @@ class Rooms {
       };
     }
 
-    const { rows, err } = db.query(GET_LAST_STATE_BY_ID_GAME, [game_id]);
+
+    let { rows, err } = await db.query(GET_LAST_STATE_BY_ID_GAME, [game_id]);
 
     if (err) {
       return {
@@ -162,10 +195,26 @@ class Rooms {
       };
     }
 
+
+    let data = rows[0];
+
+    if (rows.length === 0) {
+      let initState = await db.query(GET_GAME_BY_ID, [game_id]);
+
+      if (initState.err) {
+        return {
+          err: initState.err.message,
+          status: 400,
+        };
+      }
+
+      data = initState.rows[0];
+    }
+
     return {
       data: {
-        time: rows[0].time,
-        state: rows[0].state,
+        time: data.time,
+        state: data.state ? data.state : data.initial_state,
         first_player: game.first_player,
         second_player: game.second_player,
       },
