@@ -6,7 +6,7 @@ const Tile = ({ className, handleClick, piece, name, selected, move  }) => {
 
     return (
         <div className={className} onClick={() => handleClick(name)} >
-            {piece && <img src={svgs[piece.color + '_' + piece.type]} className="piece_img"></img>}
+            {piece && <img src={svgs[piece.color + '_' + piece.type]} className="piece_img" alt={piece.color + '_' + piece.type}></img>}
             {selected && "S"}
             {move && "M"}
         </div>

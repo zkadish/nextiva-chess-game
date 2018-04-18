@@ -6,6 +6,7 @@ import Tile from "./Tile";
 import "./chessboard.scss";
 
 import { createRoom, joinRoom, watchRoom } from "../../redux/actions/entranceActions";
+import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE } from "../../redux/constants/roles";
 import { initializeBoard, makeMove, giveUp } from "../../redux/actions/BoardActions";
 import { Button } from '@nextiva/next-ui';
 
@@ -18,9 +19,12 @@ class ChessboardComp extends React.Component {
     this.chess.clear();
 
     this.state = {
-      isInited: false,
+      // isInited: false,
       selectedTileID: '',
-      notConfirmedFEN: ''
+      notConfirmedFEN: '',
+      // watcher: '',
+      // white: false,
+      // isMyTurn:false
     };
   }
 
@@ -28,7 +32,6 @@ class ChessboardComp extends React.Component {
   //   if (this.state.isInited === false) {
   //     this.props.initializeBoard();
   //   }
-
   // }
 
 
@@ -54,7 +57,7 @@ class ChessboardComp extends React.Component {
           handleClick={this.tileHandler}
           piece={this.chess.get(element)}
           move={movesSet.has(element)}
-          selected={this.state.selectedTileID == element}
+          selected={this.state.selectedTileID === element}
         />
       );
     });
@@ -69,8 +72,7 @@ class ChessboardComp extends React.Component {
   makeMove(param) { this.props.makeMove(param); }
 
   tryToInit() {
-    if (this.props.player1 && this.props.player2 && !this.props.fen) {
-      this.setState({ isInited: true })
+    if (this.props.player1 && !this.props.fen) {
       return this.props.initializeBoard()
     }
     return
@@ -160,8 +162,7 @@ const mapStateToProps = state => {
     player2: state.playstate.player2,
     //array of watchers (simply for names displaying / chat / etc)
     watchers: state.playstate.watchers,
-    //TODO: not sure, we need it
-    entranceType: state.playstate.entranceType,
+    currentPlayerRole: state.playstate.role
   };
 };
 
