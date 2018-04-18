@@ -7,7 +7,7 @@ server.listen(8080, '0.0.0.0');
 
 io.on('connection', function (socket) {
   socket.emit('news', { hello: 'world 32' });
-  socket.on('my other event', function (data) {
+  socket.on('test', function (data) {
     console.log(data);
   });
 });

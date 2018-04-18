@@ -82,12 +82,10 @@ module.exports = (io) => {
     const per = await User.permissions(req, res);
     if (!per) return;
 
-    io.on('connection', (socket) => {
+    io.on('connection', async (socket) => {
       curSocket = socket;
-
-      socket.emit('rooms', Rooms.getAllList());
-      socket.on('test', (data) => console.log(data));
-
+      
+      socket.emit('rooms', await Rooms.getAllList());
       socket.on('room.create', Socket.createRoom);
       socket.on('room.connect', Socket.connectToGame);
       socket.on('room.connect-visitor', Socket.connectToGameVisitor);
@@ -96,6 +94,8 @@ module.exports = (io) => {
         console.log('user disconnected');
       });
     });
+
+    res.json();
   });
 
   return router;

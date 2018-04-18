@@ -1,15 +1,15 @@
 export const authorize = async (user, password) => {
   try{
     const body = JSON.stringify({
-      "email" : "savtym1@asdfghj.com",
-      "password": "qwerty1234"
+      "email" : "savtym@gmail.com",
+      "password": "qwerty123"
     });
   
     const response = await fetch("http://localhost:8080/api/v1/user/signin", {
       method: 'POST',
       body: JSON.stringify({
-        "email" : "savtym1@asdfghj.com",
-        "password": "qwerty1234"
+        "email" : "savtym@gmail.com",
+        "password": "qwerty123"
       }),
       headers: new Headers({
         'Content-Type': 'application/json'
@@ -24,13 +24,14 @@ export const authorize = async (user, password) => {
   }
 }
 
-export const createSocket = async (token) => {
+export const createSocket = async ({token}) => {
   try{
     const response = await fetch("http://localhost:8080/api/v1/socket", {
       method: 'POST',
+      body: JSON.stringify({test: 'test'}),
       headers: new Headers({
         'Content-Type': 'application/json',
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTFAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTEiLCJpYXQiOjE1MjM5MDQzMTl9.QNHXz9KqLlTS2HFqnaLlUqLbMvl1yCl5n-Z_rqDP9M0"
+        Authorization: `Bearer ${token}`,
       })
     })
       
