@@ -84,7 +84,7 @@ module.exports = (io) => {
 
     io.on('connection', async (socket) => {
       curSocket = socket;
-      
+
       socket.emit('rooms', await Rooms.getAllList());
       socket.on('room.create', Socket.createRoom);
       socket.on('room.connect', Socket.connectToGame);

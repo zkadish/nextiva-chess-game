@@ -3,17 +3,39 @@ const User = require('./User');
 const Helpers = require('../utils/helpers');
 
 
-const GET_ALL_LIST = `SELECT * FROM games`;
+const GET_ALL_LIST = `
+SELECT 
+	g.id,
+	uf.username AS first_player,
+	(
+    SELECT 
+      username 
+    FROM users 
+    WHERE id = g.second_player_id
+  ) AS second_player
+FROM games AS g
+JOIN users AS uf ON uf.id = g.first_player_id
+`;
 const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES ($1, $2) RETURNING id`;
-const GET_GAME_BY_ID = `SELECT * FROM games WHERE $1 = id`;
+const GET_GAME_BY_ID = `
+SELECT 
+	g.id,
+	uf.username AS first_player,
+	us.username AS second_player
+FROM games AS g 
+JOIN users AS uf ON uf.id = g.first_player_id
+JOIN users AS us ON us.id = g.second_player_id
+WHERE g.id = $1
+`;
 const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
 const CONNECT_TO_GAME = `INSERT INTO games (second_player_id, time) VALUES ($1, $2)`;
 const GET_LAST_STATE_BY_ID_GAME = `
 SELECT
-  player_id,
-  state, 
-  time
-FROM history 
+  u.username,
+  h.state, 
+  h.time
+FROM history AS h
+JOIN users AS u ON u.id = h.player_id
 WHERE time = (
   SELECT 
     max(time) 
@@ -65,9 +87,7 @@ class Rooms {
     }
 
     return {
-      data: {
-        room: Helpers.getRoomStr(rows[0].id),
-      },
+      room: Helpers.getRoomStr(rows[0].id),
       status: 201,
     }
   }
@@ -87,7 +107,9 @@ class Rooms {
       };
     }
 
-    let { err } = await db.query(CONNECT_TO_GAME, [per.id, Helpers.getUnixTimeNow()]);
+    const time = Helpers.getUnixTimeNow();
+
+    let { err } = await db.query(CONNECT_TO_GAME, [per.id, time]);
 
     if (err) {
       return {
@@ -96,10 +118,14 @@ class Rooms {
       };
     }
 
+
+    const state = db.query(GET_LAST_STATE_BY_ID_GAME, [game_id]);
+
     return {
       data: {
-        // first_player:,
-        // second_player:,
+        time,
+        first_player: game.first_player,
+        second_player: game.second_player,
         room: Helpers.getRoomStr(game_id),
       },
       status: 201,
@@ -133,8 +159,8 @@ class Rooms {
     return {
       data: {
         data: rows[0],
-        room: Helpers.getRoomStr(game_id),
       },
+      room: Helpers.getRoomStr(game_id),
       status: 200,
     };
   }
