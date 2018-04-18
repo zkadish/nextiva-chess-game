@@ -20,4 +20,4 @@ ReactDOM.render(
 registerServiceWorker()
 
 
-// store.dispatch({type:"room.create"})
+// store.dispatch({type:"room.create", payload: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"})

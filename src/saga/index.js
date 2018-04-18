@@ -29,41 +29,6 @@ function subscribe(socket) {
     socket.on('disconnect', e => {
       // TODO: handle
     });
-    socket.on('room.connect', (data) => {
-      console.log('connect', data)
-    })
-
-    socket.emit('room.move', {
-      token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
-      game_id: 3,
-    });
-
-    socket.emit('room.create', {
-      token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
-      state: 'safas',
-    }, (data) => {
-      console.log(data);
-
-      socket.emit('room.connect', {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTFAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTEiLCJpYXQiOjE1MjM4OTgwNTF9.7H219EsJs1XfTp4kFVxQSb2AxKJha9z8PL_fGf0429A',
-        game_id: 35,
-      }, (data) => {
-        console.log(data)
-
-
-        socket.emit('room.connect-visitor', {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTJAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTIiLCJpYXQiOjE1MjQwNzEwMjR9.myGXVdOWqOq65etoQxYUv5CmDbjjfumxx0YyoS9fJNg',
-          game_id: 3,
-        }, (res) => {
-          console.log('visitor', res)
-        })
-      });
-
-
-    });
-
-
-
     return () => {};
   });
 }
@@ -76,26 +41,28 @@ function* read(socket) {
   }
 }
 
-function* write(socket) {
-  yield fork(createRoom, socket)
+function* write(socket, token) {
+  yield fork(createRoom, socket, token)
 }
 
-function* createRoom(socket) {
+function* createRoom(socket, token) {
   while (true) {
     const action= yield take("room.create")
-    socket.emit("room.create", {}, (data) => {
-      debugger
+    socket.emit("room.create", {token, state: action.state}, (data) => {
+      if(data.err){
+        console.log("ERROR ", data.err)
+      }
     })
-    // yield apply(socket, socket.emit, ['room.create', { username: "payload.username" }, (data) => {
+    // yield apply(socket, socket.emit, ['room.create', {token, state: "FEN string"}, (data) => {
     //   debugger
     // }])//token, state
 
   }
 }
 
-function* handleIO(socket) {
+function* handleIO(socket, token) {
   yield fork(read, socket);
-  yield fork(write, socket);
+  yield fork(write, socket, token);
 }
 
 function* flow() {
@@ -103,7 +70,8 @@ function* flow() {
     // let { payload } = yield take(`${login}`);
     const user = "user"
     const password = "user"
-    const token = yield call(Api.authorize, user, password) //get token from api.authorize
+    const { token } = yield call(Api.authorize, user, password) //get token from api.authorize
+
     yield call(Api.createSocket, token) //send requets for open socket
   
     const socket = yield call(connect); // connect to sokket
@@ -113,7 +81,7 @@ function* flow() {
     //socket.emit('test', { username: "payload.username" });
     yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
 
-    const task = yield fork(handleIO, socket);
+    const task = yield fork(handleIO, socket, token);
 
     // let action = yield take(`${logout}`);
     // yield cancel(task);
