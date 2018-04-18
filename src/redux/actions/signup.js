@@ -1,6 +1,7 @@
 import { URL } from '../constants/signup';
 import { BASE_URL } from '../constants/main';
 import { LOADING, SUCCESS, FAILURE } from '../constants/signup';
+import { ROUTE } from '../constants/route';
 
 const friendlyError = (error) => {
     return error;
@@ -18,6 +19,11 @@ const signUp = (dispatch, payload) => {
                 username: payload.username, 
                 ...{ token: 'abbqrb.qbqbab.bqbqe' } 
             }
+        });
+
+        dispatch({
+            type: ROUTE,
+            payload: 'lobby'
         });
 
         // dispatch({

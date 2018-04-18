@@ -3,6 +3,7 @@ import { TextField, Button, Spinner } from '@nextiva/next-ui';
 import { connect } from 'react-redux';
 
 import signUp from '../../redux/actions/signup';
+import route from '../../redux/actions/route';
 
 import './signup.scss';
 
@@ -64,7 +65,11 @@ class Signup extends React.Component {
                             onClick={() => this.props.signUp(this.state)}>
                             Sign up
                         </Button>
-                        <Button kind='close' className="signup__cencel">Cancel</Button>
+                        <Button 
+                            kind='close'
+                            className="signup__cencel"
+                            onClick={() => this.props.route('signin')}
+                        >Cancel</Button>
                     </div>
                     {this.props.isLoading && <Spinner className="signup__spinner" />}
                     {this.props.error && <div className="signup__error">Some error was occurred! </div>}
@@ -84,7 +89,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    signUp: (payload) => signUp(dispatch, payload)
+    signUp: (payload) => signUp(dispatch, payload),
+    route: (payload) => route(dispatch, payload)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

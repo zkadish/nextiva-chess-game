@@ -1,6 +1,7 @@
 import { URL } from '../constants/signin';
 import { BASE_URL } from '../constants/main';
 import { LOADING, SUCCESS, FAILURE } from '../constants/signin';
+import { ROUTE } from '../constants/route';
 
 const friendlyError = (error) => {
     return error;
@@ -14,6 +15,11 @@ const signIn = (dispatch, payload) => {
         dispatch({
             type: SUCCESS,
             data: { email: payload.email, ...{ username: "Jerry", token: 'abbqrb.qbqbab.bqbqe' } }
+        });
+
+        dispatch({
+            type: ROUTE,
+            payload: 'lobby'
         });
 
         // dispatch({
@@ -31,6 +37,10 @@ const signIn = (dispatch, payload) => {
     //             type: SUCCESS,
     //             data: { email: payload.email, ...data }
     //         });
+                // dispatch({
+                //     type: ROUTE,
+                //     payload: 'lobby'
+                // });
     //     })
     //     .catch(error => {
     //         dispatch({

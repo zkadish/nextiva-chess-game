@@ -1,6 +1,8 @@
-import { LOADING, SUCCESS, FAILURE } from '../constants/signin';
+import { LOADING, SUCCESS, FAILURE } from '../constants/user';
+import { LOGOUT } from '../constants/logout';
+import USER from '../constants/localstorage';
 
-const signIn = (state = { loaded: false, loading: false, error: false, data: null }, action) => {
+const signIn = (state = { loaded: false, loading: false, error: false, data: USER }, action) => {
     switch (action.type) {
         case LOADING:
             return {
@@ -29,6 +31,15 @@ const signIn = (state = { loaded: false, loading: false, error: false, data: nul
                 loading: false,
                 loaded: true,
                 error: action.data
+            }
+        }
+
+        case LOGOUT: {
+            return {
+                loaded: false,
+                loading: false,
+                error: false,
+                data: null
             }
         }
     
