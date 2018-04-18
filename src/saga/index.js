@@ -3,6 +3,7 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
+import {CREATE_ROOM_REQUEST} from "../redux/constants/ActionTypes"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -17,7 +18,7 @@ function connect() {
 function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('rooms', (data) => {
-      console.log("NEWS RECEIVED", data)
+      console.log("ROOMS RECEIVED", data)
       // emit(actions.addUser({ username }));
     });
     socket.on('room.', ({ username }) => {
@@ -42,21 +43,22 @@ function* read(socket) {
 }
 
 function* write(socket, token) {
-  yield fork(createRoom, socket, token)
+  yield fork(createRoomSaga, socket, token)
 }
 
-function* createRoom(socket, token) {
+function* createRoomSaga(socket, token) {
   while (true) {
-    const action= yield take("room.create")
-    socket.emit("room.create", {token, state: action.state}, (data) => {
-      if(data.err){
-        console.log("ERROR ", data.err)
-      }
+    const action = yield take(CREATE_ROOM_REQUEST)
+    const data = yield new Promise(resolve => {
+      socket.emit("room.create", {token, state: action.payload}, (data) => {resolve(data)})
     })
-    // yield apply(socket, socket.emit, ['room.create', {token, state: "FEN string"}, (data) => {
-    //   debugger
-    // }])//token, state
 
+    if(!data.err){
+      yield put(actions.createRoom(action.payload))
+    }
+    else {
+      console.log("ERROR ", data.err)
+    }
   }
 }
 
@@ -79,9 +81,11 @@ function* flow() {
     window.socket = socket;
 
     //socket.emit('test', { username: "payload.username" });
-    yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
+    // yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
 
     const task = yield fork(handleIO, socket, token);
+
+    yield put(actions.createRoomRequest())
 
     // let action = yield take(`${logout}`);
     // yield cancel(task);

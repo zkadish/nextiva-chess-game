@@ -6,7 +6,6 @@ export function playstate(state = '', action) {
 
     case CREATE_ROOM:
       //TODO: not implemented yet, need to discuss
-      debugger
       return {...state, state: action.payload};
 
     //mock, currently actions are same

@@ -24,7 +24,7 @@ export const authorize = async (user, password) => {
   }
 }
 
-export const createSocket = async ({token}) => {
+export const createSocket = async (token) => {
   try{
     const response = await fetch("http://localhost:8080/api/v1/socket", {
       method: 'POST',

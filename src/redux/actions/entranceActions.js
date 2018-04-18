@@ -1,10 +1,17 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST } from "../constants/ActionTypes";
 
 //Temporartily added delay for server response delay simulation
 
-export const createRoom = (counter, value) => dispatch => {
-  setTimeout(() => {dispatch(create(counter));}, 500);
-};
+export const createRoomRequest = () => ({
+  type: CREATE_ROOM_REQUEST,
+  payload: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+});
+
+export const createRoom = (fen) => ({
+  type: CREATE_ROOM,
+  payload: fen
+});
+
 
 export const joinRoom = (counter, value) => dispatch => {
   setTimeout(() => {dispatch(join());}, 500);
