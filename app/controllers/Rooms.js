@@ -20,6 +20,7 @@ const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES (
 const GET_GAME_BY_ID = `
 SELECT 
 	g.id,
+	g.initial_state,
 	uf.username AS first_player,
 	us.username AS second_player
 FROM games AS g 
@@ -118,16 +119,14 @@ class Rooms {
       };
     }
 
-
-    const state = db.query(GET_LAST_STATE_BY_ID_GAME, [game_id]);
-
     return {
       data: {
         time,
+        state: game.initial_state,
         first_player: game.first_player,
         second_player: game.second_player,
-        room: Helpers.getRoomStr(game_id),
       },
+      room: Helpers.getRoomStr(game_id),
       status: 201,
     }
   }
@@ -158,7 +157,10 @@ class Rooms {
 
     return {
       data: {
-        data: rows[0],
+        time: rows[0].time,
+        state: rows[0].state,
+        first_player: game.first_player,
+        second_player: game.second_player,
       },
       room: Helpers.getRoomStr(game_id),
       status: 200,
