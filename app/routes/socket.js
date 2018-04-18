@@ -15,10 +15,11 @@ class Socket {
     const res = await Rooms.createGame(data);
 
     if (!res.err) {
-      console.log(res);
-      await Socket._handleRoom(res.room, true);
-      curIo.emit('rooms', Rooms.getAllList());
+      await Socket._handleRoom(res.room);
+      curIo.emit('rooms', await Rooms.getAllList());
     }
+
+    !res.room || delete res.room;
 
     callback(res);
   }
@@ -28,9 +29,11 @@ class Socket {
     const res = await Rooms.connectToGame(data);
 
     if (!res.err) {
-      await Socket._handleRoom(res.room);
-      curIo.emit('rooms', Rooms.getAllList());
+      await Socket._handleRoom(res.room, true, res.data);
+      curIo.emit('rooms', await Rooms.getAllList());
     }
+
+    !res.room || delete res.room;
 
     callback(res);
   }
@@ -44,12 +47,14 @@ class Socket {
       curIo.sockets.in(res.room).on('room', console.log);
     }
 
+    !res.room || delete res.room;
+
     callback(res);
   }
 
 
 
-  static async _handleRoom(room, isCreate = false) {
+  static async _handleRoom(room, isConnect = false, game) {
     curSocket.join(room);
     curIo.sockets.in(room)
       .on('room.move', async (data) => {
@@ -63,11 +68,8 @@ class Socket {
 
       });
 
-    if (!isCreate) {
-      curIo.sockets.in(room)
-        .emit('room.connect', {
-
-        });
+    if (isConnect) {
+      curIo.sockets.in(room).emit('room.connect', game);
     }
   }
 
@@ -83,13 +85,13 @@ module.exports = (io) => {
     const per = await User.permissions(req, res);
     if (!per) return;
 
-    io.on('connection', async (socket) => {
+    io.once('connection', async (socket) => {
       curSocket = socket;
 
       socket.emit('rooms', await Rooms.getAllList());
       socket.on('room.create', await Socket.createRoom);
-      socket.on('room.connect', Socket.connectToGame);
-      socket.on('room.connect-visitor', Socket.connectToGameVisitor);
+      socket.on('room.connect', await Socket.connectToGame);
+      socket.on('room.connect-visitor', await Socket.connectToGameVisitor);
 
       socket.on('disconnect', () => {
         console.log('user disconnected');
