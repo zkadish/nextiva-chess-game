@@ -46,7 +46,7 @@ Route                       | Params                                        | Re
 ----------------------------|-----------------------------------------------|------------------------
 connection (on)             |                                               | subscribe, *rooms emit
 rooms (emit)                |                                               | all rooms (array)
-room.create (on)            | token, state                                  | *rooms emit, status - 201
+room.create (on)            | token, state                                  | room, *rooms emit, status - 201
 room.connect (on)           | token, game_id                                | *rooms emit, status - 201
 room.connect-visitor (on)   | token, game_id                                | *rooms emit, status - 201
 disconnect (on)             |                                               | unsubscribe

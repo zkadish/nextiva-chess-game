@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../controllers/User');
+const Game = require('../controllers/Game');
 const Rooms = require('../controllers/Rooms');
 
 
@@ -12,27 +13,53 @@ class Socket {
 
   static async createRoom(data, callback) {
     const res = await Rooms.createGame(data);
-    callback(res);
 
     if (!res.err) {
-      curIo.emit('/rooms', Rooms.getAllList());
+      await Socket._handleRoom(res.room);
+      curIo.emit('rooms', Rooms.getAllList());
     }
+
+    callback(res);
   }
 
 
   static async connectToGame(data, callback) {
     const res = await Rooms.connectToGame(data);
-    curSocket.emit('/room/connect', res);
 
     if (!res.err) {
-      curIo.emit('/rooms', Rooms.getAllList());
+      await Socket._handleRoom(res.room);
+      curIo.emit('rooms', Rooms.getAllList());
     }
+
+    callback(res);
+  }
+
+
+  static async _handleRoom(room) {
+    curSocket.join(room);
+    curIo.sockets.in(room)
+      .on('room.move', async (data) => {
+        const res = await Game.moveFigure(data);
+
+        if (!res.err) {
+          curIo.sockets.in(room).emit('room.move', Object.assign(data, res.data));
+        }
+      })
+      .on('room.give-up', async () => {
+
+      });
   }
 
 
   static async connectToGameVisitor(data, callback) {
     const res = await Rooms.connectToGameVisitor(data);
-    curSocket.emit('/room/connect-visitor', res);
+
+    if (res.err) {
+      curSocket.join(res.room);
+      curIo.sockets.in(res.room).on('room', console.log);
+    }
+
+    callback(res);
   }
 
 

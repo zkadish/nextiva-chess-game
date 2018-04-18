@@ -1,9 +1,10 @@
 const db = require('../db');
 const User = require('./User');
+const Helpers = require('../utils/helpers');
 
 
 const GET_ALL_LIST = `SELECT * FROM games`;
-const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES ($1, $2)`;
+const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state) VALUES ($1, $2) RETURNING id`;
 const GET_GAME_BY_ID = `SELECT * FROM games WHERE $1 = id`;
 const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
 const CONNECT_TO_GAME = `INSERT INTO games (second_player_id, time) VALUES ($1, $2)`;
@@ -54,7 +55,7 @@ class Rooms {
       };
     }
 
-    let { err } = await db.query(CREATE_GAME, [per.id, state]);
+    let { rows, err } = await db.query(CREATE_GAME, [per.id, state]);
 
     if (err) {
       return {
@@ -64,6 +65,9 @@ class Rooms {
     }
 
     return {
+      data: {
+        room: Helpers.getRoomStr(rows[0].id),
+      },
       status: 201,
     }
   }
@@ -83,7 +87,7 @@ class Rooms {
       };
     }
 
-    let { err } = await db.query(CONNECT_TO_GAME, [per.id, Math.round((new Date()).getTime() / 1000)]);
+    let { err } = await db.query(CONNECT_TO_GAME, [per.id, Helpers.getUnixTimeNow()]);
 
     if (err) {
       return {
@@ -93,6 +97,9 @@ class Rooms {
     }
 
     return {
+      data: {
+        room: Helpers.getRoomStr(game_id),
+      },
       status: 201,
     }
   }
@@ -122,7 +129,10 @@ class Rooms {
     }
 
     return {
-      data: rows[0],
+      data: {
+        data: rows[0],
+        room: Helpers.getRoomStr(game_id),
+      },
       status: 200,
     };
   }
