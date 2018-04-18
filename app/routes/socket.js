@@ -15,6 +15,7 @@ class Socket {
     const res = await Rooms.createGame(data);
 
     if (!res.err) {
+      console.log(res);
       await Socket._handleRoom(res.room, true);
       curIo.emit('rooms', Rooms.getAllList());
     }
@@ -86,7 +87,7 @@ module.exports = (io) => {
       curSocket = socket;
 
       socket.emit('rooms', await Rooms.getAllList());
-      socket.on('room.create', Socket.createRoom);
+      socket.on('room.create', await Socket.createRoom);
       socket.on('room.connect', Socket.connectToGame);
       socket.on('room.connect-visitor', Socket.connectToGameVisitor);
 

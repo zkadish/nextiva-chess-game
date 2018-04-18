@@ -27,6 +27,12 @@ function subscribe(socket) {
     socket.on('disconnect', e => {
       // TODO: handle
     });
+    socket.emit('room.create', {
+      token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
+    }, (data) => {
+      debugger
+      console.log(data)
+    })
     return () => {};
   });
 }
@@ -56,7 +62,7 @@ function* handleIO(socket) {
 }
 
 function* flow() {
-  while (true) {
+  // while (true) {
     // let { payload } = yield take(`${login}`);
     const user = "user"
     const password = "user"
@@ -64,6 +70,8 @@ function* flow() {
     yield call(Api.createSocket, token) //send requets for open socket
   
     const socket = yield call(connect); // connect to sokket
+
+    window.socket = socket;
 
     //socket.emit('test', { username: "payload.username" });
     yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
@@ -73,7 +81,7 @@ function* flow() {
     // let action = yield take(`${logout}`);
     // yield cancel(task);
     // socket.emit('logout');
-  }
+  // }
 }
 
 /* function* authorize(user, password) {

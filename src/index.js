@@ -23,7 +23,7 @@ const store = createStore(
 )
 // window.store = store //only for debugging
 
-//sagaMiddleware.run(rootSaga)
+sagaMiddleware.run(rootSaga)
 
 ReactDOM.render(
   <Provider store={store}>

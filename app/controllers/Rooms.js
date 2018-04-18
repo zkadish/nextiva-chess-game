@@ -66,10 +66,17 @@ class Rooms {
 
   static async createGame({ token, state }) {
     let per = await User.permissionsToken(token);
-    if (per.status) return;
+    if (per.status) return per;
 
-    const game = Rooms._getGame(GET_GAME_BY_ID_PLAYER, per.id);
-    if (game.err) return game;
+    const game = await Rooms._getGame(GET_GAME_BY_ID_PLAYER, per.id);
+
+    if (game && game.err) {
+      return {
+        err: game.err.message,
+        status: 400,
+      };
+    }
+
 
     if (game) {
       return {
@@ -96,7 +103,7 @@ class Rooms {
 
   static async connectToGame({ token, game_id }) {
     let per = await User.permissionsToken(token);
-    if (per.status) return;
+    if (per.status) return per;
 
     const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
     if (game.err) return game;
@@ -134,7 +141,7 @@ class Rooms {
 
   static async connectToGameVisitor({ token, game_id }) {
     let per = await User.permissionsToken(token);
-    if (per.status) return;
+    if (per.status) return per;
 
     const game = Rooms._getGame(GET_GAME_BY_ID, game_id);
     if (game.err) return game;
