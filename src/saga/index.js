@@ -19,7 +19,7 @@ function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('rooms', (data) => {
       console.log("ROOMS RECEIVED", data)
-      // emit(actions.addUser({ username }));
+      emit(actions.roomsList(data.data));
     });
     socket.on('room.', ({ username }) => {
       // emit(removeUser({ username }));

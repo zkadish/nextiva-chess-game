@@ -10,3 +10,5 @@ export const WATCH_ROOM = 'WATCH_ROOM';
 
 export const CREATE_ROOM_REQUEST = 'CREATE_ROOM_REQUEST';
 export const CREATE_ROOM = 'CREATE_ROOM';
+
+export const ROOMS_LIST = 'ROOMS_LIST';

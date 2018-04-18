@@ -21,6 +21,10 @@ export const createRoom = (fen) => ({
   payload: fen
 });
 
+export const roomsList = (rooms) => ({
+  type: ROOMS_LIST,
+  payload: rooms
+});
 
 export const joinRoom = (counter, value) => dispatch => {
   setTimeout(() => {dispatch(join());}, 500);
