@@ -8,7 +8,7 @@ import './index.css'
 import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import reducers from './redux/reducers'
-import handleNewMessage from './saga'
+import rootSaga from './saga'
 import setupSocket from './sockets'
 import username from './utils/name'
 
@@ -21,14 +21,15 @@ const logger = createLogger({
   collapsed: true
 });
 
+const enhancer = applyMiddleware(sagaMiddleware, thunk, logger)
+
 const store = createStore(
   reducers,
-  applyMiddleware(logger, thunk, sagaMiddleware)
+  enhancer
 )
+window.store = store //only for debugging
 
-const socket = setupSocket(store.dispatch, username)
-
-sagaMiddleware.run(handleNewMessage, { socket, username })
+sagaMiddleware.run(rootSaga)
 
 ReactDOM.render(
   <Provider store={store}>

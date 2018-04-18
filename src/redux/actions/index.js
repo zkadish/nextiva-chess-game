@@ -1,5 +1,6 @@
 import * as types from '../constants/ActionTypes'
 
+
 let nextMessageId = 0
 let nextUserId = 0
 
@@ -28,7 +29,7 @@ export const populateUsersList = users => ({
   users
 })
 
-export const signIn = () => {
+/* export const signIn = () => {
   const body = JSON.stringify({
     "email" : "savtym1@asdfghj.com",
     "password": "qwerty1234"
@@ -37,10 +38,18 @@ export const signIn = () => {
   return dispatch => {
     fetch("http://localhost:8080/api/v1/user/signin", {
       method: 'POST',
-      body
+      body: JSON.stringify({
+        "email" : "savtym1@asdfghj.com",
+        "password": "qwerty1234"
+      }),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
     }).then((response) => response.json()).then((data) => {
+      
       console.log("onLoaded", data)
+      const socket = setupSocket(store.dispatch, username)
       dispatch({type: "SIGN_IN"})
     })
-  };
-}
+  }; 
+}*/

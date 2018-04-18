@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import React from "react"
 import AddMessageComponent from '../AddMessage'
-import { addMessage, signIn } from '../../redux/actions'
+import { addMessage} from '../../redux/actions'
 
 const AddMessage = (props) => {
   let input
@@ -12,7 +12,6 @@ const AddMessage = (props) => {
         onKeyPress={(e) => {
         if (e.key === 'Enter') {
 
-          props.signIn()
           // props.addMessage(input.value, 'Me')
           input.value = ''
         }
@@ -27,4 +26,4 @@ const AddMessage = (props) => {
 }
 
 export default connect(
-  null, {addMessage, signIn})(AddMessage)
+  null, {addMessage})(AddMessage)
