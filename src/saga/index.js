@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
-import {CREATE_ROOM_REQUEST} from "../redux/constants/ActionTypes"
+import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUESRT, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -21,10 +21,10 @@ function subscribe(socket) {
       console.log("ROOMS RECEIVED", data)
       emit(actions.roomsList(data.data));
     });
-    socket.on('room.', ({ username }) => {
+    socket.on('rooms', ({ username }) => {
       // emit(removeUser({ username }));
     });
-    socket.on('messages.new', ({ message }) => {
+    socket.on('room.connect', (data) => {
       // emit(newMessage({ message }));
     });
     socket.on('disconnect', e => {
@@ -44,6 +44,7 @@ function* read(socket) {
 
 function* write(socket, token) {
   yield fork(createRoomSaga, socket, token)
+  yield fork(joinRoomSaga, socket, token)
 }
 
 function* createRoomSaga(socket, token) {
@@ -52,9 +53,36 @@ function* createRoomSaga(socket, token) {
     const data = yield new Promise(resolve => {
       socket.emit("room.create", {token, state: action.payload}, (data) => {resolve(data)})
     })
-
     if(!data.err){
       yield put(actions.createRoom(action.payload))
+    }
+    else {
+      console.log("ERROR ", data.err)
+    }
+  }
+}
+function* joinRoomSaga(socket, token) {
+  while (true) {
+    const action = yield take(JOIN_ROOM_REQUESRT)
+    const data = yield new Promise(resolve => {
+      socket.emit("room.connect", {token, state: action.payload}, (data) => {resolve(data)})
+    })
+    if(!data.err){
+      yield put(actions.joinRoom(action.payload))
+    }
+    else {
+      console.log("ERROR ", data.err)
+    }
+  }
+}
+function* watchRoomSaga(socket, token) {
+  while (true) {
+    const action = yield take(WATCH_ROOM_REQUEST)
+    const data = yield new Promise(resolve => {
+      socket.emit("room.connect-visitor", {token, state: action.payload}, (data) => {resolve(data)})
+    })
+    if(!data.err){
+      yield put(actions.watchRoom(action.payload))
     }
     else {
       console.log("ERROR ", data.err)
