@@ -29,13 +29,16 @@ class Socket {
     const res = await Rooms.connectToGame(data);
 
     if (!res.err) {
-      await Socket._handleRoom(res.room, true, res.data);
+      await Socket._handleRoom(res.room);
       curIo.emit('rooms', await Rooms.getAllList());
     }
 
-    !res.room || delete res.room;
+    callback({
+      err: res.err,
+      status: res.status,
+    });
 
-    callback(res);
+    curIo.sockets.in(res.room).emit('room.connect', res.data);
   }
 
 
@@ -43,8 +46,7 @@ class Socket {
     const res = await Rooms.connectToGameVisitor(data);
 
     if (res.err) {
-      curSocket.join(res.room);
-      curIo.sockets.in(res.room).on('room', console.log);
+      await Socket._handleRoom(res.room);
     }
 
     !res.room || delete res.room;
@@ -53,29 +55,23 @@ class Socket {
   }
 
 
-
-  static async _handleRoom(room, isConnect = false, game) {
+  static async _handleRoom(room) {
     curSocket.join(room);
-    curIo.sockets.in(room)
-      .on('room.move', async (data) => {
-        const res = await Game.moveFigure(data);
-
-        if (!res.err) {
-          curIo.sockets.in(room).emit('room.move', Object.assign(data, res.data));
-        }
-      })
-      .on('room.give-up', async () => {
-
-      });
-
-    if (isConnect) {
-      curIo.sockets.in(room).emit('room.connect', game);
-    }
+    curIo.sockets.in(room).on('room.move', async (data, callback) => {
+      console.log(data)
+      // const res = await Game.moveFigure(data);
+      //
+      // if (!res.err) {
+      //   curIo.sockets.in(room).emit('room.move', Object.assign(data, res.data));
+      // }
+      //
+      // !res.data || delete res.data;
+      //
+      // callback(res);
+    });
   }
 
 }
-
-
 
 
 module.exports = (io) => {

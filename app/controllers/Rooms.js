@@ -100,8 +100,11 @@ class Rooms {
       };
     }
 
+    const { id } = rows[0];
+
     return {
-      room: Helpers.getRoomStr(rows[0].id),
+      data: { id },
+      room: Helpers.getRoomStr(id),
       status: 201,
     }
   }
@@ -174,9 +177,8 @@ class Rooms {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
-
     const game = await Rooms._getGame(GET_GAME_BY_ID, game_id);
-    if (game.err) return game;
+    if (game && game.err) return game;
 
     if (!game) {
       return {
@@ -219,7 +221,7 @@ class Rooms {
         second_player: game.second_player,
       },
       room: Helpers.getRoomStr(game_id),
-      status: 200,
+      status: 201,
     };
   }
 

@@ -12,7 +12,7 @@ VALUES ($1, $2, $3, $4, $5)
 
 class Game {
 
-  static async moveFigure({ token, game_id, state, is_give_up = false }) {
+    static async moveFigure({ token, game_id, state, is_give_up = false }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 

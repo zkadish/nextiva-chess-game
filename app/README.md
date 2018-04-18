@@ -46,7 +46,9 @@ Route                       | Params                                        | Re
 ----------------------------|-----------------------------------------------|------------------------
 connection (on)             |                                               | subscribe, *rooms emit
 rooms (emit)                |                                               | all rooms (array)
-room.create (on)            | token, state                                  | room, *rooms emit, status - 201
-room.connect (on)           | token, game_id                                | *rooms emit, status - 201
-room.connect-visitor (on)   | token, game_id                                | *rooms emit, status - 201
+room.create (on)            | token, state                                  | id, *rooms emit, status - 201
+room.connect (on)           | token, game_id                                | *room.connect (emit), status - 201
+room.connect (emit)         |                                               | time, state, first_player, second_player
+room.connect-visitor (on)   | token, game_id                                | *room.connect (emit), status - 201
+room.move (on)              | token, game_id, state, is_give_up = false     | *room.move emit, status - 201
 disconnect (on)             |                                               | unsubscribe

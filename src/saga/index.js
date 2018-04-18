@@ -32,6 +32,12 @@ function subscribe(socket) {
     socket.on('room.connect', (data) => {
       console.log('connect', data)
     })
+
+    socket.emit('room.move', {
+      token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
+      game_id: 3,
+    });
+
     socket.emit('room.create', {
       token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
       state: 'safas',
@@ -47,7 +53,7 @@ function subscribe(socket) {
 
         socket.emit('room.connect-visitor', {
           token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bTJAYXNkZmdoai5jb20iLCJ1c2VybmFtZSI6InNhdnR5bTIiLCJpYXQiOjE1MjQwNzEwMjR9.myGXVdOWqOq65etoQxYUv5CmDbjjfumxx0YyoS9fJNg',
-          game_id: 35,
+          game_id: 3,
         }, (res) => {
           console.log('visitor', res)
         })
