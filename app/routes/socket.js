@@ -213,7 +213,7 @@ module.exports = (io) => {
       socket.once('chat.local.insert', await Socket.insertMessageToLocal);
       socket.once('chat.general.insert', await Socket.insertMessageToGeneral);
 
-      // socket.once('disconnect', await Socket.disconnect);
+      socket.once('disconnect', await Socket.disconnect);
     });
 
     res.json();
