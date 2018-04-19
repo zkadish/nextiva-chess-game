@@ -7,7 +7,7 @@ import Signup from './Signup';
 import Lobby from './Lobby';
 
 // import './App.scss';
-import ChessboardComponent from './Chessboard/ChessboardComponent';
+import Game from './Game';
 
 class App extends Component {
   constructor(props){
@@ -30,7 +30,7 @@ class App extends Component {
         );
       case 'chessboard':
         return (
-          <ChessboardComponent/>
+          <Game/>
         )
       default: 
         return (
