@@ -9,7 +9,7 @@ import './game.scss';
 
 
 import { createRoom, joinRoom, watchRoom } from "../../redux/actions/entranceActions";
-import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE } from "../../redux/constants/roles";
+import { ROLE_WATCHER } from "../../redux/constants/roles";
 import { initializeBoard, makeMove, giveUp } from "../../redux/actions/BoardActions";
 
 
@@ -23,7 +23,7 @@ class Game extends React.Component {
     }
 
     isMyTurn = () => {
-        return !this.state.observer && this.chess.turn() == this.props.currentPlayerRole;
+        return !this.state.observer && this.chess.turn() === this.props.currentPlayerRole;
     }
 
     gameOver = () => {
@@ -130,11 +130,11 @@ class Game extends React.Component {
             <button onClick={this.makeMove.bind(this, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3')}>MakeMove</button>
             <div className="game_container">
                 <ChessboardHeader
-                    back={this.props.currentPlayerRole == ROLE_WATCHER ?
+                    back={this.props.currentPlayerRole === ROLE_WATCHER ?
                         { onClick: () => (console.log('Go back to Lobby')) } :
                         { onClick: () => (console.log('Give Up!')) }
                     }
-                    backText={this.props.currentPlayerRole == ROLE_WATCHER ? 'Go back to Lobby' :'Give Up!'}
+                    backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' :'Give Up!'}
                     playerName={this.props.player1}
                     //TODO: don't update when move
                     time={0}
