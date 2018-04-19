@@ -9,7 +9,7 @@ export const createRoomRequest = (creatorId) => ({
 //TODO: implement in component to dispatch on click handler
 export const createJoinRequest = (room_id) => ({
   type: JOIN_ROOM_REQUEST,
-  payload: room_id
+  payload: Number(room_id)
 })
 
 //TODO: implement in component to dispatch on click handler
