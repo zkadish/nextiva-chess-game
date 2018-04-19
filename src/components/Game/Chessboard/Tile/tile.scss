@@ -1,0 +1,40 @@
+.tile {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.light {
+    @extend .tile;
+    background: #ccc;
+}
+
+.light_selected {
+    @extend .light;
+    border: 4px solid #b8ffb6;
+}
+
+.light_move {
+    @extend .tile;
+    background: #e8fce8;
+}
+
+.dark {
+    @extend .tile;
+    background: rgb(65, 65, 65);
+}
+
+.dark_selected {
+    @extend .dark;
+    border: 4px solid #b8ffb6;
+}
+
+.dark_move {
+    @extend .tile;
+    background: #8aff86;
+}
+
+.piece_img {
+    display: flex;
+    width: 100%;
+}

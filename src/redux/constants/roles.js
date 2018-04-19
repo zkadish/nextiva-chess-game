@@ -1,3 +1,3 @@
-export const ROLE_WATCHER = 'ROLE_WATCHER';
-export const ROLE_BLACK = 'ROLE_BLACK';
-export const ROLE_WHITE = 'ROLE_WHITE';
+export const ROLE_WATCHER = 'watcher';
+export const ROLE_BLACK = 'b';
+export const ROLE_WHITE = 'w';

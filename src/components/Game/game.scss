@@ -1,0 +1,8 @@
+.game_container {
+    display: grid;
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 480px;
+    height: 580px;
+    grid-template-rows: repeat(3 , 1fr);  
+}
