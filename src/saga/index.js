@@ -20,14 +20,10 @@ function connect() {
 function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('rooms', (data) => {
-      // console.log("ROOMS RECEIVED", data)
       emit(actions.roomsList(data.data));
     });
-    socket.on('rooms', ({ username }) => {
-      // emit(removeUser({ username }));
-    });
     socket.on('room.connect', (data) => {
-      // emit(newMessage({ message }));
+      emit(actions.updateRoomState(data.data));
     });
     socket.on('disconnect', e => {
       // TODO: handle
@@ -101,6 +97,7 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
       })
       if(!data.err){
         yield put(actions.route("chessboard"))
+        debugger
         yield put(action(payload))
       }
       else {
@@ -120,6 +117,9 @@ function* handleIO(socket, token) {
 function* flow() {
   while (true) {
     const signIn = yield take(LOGIN);
+
+
+
     const token = signIn.data.token
     // const { token } = yield call(Api.authorize, "user", "password") //get token from api.authorize
     yield call(Api.createSocket, token) //send requets for open socket
