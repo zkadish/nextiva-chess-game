@@ -44,67 +44,46 @@ function* read(socket) {
 }
 
 function* write(socket, token) {
-  // yield fork(createRoomSaga, socket, token)
-  // yield fork(joinRoomSaga, socket, token)
   yield fork(writeSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
-  yield fork(writeSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
-  yield fork(writeSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
+  yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
+  yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
 }
-
-/* function* createRoomSaga(socket, token) {
-  while (true) {
-    const {payload} = yield take(CREATE_ROOM_REQUEST)
-    const data = yield new Promise(resolve => {
-      socket.emit("room.create", {token, state: payload}, (data) => {resolve(data)})
-    })
-    if(!data.err){
-      yield put(actions.createRoom(payload))
-    }
-    else {
-      console.log("ERROR ", data.err)
-    }
-  }
-}
-function* joinRoomSaga(socket, token) {
-  while (true) {
-    const action = yield take(JOIN_ROOM_REQUEST)
-    const data = yield new Promise(resolve => {
-      socket.emit("room.connect", {token, state: action.payload}, (data) => {resolve(data)})
-    })
-    if(!data.err){
-      yield put(actions.joinRoom(action.payload))
-    }
-    else {
-      console.log("ERROR ", data.err)
-    }
-  }
-}
-function* watchRoomSaga(socket, token) {
-  while (true) {
-    const {payload} = yield take(WATCH_ROOM_REQUEST)
-    const data = yield new Promise(resolve => {
-      socket.emit("room.connect-visitor", {token, state: payload}, (data) => {resolve(data)})
-    })
-    if(!data.err){
-      yield put(actions.watchRoom(payload))
-    }
-    else {
-      console.log("ERROR ", data.err)
-    }
-  }
-} */
 
 function* writeSaga(socket, token, emitType, actionType, action) {
   while (true) {
-    const {payload} = yield take(actionType)
-    const data = yield new Promise(resolve => {
-      socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
-    })
-    if(!data.err){
-      yield put(action(payload))
+    try {
+      const {payload} = yield take(actionType)
+      const data = yield new Promise(resolve => {
+        socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
+      })
+      if(!data.err){
+        yield put(action(payload))
+      }
+      else {
+        console.log("ERROR ", data.err)
+      }
+    } catch (error) {
+      console.log("CATCH TRIGGERED in saga.writeSaga", error)
     }
-    else {
-      console.log("ERROR ", data.err)
+    
+  }
+}
+
+function* joinRoomSaga(socket, token, emitType, actionType, action) {
+  while (true) {
+    try {
+      const {payload} = yield take(actionType)
+      const data = yield new Promise(resolve => {
+        socket.emit(emitType, {token, game_id: payload}, (data) => {resolve(data)})
+      })
+      if(!data.err){
+        yield put(action(payload))
+      }
+      else {
+        console.log("ERROR ", data.err)
+      }
+    } catch (error) {
+      console.log("CATCH TRIGGERED in saga.joinRoomSaga", error)
     }
   }
 }
@@ -128,8 +107,6 @@ function* flow() {
     const task = yield fork(handleIO, socket, token);
   }
 }
-
-
 
 export default function* rootSaga() {
   yield fork(flow);
