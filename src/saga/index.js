@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
 import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
+import {LOGIN} from "../redux/constants/user"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -18,7 +19,7 @@ function connect() {
 function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('rooms', (data) => {
-      console.log("ROOMS RECEIVED", data)
+      // console.log("ROOMS RECEIVED", data)
       emit(actions.roomsList(data.data));
     });
     socket.on('rooms', ({ username }) => {
@@ -96,29 +97,26 @@ function* handleIO(socket, token) {
 }
 
 function* flow() {
-  // while (true) {
-    // let { payload } = yield take(`${login}`);
-    const user = "user"
-    const password = "user"
-    const { token } = yield call(Api.authorize, user, password) //get token from api.authorize
-
+  while (true) {
+    const signIn = yield take(LOGIN);
+    const token = signIn.data.token
+    // const { token } = yield call(Api.authorize, "user", "password") //get token from api.authorize
     yield call(Api.createSocket, token) //send requets for open socket
   
     const socket = yield call(connect); // connect to sokket
 
-    window.socket = socket;
+    window.socket = socket;//for debug, remove after
 
-    //socket.emit('test', { username: "payload.username" });
     // yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
 
     const task = yield fork(handleIO, socket, token);
 
-    yield put(actions.createRoomRequest())
+    // yield put(actions.createRoomRequest())
 
     // let action = yield take(`${logout}`);
     // yield cancel(task);
     // socket.emit('logout');
-  // }
+  }
 }
 
 /* function* authorize(user, password) {
