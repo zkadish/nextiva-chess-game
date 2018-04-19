@@ -5,6 +5,7 @@ import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
 import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
 import {LOGIN} from "../redux/constants/user"
+import {ROUTE} from "../redux/constants/route"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -57,6 +58,7 @@ function* writeSaga(socket, token, emitType, actionType, action) {
         socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
       })
       if(!data.err){
+        yield put(actions.route("chessboard"))
         yield put(action(payload))
       }
       else {
@@ -69,6 +71,27 @@ function* writeSaga(socket, token, emitType, actionType, action) {
   }
 }
 
+/* function* createRoomSaga(socket, token, emitType, actionType, action) {
+  while (true) {
+    try {
+      const {payload} = yield take(actionType)
+      const data = yield new Promise(resolve => {
+        socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
+      })
+      if(!data.err){
+        yield put(actions.route("chessboard"))
+        yield put(action(payload))
+      }
+      else {
+        console.log("ERROR ", data.err)
+      }
+    } catch (error) {
+      console.log("CATCH TRIGGERED in saga.writeSaga", error)
+    }
+    
+  }
+} */
+
 function* joinRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {
     try {
@@ -77,6 +100,7 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
         socket.emit(emitType, {token, game_id: payload}, (data) => {resolve(data)})
       })
       if(!data.err){
+        yield put(actions.route("chessboard"))
         yield put(action(payload))
       }
       else {

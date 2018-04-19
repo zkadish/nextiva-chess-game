@@ -24,7 +24,7 @@ export const createRoom = (fen) => ({
   payload: fen
 });
 
-export const Route = (payload) => ({
+export const route = (payload) => ({
   type:ROUTE,
   payload,
 })
