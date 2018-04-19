@@ -56,10 +56,7 @@ class Socket {
 
     const res = await Rooms.connectToGameVisitor(data);
 
-    callback({
-      err: res.err,
-      status: res.status,
-    });
+    callback(res);
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
