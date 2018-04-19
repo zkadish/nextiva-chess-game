@@ -56,10 +56,14 @@ class Socket {
 
     const res = await Rooms.connectToGameVisitor(data);
 
-    callback(res);
+    callback({
+      err: res.err,
+      status: res.status,
+    });
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
+      curSocket.emit('room.connect', res.data);
     }
   }
 
