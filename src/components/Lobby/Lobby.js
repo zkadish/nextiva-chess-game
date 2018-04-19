@@ -22,6 +22,18 @@ class Lobby extends React.Component {
         this.setState({ selectedRoom: room });
     }
 
+    onCreateHandler() {
+        this.props.createRoomRequest();
+    }
+
+    onJoinHandler(param) {
+        this.props.createJoinRequest(param);
+    }
+
+    onWatchHandler(param) {
+        this.props.createWatchRoomRequest(param);
+    }
+
     render(){
         return (
             <div className="lobby">
@@ -36,11 +48,9 @@ class Lobby extends React.Component {
                     )}
                 </ul>
                 <div className="lobby__action">
-                    {/* TODO: unsure in buttons */}
-                    <Button kind="primary" onClick={() => this.props.createJoinRequest(this.state.selectedRoom)} className="lobby__action__join">Join</Button>
-                    <Button kind="success" onClick={this.props.createRoomRequest} className="lobby__action__join">Create</Button>
-                    <Button kind="warning" onClick={this.props.createWatchRoomRequest} className="lobby__action__watch">Watch</Button>
-                    {/* <Button kind="warning" onClick={() => this.props.route('chessboard')}>B</Button> */}
+                    <Button kind="primary" onClick={this.onJoinHandler.bind(this, this.state.selectedRoom)} className="lobby__action__join">Join</Button>
+                    <Button kind="success" onClick={this.onCreateHandler.bind(this)} className="lobby__action__join">Create</Button>
+                    <Button kind="warning" onClick={this.onWatchHandler.bind(this, this.state.selectedRoom)} className="lobby__action__watch">Watch</Button>
                 </div>
             </div>
         )
@@ -56,10 +66,9 @@ const mapStateToProps = state => {
   
   const mapDispatchToProps = dispatch => {
     return {
-      createRoomRequest:        (params) => dispatch(createRoomRequest(params)),
+      createRoomRequest:        () => dispatch(createRoomRequest()),
       createJoinRequest:        (params) => dispatch(createJoinRequest(params)),
       createWatchRoomRequest:   (params) => dispatch(createWatchRoomRequest(params)),
-    // route: (payload) => route(dispatch, payload)
     };
   };
   
