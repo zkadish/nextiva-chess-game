@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
-import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUESRT, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
+import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -63,7 +63,7 @@ function* createRoomSaga(socket, token) {
 }
 function* joinRoomSaga(socket, token) {
   while (true) {
-    const action = yield take(JOIN_ROOM_REQUESRT)
+    const action = yield take(JOIN_ROOM_REQUEST)
     const data = yield new Promise(resolve => {
       socket.emit("room.connect", {token, state: action.payload}, (data) => {resolve(data)})
     })
