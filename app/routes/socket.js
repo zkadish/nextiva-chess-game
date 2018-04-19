@@ -26,7 +26,7 @@ class Socket {
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
-      curIo.emit('rooms', await Rooms.getAllList());
+      curIo.emit('rooms', await Rooms.getAllList().data);
     }
   }
 
@@ -44,7 +44,7 @@ class Socket {
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
-      curIo.emit('rooms', await Rooms.getAllList());
+      curIo.emit('rooms', await Rooms.getAllList().data);
       curIo.sockets.in(res.room).emit('room.connect', res.data);
     }
   }
@@ -160,7 +160,7 @@ class Socket {
       await Game.giveUp(id);
       curSocket.leave(curSocket.room);
       curSocket.room = null;
-      curIo.emit('rooms', await Rooms.getAllList());
+      curIo.emit('rooms', await Rooms.getAllList().data);
     }
 
     curIo.emit('disconnect', curSocket.username);

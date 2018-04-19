@@ -20,10 +20,10 @@ function connect() {
 function subscribe(socket) {
   return eventChannel(emit => {
     socket.on('rooms', (data) => {
-      emit(actions.roomsList(data.data));
+      emit(actions.roomsList(data));
     });
     socket.on('room.connect', (data) => {
-      emit(actions.updateRoomState(data.data));
+      emit(actions.updateRoomState(data));
     });
     socket.on('disconnect', e => {
       // TODO: handle
@@ -97,7 +97,6 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
       })
       if(!data.err){
         yield put(actions.route("chessboard"))
-        debugger
         yield put(action(payload))
       }
       else {
