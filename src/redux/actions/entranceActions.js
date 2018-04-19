@@ -1,4 +1,5 @@
 import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST } from "../constants/ActionTypes";
+import {ROUTE} from '../../redux/constants/route';
 
 //TODO: implement in component to dispatch on click handler
 export const createRoomRequest = (creatorId) => ({
@@ -22,6 +23,11 @@ export const createRoom = (fen) => ({
   type: CREATE_ROOM,
   payload: fen
 });
+
+export const Route = (payload) => ({
+  type:ROUTE,
+  payload,
+})
 
 export const roomsList = (rooms) => ({
   type: ROOMS_LIST,

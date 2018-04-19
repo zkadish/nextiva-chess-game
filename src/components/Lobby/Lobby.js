@@ -8,6 +8,8 @@ import './lobby.scss';
 import { createRoomRequest, createJoinRequest, createWatchRoomRequest } from "../../redux/actions/entranceActions";
 import { connect } from "react-redux";
 
+import route from '../../redux/actions/route';
+
 class Lobby extends React.Component {
     constructor(props){
         super(props);
@@ -38,6 +40,7 @@ class Lobby extends React.Component {
                     <Button kind="primary" onClick={() => this.props.createJoinRequest(this.state.selectedRoom)} className="lobby__action__join">Join</Button>
                     <Button kind="success" onClick={this.props.createRoomRequest} className="lobby__action__join">Create</Button>
                     <Button kind="warning" onClick={this.props.createWatchRoomRequest} className="lobby__action__watch">Watch</Button>
+                    {/* <Button kind="warning" onClick={() => this.props.route('chessboard')}>B</Button> */}
                 </div>
             </div>
         )
@@ -56,6 +59,7 @@ const mapStateToProps = state => {
       createRoomRequest:        (params) => dispatch(createRoomRequest(params)),
       createJoinRequest:        (params) => dispatch(createJoinRequest(params)),
       createWatchRoomRequest:   (params) => dispatch(createWatchRoomRequest(params)),
+    // route: (payload) => route(dispatch, payload)
     };
   };
   

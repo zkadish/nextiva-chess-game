@@ -7,7 +7,7 @@ import Signup from './Signup';
 import Lobby from './Lobby';
 
 // import './App.scss';
-// import ChessboardComponent from './Chessboard/ChessboardComponent';
+import ChessboardComponent from './Chessboard/ChessboardComponent';
 
 class App extends Component {
   constructor(props){
@@ -28,6 +28,10 @@ class App extends Component {
         return (
           <Lobby />
         );
+      case 'chessboard':
+        return (
+          <ChessboardComponent/>
+        )
       default: 
         return (
           <Signin />
