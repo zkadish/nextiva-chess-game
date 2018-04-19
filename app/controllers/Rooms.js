@@ -64,6 +64,8 @@ class Rooms {
       };
     }
 
+    console.log(rows)
+
     return {
       data: rows,
       status: 200,

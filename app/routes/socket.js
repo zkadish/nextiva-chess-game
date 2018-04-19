@@ -203,7 +203,8 @@ module.exports = (io) => {
       curSocket = socket;
       socket.username = per.username;
 
-      socket.emit('rooms', await Rooms.getAllList());
+      const res = await Rooms.getAllList();
+      socket.emit('rooms', res.data);
       socket.once('room.create', await Socket.createRoom);
       socket.once('room.connect', await Socket.connectToGame);
       socket.once('room.connect-visitor', await Socket.connectToGameVisitor);
