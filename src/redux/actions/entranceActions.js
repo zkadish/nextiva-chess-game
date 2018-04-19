@@ -3,10 +3,7 @@ import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQU
 //TODO: implement in component to dispatch on click handler
 export const createRoomRequest = (creatorId) => ({
   type: CREATE_ROOM_REQUEST,
-  payload: {
-    fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    player1: creatorId
-  }
+  payload: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 });
 
 //TODO: implement in component to dispatch on click handler

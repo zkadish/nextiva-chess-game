@@ -44,18 +44,21 @@ function* read(socket) {
 }
 
 function* write(socket, token) {
-  yield fork(createRoomSaga, socket, token)
-  yield fork(joinRoomSaga, socket, token)
+  // yield fork(createRoomSaga, socket, token)
+  // yield fork(joinRoomSaga, socket, token)
+  yield fork(writeSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
+  yield fork(writeSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
+  yield fork(writeSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
 }
 
-function* createRoomSaga(socket, token) {
+/* function* createRoomSaga(socket, token) {
   while (true) {
-    const action = yield take(CREATE_ROOM_REQUEST)
+    const {payload} = yield take(CREATE_ROOM_REQUEST)
     const data = yield new Promise(resolve => {
-      socket.emit("room.create", {token, state: action.payload}, (data) => {resolve(data)})
+      socket.emit("room.create", {token, state: payload}, (data) => {resolve(data)})
     })
     if(!data.err){
-      yield put(actions.createRoom(action.payload))
+      yield put(actions.createRoom(payload))
     }
     else {
       console.log("ERROR ", data.err)
@@ -78,12 +81,27 @@ function* joinRoomSaga(socket, token) {
 }
 function* watchRoomSaga(socket, token) {
   while (true) {
-    const action = yield take(WATCH_ROOM_REQUEST)
+    const {payload} = yield take(WATCH_ROOM_REQUEST)
     const data = yield new Promise(resolve => {
-      socket.emit("room.connect-visitor", {token, state: action.payload}, (data) => {resolve(data)})
+      socket.emit("room.connect-visitor", {token, state: payload}, (data) => {resolve(data)})
     })
     if(!data.err){
-      yield put(actions.watchRoom(action.payload))
+      yield put(actions.watchRoom(payload))
+    }
+    else {
+      console.log("ERROR ", data.err)
+    }
+  }
+} */
+
+function* writeSaga(socket, token, emitType, actionType, action) {
+  while (true) {
+    const {payload} = yield take(actionType)
+    const data = yield new Promise(resolve => {
+      socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
+    })
+    if(!data.err){
+      yield put(action(payload))
     }
     else {
       console.log("ERROR ", data.err)
@@ -107,44 +125,11 @@ function* flow() {
 
     window.socket = socket;//for debug, remove after
 
-    // yield apply(socket, socket.emit, ['test', { username: "payload.username" }]) 
-
     const task = yield fork(handleIO, socket, token);
-
-    // yield put(actions.createRoomRequest())
-
-    // let action = yield take(`${logout}`);
-    // yield cancel(task);
-    // socket.emit('logout');
   }
 }
 
-/* function* authorize(user, password) {
-  try {
-    const token = yield call(Api.authorize, user, password)
-    yield put({type: 'LOGIN_SUCCESS', token})
-    // yield call(Api.storeItem, {token})
-    return token
-  } catch(error) {
-    yield put({type: 'LOGIN_ERROR', error})
-  } finally {
-    if (yield cancelled()) {
-      // ... put special cancellation handling code here
-    }
-  }
-}
 
-function* loginFlow() {
-  while (true) {
-    const {user, password} = yield take('LOGIN_REQUEST')
-    // fork return a Task object
-    const task = yield fork(authorize, user, password)
-    const action = yield take(['LOGOUT', 'LOGIN_ERROR'])
-    if (action.type === 'LOGOUT')
-      yield cancel(task)
-    yield call(Api.clearItem, 'token')
-  }
-} */
 
 export default function* rootSaga() {
   yield fork(flow);
