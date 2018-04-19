@@ -18,7 +18,6 @@ class Lobby extends React.Component {
 
     selectRoom = (room) => {
         this.setState({ selectedRoom: room });
-        console.log("Selected ROMM: " + JSON.stringify(room));
     }
 
     render(){
@@ -28,8 +27,9 @@ class Lobby extends React.Component {
                 <ul className="lobby__games">
                     {this.props.rooms.map(room => <Room
                         key={room.id}
-                        firstPlayer={room.first_player}
+                        firstPlayer={room.first_player} 
                         secondPlayer={room.second_player}
+                        activeClass={ this.state.selectedRoom == room.id ? 'active' : '' }
                         clickHandler={() => this.selectRoom(room.id)} />
                     )}
                 </ul>

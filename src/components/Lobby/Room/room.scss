@@ -2,7 +2,10 @@
     display: flex;
     justify-content: space-between;
     padding: 10px;
-    &:hover {
+    &.active {
+        background-color: #C1FFC1
+    }
+    &:not(.active):hover {
         background-color: #eee;
     }
 }

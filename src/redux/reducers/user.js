@@ -1,5 +1,4 @@
-import { LOGIN, LOGOUT } from '../constants/user';
-import USER from '../constants/localstorage';
+import { LOGIN, LOGOUT, USER } from '../constants/user';
 
 const user = (state = { data: USER }, action) => {
     switch (action.type) {
@@ -8,7 +7,6 @@ const user = (state = { data: USER }, action) => {
             localStorage.setItem('username', action.data.username);
             localStorage.setItem('email', action.data.email);
             localStorage.setItem('token', action.data.token);
-            console.log(`UserReducer: ${JSON.stringify(action.data)}`);
             return {
                 data: action.data
             }

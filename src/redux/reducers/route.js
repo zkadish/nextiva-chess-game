@@ -1,5 +1,5 @@
 import { ROUTE } from '../constants/route';
-import USER from '../constants/localstorage';
+import { USER } from '../constants/user';
 
 const route = (state = { component: USER ? 'lobby' : 'signin' }, action) => {
     switch (action.type) {
