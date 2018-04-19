@@ -12,13 +12,21 @@ VALUES ($1, $2, $3, $4, $5)
 
 class Game {
 
-    static async moveFigure({ token, game_id, state, is_give_up = false }) {
+  static async moveFigure({ token, game_id, state, is_give_up = false }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
+    if (state === undefined) {
+      return {
+        err: `State is undefined`,
+        status: 400,
+      }
+    }
+
+    const { id, username } = per;
     const time = Helpers.getUnixTimeNow();
 
-    const { err } = db.query(INSERT_STATE_CHESS, [game_id, per.id, state, time, is_give_up]);
+    const { err } = db.query(INSERT_STATE_CHESS, [game_id, id, state, time, is_give_up]);
 
     if (err) {
       return {
@@ -28,7 +36,7 @@ class Game {
     }
 
     return {
-      data: { time },
+      data: { time, username, is_give_up },
       status: 201,
     }
   }
