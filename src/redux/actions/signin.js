@@ -44,6 +44,9 @@ const signIn = (dispatch, payload) => {
             return data.json();
         })
         .then(data => {
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('email', payload.email);
+            localStorage.setItem('token', data.token);
             dispatch({ type: SUCCESS });
             dispatch({
                 type: LOGIN,
