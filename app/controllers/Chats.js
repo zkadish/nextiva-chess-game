@@ -111,7 +111,7 @@ class Chats {
     }
 
     return {
-      data: { username, message, time, game_id },
+      data: { username, message, time },
       status: 201,
     }
   }

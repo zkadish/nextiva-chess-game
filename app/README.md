@@ -51,4 +51,10 @@ room.connect (on)           | token, game_id                                | *r
 room.connect (emit)         |                                               | time, state, first_player, second_player
 room.connect-visitor (on)   | token, game_id                                | time, state, first_player, second_player, status - 201
 room.move (on)              | token, game_id, state, is_give_up = false     | *room.move emit, status - 201
+chat.local (on)             | token, game_id, limit = 50, offset = 0        | all messages local, status - 201
+chat.general (on)           | token, limit = 50, offset = 0                 | all messages general, status - 201
+chat.local.insert (on)      | token, message, game_id                       | *chat.local emit, status - 201
+chat.general.insert (on)    | token, message                                | *chat.general emit, status - 201
+chat.local (emit)           |                                               | username, message, time, game_id, status - 201
+chat.general (emit)         |                                               | username, message, time, game_id, status - 201
 disconnect (on)             |                                               | unsubscribe
