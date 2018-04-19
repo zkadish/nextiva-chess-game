@@ -50,7 +50,7 @@ exports.up = function(db, callback) {
       }
     },
     state: {type: 'string', notNull: true},
-    time: {type: 'string', notNull: true},
+    time: {type: 'int', notNull: true},
     give_up: {type: 'boolean', defaultValue: false},
   }, () => {
     for (let w of defaultValues) {

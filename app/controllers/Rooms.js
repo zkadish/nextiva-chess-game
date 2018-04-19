@@ -15,6 +15,7 @@ SELECT
   ) AS second_player
 FROM games AS g
 JOIN users AS uf ON uf.id = g.first_player_id
+WHERE is_give_up = false
 `;
 const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state, time) VALUES ($1, $2, $3) RETURNING id`;
 const GET_GAME_BY_PLAYER_ID = `SELECT * FROM games WHERE first_player_id = $1`;

@@ -42,7 +42,7 @@ exports.up = function(db, callback) {
   return db.createTable('users', {
     id: {type: 'int', primaryKey: true, autoIncrement: true},
     email: {type: 'string', notNull: true, unique: true},
-    username: {type: 'string', notNull: true},
+    username: {type: 'string', notNull: true, unique: true},
     token: {type: 'string', notNull: true},
     hash: {type: 'string', notNull: true},
     salt: {type: 'string', notNull: true}

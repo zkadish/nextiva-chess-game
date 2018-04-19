@@ -5,6 +5,8 @@ var type;
 var seed;
 
 const defaultValues = [
+  [1, 'qwrwer', 34234],
+  [1, 'qwertyu', 1111, 1],
 ];
 
 /**
@@ -20,9 +22,23 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db, callback) {
   return db.createTable('messages', {
     id: {type: 'int', primaryKey: true, autoIncrement: true},
-    game_id: {
+    user_id: {
       type: 'int',
       notNull: true,
+      foreignKey: {
+        name: 'messages_user_id_fk',
+        table: 'users',
+        rules: {
+          onDelete: 'CASCADE',
+          onUpdate: 'RESTRICT'
+        },
+        mapping: 'id'
+      }
+    },
+    message: {type: 'string', notNull: true},
+    time: {type: 'int', notNull: true},
+    game_id: {
+      type: 'int',
       foreignKey: {
         name: 'messages_game_id_fk',
         table: 'games',
@@ -33,24 +49,10 @@ exports.up = function(db, callback) {
         mapping: 'id'
       }
     },
-    player_id: {
-      type: 'int',
-      notNull: true,
-      foreignKey: {
-        name: 'messages_player_id_fk',
-        table: 'users',
-        rules: {
-          onDelete: 'CASCADE',
-          onUpdate: 'RESTRICT'
-        },
-        mapping: 'id'
-      }
-    },
-    step: {type: 'string', notNull: true},
-    time: {type: 'string', notNull: true}
   }, () => {
-    for (let w of defaultValues) {
-      db.insert('messages', ['game_id', 'step', 'time'], w, callback);
+    const columns = ['user_id', 'message', 'time', 'game_id'];
+    for (let m of defaultValues) {
+      db.insert('messages', columns.slice(0, m.length), m, callback);
     }
   });
 };

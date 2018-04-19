@@ -49,7 +49,8 @@ exports.up = function (db, callback) {
       }
     },
     initial_state: { type: 'string', notNull: true },
-    time: { type: 'string', notNull: true }
+    time: { type: 'string', notNull: true },
+    is_give_up: { type: 'boolean', defaultValue: false },
   }, () => {
     const columns = ['first_player_id', 'second_player_id', 'initial_state', 'time'];
     for (let game of defaultValues) {
