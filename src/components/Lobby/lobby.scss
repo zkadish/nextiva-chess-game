@@ -21,12 +21,3 @@
         justify-content: space-around;
     }
 }
-
-.game {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    &:hover {
-        background-color: #eee;
-    }
-}
