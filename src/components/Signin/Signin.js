@@ -64,10 +64,10 @@ class Signin extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    isLoading: state.user.loading,
-    loaded: state.user.loaded,
+    isLoading: state.signin.loading,
+    loaded: state.signin.loaded,
     data: state.user.data,
-    error: state.user.error
+    error: state.signin.error
 });
 
 const mapDispatchToProps = (dispatch) => ({

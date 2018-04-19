@@ -82,10 +82,10 @@ class Signup extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    isLoading: state.user.loading,
-    loaded: state.user.loaded,
+    isLoading: state.signup.loading,
+    loaded: state.signup.loaded,
     data: state.user.data,
-    error: state.user.error
+    error: state.signup.error
 });
 
 const mapDispatchToProps = (dispatch) => ({

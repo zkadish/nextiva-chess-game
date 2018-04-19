@@ -1,10 +1,14 @@
 import { URL } from '../constants/signin';
 import { BASE_URL } from '../constants/main';
-import { LOADING, SUCCESS, FAILURE } from '../constants/signin';
+import { LOADING, SUCCESS, FAILURE, REINIT } from '../constants/signin';
+import { LOGIN } from '../constants/user';
 import { ROUTE } from '../constants/route';
 
-const friendlyError = (error) => {
-    return error;
+const handleErrors = (response) => {
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
+    return response;
 }
 
 const signIn = (dispatch, payload) => {
@@ -35,25 +39,27 @@ const signIn = (dispatch, payload) => {
             'Content-Type': 'application/json',
         })
     })
+        .then(handleErrors)
         .then(data => {
             return data.json();
         })
         .then(data => {
-            console.log("SERVER RESPONSE: " + data);
+            dispatch({ type: SUCCESS });
             dispatch({
-                type: SUCCESS,
+                type: LOGIN,
                 data: { email: payload.email, ...data }
+            })
+            dispatch({
+                type: ROUTE,
+                payload: 'lobby'
             });
-                dispatch({
-                    type: ROUTE,
-                    payload: 'lobby'
-                });
         })
         .catch(error => {
             dispatch({
                 type: FAILURE,
-                data: friendlyError(error)
-            })
+                data: error
+            });
+            setTimeout(() => dispatch({ type: REINIT }), 1500);
         });
 }
 

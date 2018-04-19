@@ -1,4 +1,4 @@
-import { LOGOUT } from '../constants/logout';
+import { LOGOUT } from '../constants/user';
 import { ROUTE } from '../constants/route';
 
 const logOut = (dispatch) => {
