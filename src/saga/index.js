@@ -25,6 +25,18 @@ function subscribe(socket) {
     socket.on('room.connect', (data) => {
       emit(actions.updateRoomState(data));
     });
+    socket.on('room.move', (data) => {//return { username, state, time, is_give_up }
+      emit(actions.roomMoveUpdate(data));
+    });
+    /* socket.on('chat.local', (data) => {
+      emit(actions.updateRoomState(data));
+    });
+    socket.on('chat.general', (data) => {
+      emit(actions.updateRoomState(data));
+    });
+    socket.on('user.disconnect', (data) => {
+      emit(actions.updateRoomState(data));
+    }); */
     socket.on('disconnect', e => {
       // TODO: handle
     });
@@ -41,7 +53,7 @@ function* read(socket) {
 }
 
 function* write(socket, token) {
-  yield fork(writeSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
+  yield fork(createRoomSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
 }
@@ -67,12 +79,12 @@ function* writeSaga(socket, token, emitType, actionType, action) {
   }
 }
 
-/* function* createRoomSaga(socket, token, emitType, actionType, action) {
+function* createRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {
     try {
       const {payload} = yield take(actionType)
       const data = yield new Promise(resolve => {
-        socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
+        socket.emit(emitType, {token, state: payload.fen}, (data) => {resolve(data)})
       })
       if(!data.err){
         yield put(actions.route("chessboard"))
@@ -82,11 +94,11 @@ function* writeSaga(socket, token, emitType, actionType, action) {
         console.log("ERROR ", data.err)
       }
     } catch (error) {
-      console.log("CATCH TRIGGERED in saga.writeSaga", error)
+      console.log("CATCH TRIGGERED in saga.createRoomSaga", error)
     }
     
   }
-} */
+}
 
 function* joinRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {

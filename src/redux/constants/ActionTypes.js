@@ -14,3 +14,5 @@ export const CREATE_ROOM = 'CREATE_ROOM';
 export const ROOMS_LIST = 'ROOMS_LIST';
 
 export const UPDATE_ROOM_STATE = 'UPDATE_ROOM_STATE';
+
+export const ROOM_MOVE_UPDATE = 'ROOM_MOVE_UPDATE';

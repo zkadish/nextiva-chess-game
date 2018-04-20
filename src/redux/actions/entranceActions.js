@@ -1,4 +1,4 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST, UPDATE_ROOM_STATE } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST, UPDATE_ROOM_STATE, ROOM_MOVE_UPDATE } from "../constants/ActionTypes";
 import {ROUTE} from '../../redux/constants/route';
 
 export const createRoomRequest = (playerName = 'UNKNOWN') => ({
@@ -48,5 +48,10 @@ export const watchRoom = (payload) => ({
 
 export const updateRoomState = (payload) => ({
   type:UPDATE_ROOM_STATE,
+  payload,
+});
+
+export const roomMoveUpdate = (payload) => ({//payload is  {username, state, time, is_give_up }
+  type: ROOM_MOVE_UPDATE,
   payload,
 });
