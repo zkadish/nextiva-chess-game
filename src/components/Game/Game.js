@@ -8,7 +8,9 @@ import CancelConfirmComponent from './CancelConfirmComponent';
 import './game.scss';
 
 
-import { makeMove, giveUp } from "../../redux/actions/BoardActions";
+import { giveUp } from "../../redux/actions/BoardActions";
+import { makeMove } from "../../redux/actions/entranceActions";
+
 import { ROLE_WATCHER, ROLE_WHITE } from "../../redux/constants/roles";
 
 
@@ -86,7 +88,7 @@ class Game extends React.Component {
     onConfirmClick = () => {
         if (this.state.notConfirmedFEN) {
             this.setNotConfirmedFEN();
-            this.props.makeMove(this.state.notConfirmedFEN, this.gameOver());
+            this.props.makeMove(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver());
         }
     }
 
@@ -179,7 +181,10 @@ const mapStateToProps = state => {
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
         currentPlayerRole: state.playstate.role,
-        time: state.playstate.time
+        time: state.playstate.time,
+        role: state.playstate.role,
+        date: state.playstate.date,
+        roomId: state.playstate.id
     };
 };
 

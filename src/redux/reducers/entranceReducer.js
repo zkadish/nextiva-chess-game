@@ -8,7 +8,6 @@ export function playstate(state = "", action) {
     return { ...state, state: action.payload };
 
     case UPDATE_ROOM_STATE:
-      debugger;
       return {
         ...state,
         fen: action.payload.state,
