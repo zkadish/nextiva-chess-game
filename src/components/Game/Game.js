@@ -20,19 +20,29 @@ class Game extends React.Component {
 
         this.chess = new Chess();
         this.chess.clear();
-        this.state = {};
+        this.state = {
+            selectedTileID: '',
+            notConfirmedFEN: ''
+        };
     }
 
     isMyTurn = () => {
-        return !this.state.observer && this.chess.turn() === this.props.currentPlayerRole;
+        return !this.isWatcher() && this.chess.turn() === this.props.currentPlayerRole;
     }
 
+    isWatcher = () => {
+        return this.state.waiting_for_opponent_join||this.props.currentPlayerRole === ROLE_WATCHER;
+    }
     gameOver = () => {
         return this.chess.game_over();
     }
 
     getCurTurnPlayerName() {
-        return this.chess.turn() == ROLE_WHITE ? this.props.player1 : this.props.player2;
+        return this.chess.turn() === ROLE_WHITE ? this.props.player1 : this.props.player2;
+    }
+
+    getPlayerName() {
+        return this.props.currentPlayerRole === ROLE_WHITE ? this.props.player1 : this.props.player2;
     }
 
     isMoveDone = () => {
@@ -46,12 +56,7 @@ class Game extends React.Component {
     }
 
 
-
-    //Temporary functional. Mock for server resp
-    createRoom(param) { this.props.createRoom(param); };
-    joinRoom = name => { this.props.joinRoom(); };
-    watchRoom = name => { this.props.watchRoom(); };
-    makeMove(game_id, fen, is_over) {this.props.makeMove(game_id, fen, is_over);}
+    makeMove(game_id, fen, is_over) { this.props.makeMove(game_id, fen, is_over); }
     tileHandler = (name) => {
         if (!this.isMyTurn())
             return;
@@ -131,7 +136,7 @@ class Game extends React.Component {
         if (this.gameOver()) {
             return (
                 <ChessboardHeader
-                    back={ {onClick: () => (console.log('Go back to Lobby')) } }
+                    back={{ onClick: () => (this.props.exit()) }}
                     backText={'Go back to Lobby'}
                     playerName={`${this.getCurTurnPlayerName()} lost`}
                 />
@@ -140,18 +145,18 @@ class Game extends React.Component {
         return (
             <ChessboardHeader
                 back={this.props.currentPlayerRole === ROLE_WATCHER ?
-                    { onClick: () => (console.log('Go back to Lobby')) } :
-                    { onClick: () => (console.log('Give Up!')) }
+                    { onClick: () => (this.props.exit()) } :
+                    { onClick: () => (this.props.giveUp()) }
                 }
                 backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' : 'Give Up!'}
-                playerName={this.getCurTurnPlayerName()}
+                playerName={this.getPlayerName()}
                 time={this.props.time}
             />
         );
     }
     getConfirmCancel() {
         return (
-            !this.gameOver() && !this.state.observer && <CancelConfirmComponent
+            !this.gameOver() && !this.isWatcher() && <CancelConfirmComponent
                 cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
                 confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
             />
@@ -160,15 +165,11 @@ class Game extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { fen, currentPlayerRole, player1, initializeBoard } = nextProps;
+        const { fen, currentPlayerRole, player1, player2 } = nextProps;
 
-        if (player1 && !fen) {
-            initializeBoard();
-            return null;
-        }
         var turn = fen.split(/\s+/)[1];
         return {
-            observer: turn !== currentPlayerRole,
+            waiting_for_opponent_join: player1&&!player2,
             selectedTileID: '',
             notConfirmedFEN: ''
         }
@@ -177,7 +178,7 @@ class Game extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        fen: state.playstate.fen || 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19',
+        fen: state.playstate.fen || '',
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
         currentPlayerRole: state.playstate.role,
@@ -198,17 +199,3 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
-
-
-
-/*
-Состояния доски:
-1.Наблюдатель
-2.Мой ход
-    2.1 Не выделенной фигуры
-    2.2 Есть выделенная фигура
-    2.3 Походил и ожидаем подтверждения
-    2.4 Мат
-3. Ход противника
-
-*/
