@@ -18,11 +18,13 @@ export function playstate(state = "", action) {
       };
 
     case CREATE_ROOM:
-    debugger
+    const {date, id, state: fen, time} = action.payload;
       return {
-        ...state,
-        fen: action.payload.fen,
-        first_player: action.payload.first_player, 
+        date,//when room was created
+        id,//roomid
+        fen,
+        time,//main time for players
+        // first_player: action.payload.first_player, 
         role: ROLE_WHITE
       };
 

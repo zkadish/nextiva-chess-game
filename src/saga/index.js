@@ -90,9 +90,10 @@ function* createRoomSaga(socket, token, emitType, actionType, action) {
       const data = yield new Promise(resolve => {
         socket.emit(emitType, {token, state: payload.fen}, (data) => {resolve(data)})
       })
-      if(!data.err){
+      if(!data.err){//{id, date, time, status - 201}
         yield put(actions.route("chessboard"))
-        yield put(action(payload))
+        
+        yield put(action(Object.assign({state: payload.fen}, data.data)))
       }
       else {
         console.log("ERROR ", data.err)
