@@ -19,10 +19,13 @@ export default class Timer extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            startTime: new Date(),
-            elapsed: nextProps.time * 1000
-        }
+        const { playerName, time } = nextProps;
+        if (prevState.playerName !== playerName)
+            return {
+                playerName: playerName,
+                startTime: new Date(),
+                elapsed: time * 1000
+            }
     }
 
     render() {

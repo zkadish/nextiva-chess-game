@@ -31,7 +31,7 @@ class Game extends React.Component {
     }
 
     isWatcher = () => {
-        return this.state.waiting_for_opponent_join||this.props.currentPlayerRole === ROLE_WATCHER;
+        return this.state.waiting_for_opponent_join || this.props.currentPlayerRole === ROLE_WATCHER;
     }
     gameOver = () => {
         return this.chess.game_over();
@@ -93,7 +93,7 @@ class Game extends React.Component {
     onConfirmClick = () => {
         if (this.state.notConfirmedFEN) {
             this.setNotConfirmedFEN();
-            this.props.makeMove(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver());
+            this.props.makeMove(this.props.roomId, this.state.notConfirmedFEN, this.gameOver());
         }
     }
 
@@ -117,6 +117,7 @@ class Game extends React.Component {
         return tiles;
     }
     render() {
+        this.chess.load(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen);
         return (<div>
             <div className="game_container">
                 {this.getHeader()}
@@ -165,11 +166,11 @@ class Game extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { fen, currentPlayerRole, player1, player2 } = nextProps;
+        const { fen, player1, player2 } = nextProps;
 
-        var turn = fen.split(/\s+/)[1];
+        // var turn = fen.split(/\s+/)[1];
         return {
-            waiting_for_opponent_join: player1&&!player2,
+            waiting_for_opponent_join: player1 && !player2,
             selectedTileID: '',
             notConfirmedFEN: ''
         }
@@ -183,7 +184,6 @@ const mapStateToProps = state => {
         player2: state.playstate.second_player,
         currentPlayerRole: state.playstate.role,
         time: state.playstate.time,
-        role: state.playstate.role,
         date: state.playstate.date,
         roomId: state.playstate.id
     };
