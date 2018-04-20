@@ -8,7 +8,7 @@ import { INIT_START, MAKE_MOVE, GIVE_UP, CREATE_ROOM, MAKE_MOVE_UPDATE } from ".
   fen,
   time,
   makeMove,
-  isGiveUp
+  isOver
 }
  */
 export function fen(state = "", action) {
@@ -28,13 +28,13 @@ export function fen(state = "", action) {
       return action.payload;
 
     case MAKE_MOVE_UPDATE://payload is  {username, state, time, is_give_up }
-      const {username: makeMove, state: fen, time, is_give_up: isGiveUp} = action.payload;
+      const {username: makeMove, state: fen, time, is_over: isOver} = action.payload;
       return {
         ...state,
         fen,
         makeMove,
         time,
-        isGiveUp
+        isOver
       };
 
     default:
