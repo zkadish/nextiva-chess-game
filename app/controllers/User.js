@@ -4,11 +4,22 @@ const jwt = require('jsonwebtoken');
 
 const addSalt = '‘ß˚ç';
 
-const GET_USER_DB = (param) => `SELECT * FROM users WHERE ${param} = $1`;
-const INSERT_USER_DB = 'INSERT INTO users (email, username, token, hash, salt) VALUES ($1, $2, $3, $4, $5)';
+
+const {
+  GET_USER_DB,
+  INSERT_USER_DB,
+} = require('../db/user');
+
 
 
 class User {
+
+  /**
+   * Permissions for condition user by request with headers Authorization
+   * @param {Request} req
+   * @param {Response} res
+   * @return {boolean|User} false - if token is wrong, User - object
+   * */
   static async permissions(req, res) {
     const { rows, err } = await db.query(GET_USER_DB('token'), [req.token]);
 
@@ -26,6 +37,11 @@ class User {
   }
 
 
+  /**
+   * Permissions for condition user by token
+   * @param {string} token: token for authorization
+   * @return {object|User} object - if token is wrong, User - object
+   * */
   static async permissionsToken(token) {
     const { rows, err } = await db.query(GET_USER_DB('token'), [token]);
 
@@ -47,6 +63,12 @@ class User {
   }
 
 
+  /**
+   * Sign up user
+   * @param {Request} req, { email, username, password, repeat_password }
+   * @param {Response} res
+   * @return {object} token is string
+   * */
   static async signUpUser(req, res) {
     const { body } = req;
     let answer = await User._conditionUser(body);
@@ -77,6 +99,12 @@ class User {
   }
 
 
+  /**
+   * Sign in user
+   * @param {Request} req, {email, password}
+   * @param {Response} res
+   * @return {object} token is string
+   * */
   static async signInUser(req, res) {
     const { email, password } = req.body;
     const { rows, err } = await db.query(GET_USER_DB('email'), [email]);
@@ -100,6 +128,13 @@ class User {
   }
 
 
+  /**
+   * Get token
+   * @param {string} email
+   * @param {string} username
+   * @param {string} hash
+   * @return {string} token
+   * */
   static getToken(email, username, hash) {
     return jwt.sign({
       email,
@@ -108,6 +143,14 @@ class User {
   }
 
 
+  /**
+   * Condition user by params for sign up
+   * @param {object} email
+   * @param {string} username
+   * @param {string} password
+   * @param {string} repeat_password
+   * @return {boolean|User}
+   * */
   static async _conditionUser({ email, username, password, repeat_password }) {
     return new Promise(resolve => {
       if (typeof(email) !== 'string'
@@ -126,6 +169,11 @@ class User {
   }
 
 
+  /**
+   * Validate email
+   * @param {string} email
+   * @return {boolean} check email by regex
+   * */
   static validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);

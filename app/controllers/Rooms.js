@@ -2,60 +2,21 @@ const db = require('../db');
 const User = require('./User');
 const Helpers = require('../utils/helpers');
 
-
-const GET_ALL_LIST = `
-SELECT 
-	g.id,
-	uf.username AS first_player,
-	(
-    SELECT 
-      username 
-    FROM users 
-    WHERE id = g.second_player_id
-  ) AS second_player
-FROM games AS g
-JOIN users AS uf ON uf.id = g.first_player_id
-WHERE is_give_up = false
-`;
-const CREATE_GAME = `INSERT INTO games (first_player_id, initial_state, time) VALUES ($1, $2, $3) RETURNING id`;
-const GET_GAME_BY_PLAYER_ID = `SELECT * FROM games WHERE first_player_id = $1`;
-const GET_GAME_BY_ID = `
-SELECT 
-	g.id,
-	g.initial_state,
-	g.time,
-	uf.username AS first_player,
-	(
-    SELECT 
-      username 
-    FROM users
-    WHERE id = g.second_player_id
-  ) AS second_player
-FROM games AS g
-JOIN users AS uf ON uf.id = g.first_player_id
-WHERE g.id = $1
-`;
-const GET_GAME_BY_ID_PLAYER = `SELECT * FROM games WHERE $1 = first_player_id`;
-const CONNECT_TO_GAME = `UPDATE games SET second_player_id = $1, time = $2 WHERE id = $3`;
-const GET_LAST_STATE_BY_ID_GAME = `
-SELECT
-  u.username,
-  h.state, 
-  h.time
-FROM history AS h
-JOIN users AS u ON u.id = h.player_id
-WHERE time = (
-  SELECT 
-    max(time) 
-    FROM history
-    WHERE game_id = $1
-  )
-`;
+const {
+  CREATE_GAME,
+  GET_ALL_LIST,
+  GET_GAME_BY_ID,
+  CONNECT_TO_GAME,
+  GET_GAME_BY_PLAYER_ID,
+  GET_GAME_BY_ID_PLAYER,
+  GET_LAST_STATE_BY_ID_GAME,
+} = require('../db/game');
 
 
 class Rooms {
   /**
    * Get all list rooms
+   * @return {object} status, err|data
    * */
   static async getAllList() {
     let { rows, err } = await db.query(GET_ALL_LIST, []);
@@ -67,8 +28,6 @@ class Rooms {
       };
     }
 
-    console.log(rows)
-
     return {
       data: rows,
       status: 200,
@@ -79,7 +38,8 @@ class Rooms {
   /**
    * Crate game
    * @param {string} token: token for authorization
-   * @param {string} state:
+   * @param {string} state: state Game (FEN)
+   * @return {object} status, err|(data, room)
    * */
   static async createGame({ token, state }) {
     let per = await User.permissionsToken(token);
@@ -114,15 +74,23 @@ class Rooms {
     const { id } = rows[0];
 
     return {
-      date,
-      time: 0,
-      data: { id },
+      data: {
+        id,
+        date,
+        time: 0,
+      },
       room: Helpers.getRoomStr(id),
       status: 201,
     }
   }
 
 
+  /**
+   * Connect to game
+   * @param {string} token: token for authorization
+   * @param {number} game_id: game id
+   * @return {object} status, err|(data, room)
+   * */
   static async connectToGame({ token, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -187,6 +155,12 @@ class Rooms {
   }
 
 
+  /**
+   * Visitor connect to game
+   * @param {string} token: token for authorization
+   * @param {number} game_id: game id
+   * @return {object} status, err|(data, room)
+   * */
   static async connectToGameVisitor({ token, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -233,6 +207,12 @@ class Rooms {
   }
 
 
+  /**
+   * Visitor connect to game
+   * @param {string} request: request to the database
+   * @param {number} id: game id
+   * @return {object|null} game
+   * */
   static async _getGame(request, id) {
     const { rows, err } = await db.query(request, [id]);
 

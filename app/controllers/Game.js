@@ -2,35 +2,27 @@ const db = require('../db');
 const User = require('./User');
 const Helpers = require('../utils/helpers');
 
-const GET_ALL_HISTORY = `
-SELECT
-  COALESCE(sum(h.time), 0) AS total,
-  g.time AS start_time
-FROM history AS h
-JOIN games AS g ON g.id = h.game_id
-WHERE h.game_id = $1
-GROUP BY start_time
-`;
-const INSERT_STATE_CHESS = `
-INSERT INTO history 
-  (game_id, player_id, state, time, give_up) 
-VALUES ($1, $2, $3, $4, $5)
-`;
-const UPDATE_GIVE_UP = `UPDATE games SET is_give_up = true WHERE id = $1`;
+const {
+  GET_ALL_HISTORY,
+  INSERT_STATE_CHESS,
+  UPDATE_GIVE_UP,
+} = require('../db/game');
 
 
 /**
  * Manipulate game of state
  * */
 class Game {
+
   /**
    * Move figure for game
    * @param {string} token: token for authorization
    * @param {number} game_id: id game
    * @param {string} state: state Game (FEN)
-   * @param {boolean} is_give_up: game is over or not
+   * @param {boolean} is_over: game is over or not
+   * @return {object} status, err|data
    * */
-  static async moveFigure({ token, game_id, state, is_give_up = false }) {
+  static async moveFigure({ token, game_id, state, is_over = false }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
@@ -56,7 +48,7 @@ class Game {
     const { total, start_time } = history.rows[0];
     const curTime = time - start_time - total;
 
-    const { err } = await db.query(INSERT_STATE_CHESS, [game_id, id, state, curTime, is_give_up]);
+    const { err } = await db.query(INSERT_STATE_CHESS, [game_id, id, state, curTime, is_over]);
 
     if (err) {
       return {
@@ -66,7 +58,11 @@ class Game {
     }
 
     return {
-      data: { time: curTime, state, username, is_give_up },
+      data: {
+        is_over,
+        username,
+        time: curTime,
+      },
       status: 201,
     }
   }
@@ -74,13 +70,31 @@ class Game {
 
   /**
    *  Give up game
+   *  @param {string} token: token for authorization
    *  @param {number} id: id game
+   *  @param {number} user_id: id user
    * */
-  static async giveUp(id) {
-    const { err } = await db.query(UPDATE_GIVE_UP, [id]);
+  static async giveUp({ id, user_id, token }) {
+    let per;
+
+    if (token) {
+      per = await User.permissionsToken(token);
+      if (per.status) return per;
+    }
+
+    const { err } = await db.query(UPDATE_GIVE_UP, [id, token ? per.id : user_id]);
 
     if (err) {
       console.log(err.message, id);
+      return {
+        err: err.message,
+        status: 400,
+      }
+    }
+
+    return {
+      username: per.username,
+      status: 201,
     }
   }
 }

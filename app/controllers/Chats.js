@@ -2,24 +2,11 @@ const db = require('../db');
 const User = require('./User');
 const Helpers = require('../utils/helpers');
 
+const {
+  GET_MESSAGES,
+  INSERT_MESSAGE,
+} = require('../db/chats');
 
-const GET_MESSAGES = (game_id) => `
-SELECT
-	u.username,
-	m.message,
-	m.time
-FROM messages AS m
-JOIN users AS u ON u.id = m.user_id
-WHERE m.game_id ${ game_id ? '= $3' : 'IS NULL' }
-ORDER BY m.time DESC
-LIMIT $1
-OFFSET $2
-`;
-const INSERT_MESSAGE = (game_id) => `
-INSERT INTO messages
-  (user_id, message, time ${ game_id ? ', game_id' : '' })
-VALUES ($1, $2, $3 ${ game_id ? ', $4' : '' })
-`;
 
 /**
  * Users chat, general and local (game chat)

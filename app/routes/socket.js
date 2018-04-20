@@ -10,7 +10,9 @@ const Helpers = require('../utils/helpers');
 let curIo;
 let curSocket;
 
-
+/**
+ * Socket class for handling actions with client
+ * */
 class Socket {
 
   static async createRoom(data, callback) {
@@ -72,28 +74,63 @@ class Socket {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
 
-    const isExistRoom = Socket._isExistRoom(callback);
+    const isExistRoom = Socket._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
     const res = await Game.moveFigure(data);
 
-    !callback || callback({
+    callback({
       err: res.err,
       status: res.status,
     });
 
     if (!res.err) {
       const { state } = data;
-      const { username, time, is_give_up } = res.data;
-      curIo.sockets.in(curSocket.room).emit('room.move', { username, state, time, is_give_up });
+      const { username, time, is_over } = res.data;
+      curIo.sockets.in(curSocket.room).emit('room.move', { username, state, time, is_over });
 
-      if (is_give_up) {
-        await Game.giveUp(data.game_id);
+      if (is_over) {
+        await Game.giveUp({ game_id: data.game_id, token: data.token });
         curSocket.leave(curSocket.room);
         curSocket.room = null;
-        curIo.sockets.in(res.room).emit('room.connect', res.data);
+        curIo.sockets.in(res.room).emit('room.disconnect', res.data);
       }
     }
+  }
+
+
+  static async giveUp(data, callback) {
+    const isExistCallback = Socket._isExistCallback(callback);
+    if (typeof(isExistCallback) !== 'boolean') return;
+
+    const isExistRoom = Socket._isExistRoom();
+    if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
+
+    const res = await Game.giveUp({ game_id: data.game_id, token: data.token });
+
+    callback({
+      err: res.err,
+      status: res.status,
+    });
+
+    if (!res.err) {
+      Socket._roomDisconnect();
+    }
+  }
+
+
+  static async leaveRoom(data, callback) {
+    const isExistCallback = Socket._isExistCallback(callback);
+    if (typeof(isExistCallback) !== 'boolean') return;
+
+    const isExistRoom = Socket._isExistRoom();
+    if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
+
+    Socket._roomDisconnect();
+
+    callback({
+      status: 201,
+    });
   }
 
 
@@ -101,7 +138,7 @@ class Socket {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
 
-    const isExistRoom = Socket._isExistRoom(callback);
+    const isExistRoom = Socket._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
     callback(await Chats.getMessagesLocalChat(data));
@@ -121,7 +158,7 @@ class Socket {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
 
-    const isExistRoom = Socket._isExistRoom(callback);
+    const isExistRoom = Socket._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
     const res = await Chats.insertMessageLocalChat(data);
@@ -157,7 +194,7 @@ class Socket {
   static async disconnect() {
     if (curSocket.room) {
       const id = Helpers.getRoomId(curSocket.room);
-      await Game.giveUp(id);
+      await Game.giveUp({ id, user_id: curSocket.user_id });
       curSocket.leave(curSocket.room);
       curSocket.room = null;
       curIo.emit('rooms', await Rooms.getAllList().data);
@@ -173,6 +210,13 @@ class Socket {
   }
 
 
+  static _roomDisconnect() {
+    curSocket.leave(curSocket.room);
+    curIo.sockets.in(curSocket.room).emit('room.disconnect', curSocket.username);
+    curSocket.room = null;
+  }
+
+
   static _isExistCallback(callback) {
     return callback ? true : {
       err: `You don't have a callback.`,
@@ -183,9 +227,9 @@ class Socket {
 
   static _isExistRoom() {
     return curSocket.room ? true : {
-        err: `You don't have a room.`,
-        status: 406,
-      };
+      err: `You don't have a room.`,
+      status: 406,
+    };
   }
 
 }
@@ -201,6 +245,7 @@ module.exports = (io) => {
 
     io.once('connection', async (socket) => {
       curSocket = socket;
+      socket.user_id = per.id;
       socket.username = per.username;
 
       const res = await Rooms.getAllList();
@@ -209,6 +254,8 @@ module.exports = (io) => {
       socket.once('room.connect', await Socket.connectToGame);
       socket.once('room.connect-visitor', await Socket.connectToGameVisitor);
       socket.once('room.move', await Socket.moveFigure);
+      socket.once('room.give-up', await Socket.giveUp);
+      socket.once('room.disconnect', await Socket.leaveRoom);
 
       socket.once('chat.local', await Socket.getMessageFromLocal);
       socket.once('chat.general', await Socket.getMessageFromGeneral);
