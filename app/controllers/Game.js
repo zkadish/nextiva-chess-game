@@ -93,7 +93,7 @@ class Game {
     }
 
     return {
-      username: per.username,
+      username: per ? per.username : null,
       status: 201,
     }
   }

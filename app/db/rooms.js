@@ -33,10 +33,10 @@ module.exports = {
       ) AS second_player
     FROM games AS g
     JOIN users AS uf ON uf.id = g.first_player_id
-    WHERE g.id = $1
+    WHERE g.id = $1 AND is_give_up = false
     `,
 
-  GET_GAME_BY_ID_PLAYER: `SELECT * FROM games WHERE $1 = first_player_id`,
+  GET_GAME_BY_ID_PLAYER: `SELECT * FROM games WHERE $1 = first_player_id AND is_give_up = false`,
 
   CONNECT_TO_GAME: `UPDATE games SET second_player_id = $1, time = $2 WHERE id = $3`,
 
