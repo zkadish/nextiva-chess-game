@@ -6,4 +6,5 @@ const getLocalStorage = () => ({
 
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
+// export const SEND_MESSAGE = 'SEND_MESSAGE';
 export const USER = localStorage.getItem('token') ? getLocalStorage() : null;
