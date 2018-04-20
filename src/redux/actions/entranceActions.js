@@ -1,9 +1,12 @@
 import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, ROOMS_LIST, UPDATE_ROOM_STATE } from "../constants/ActionTypes";
 import {ROUTE} from '../../redux/constants/route';
 
-export const createRoomRequest = () => ({
+export const createRoomRequest = (playerName = 'UNKNOWN') => ({
   type: CREATE_ROOM_REQUEST,
-  payload: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  payload:{
+    fen:"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+    first_player: playerName
+  }
 });
 
 export const createJoinRequest = (room_id) => ({
@@ -17,10 +20,11 @@ export const createWatchRoomRequest = (room_id) => {
   payload: room_id
 }}
 
-export const createRoom = (fen) => ({
+export const createRoom = (payload) => {
+  return{
   type: CREATE_ROOM,
-  payload: fen
-});
+  payload
+}};
 
 export const route = (payload) => ({
   type:ROUTE,

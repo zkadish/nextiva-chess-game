@@ -152,15 +152,11 @@ class Game extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        //current figure on board potion (including, which turn, turn count, etc) in simple string
-        fen: state.fen,
-        //player1 in this case always means white
-        player1: state.playstate.player1,
-        //player on the black side of board
-        player2: state.playstate.player2,
-        //array of watchers (simply for names displaying / chat / etc)
-        watchers: state.playstate.watchers,
-        currentPlayerRole: state.playstate.role
+        fen: state.playstate.fen  || 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19',
+        player1: state.playstate.first_player,
+        player2: state.playstate.second_player,
+        currentPlayerRole: state.playstate.role,
+        time: state.time
     };
 };
 
