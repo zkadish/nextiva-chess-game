@@ -1,74 +1,41 @@
-var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
-server.listen(8080, '0.0.0.0');
-
-
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world 32' });
-  socket.on('test', function (data) {
-    console.log(data);
-  });
-});
+const routes = require('./routes');
+const cors = require('cors');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 
+const bearerToken = require('express-bearer-token');
+
+// Constants
+const PORT = process.env.PORT || 8080;
+const HOST = '0.0.0.0';
+
+// App
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
 
 
+// CORS
+app.use(cors({
+  origin: process.env.FRONTEND_URI || 'http://localhost:3000',
+  optionsSuccessStatus: 200,
+}));
 
 
+app.use(bearerToken());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true,
+}));
 
-// const WebSocket = require('ws')
+// Add routes for API
+routes(app, io, '/api/v1');
 
-// const wss = new WebSocket.Server({ port: 8989 })
 
-// const users = []
+server.listen(PORT, HOST);
+console.log(`Running on http://${HOST}:${PORT}`);
 
-// const broadcast = (data, ws) => {
-//   wss.clients.forEach((client) => {
-//     if (client.readyState === WebSocket.OPEN && client !== ws) {
-//       client.send(JSON.stringify(data))
-//     }
-//   })
-// }
 
-// wss.on('connection', (ws) => {
-//   let index
-//   ws.on('message', (message) => {
-//     const data = JSON.parse(message)
-//     console.log(message)
-//     switch (data.type) {
-//       case 'ADD_USER': {
-//         index = users.length
-//         users.push({ name: data.name, id: index + 1 })
-//         ws.send(JSON.stringify({
-//           type: 'USERS_LIST',
-//           users
-//         }))
-//         broadcast({
-//           type: 'USERS_LIST',
-//           users
-//         }, ws)
-//         break
-//       }
-//       case 'ADD_MESSAGE':
-//         broadcast({
-//           type: 'ADD_MESSAGE',
-//           message: data.message,
-//           author: data.author
-//         }, ws)
-//         break
-//       default:
-//         break
-//     }
-//   })
-
-//   ws.on('close', () => {
-//     users.splice(index, 1)
-//     broadcast({
-//       type: 'USERS_LIST',
-//       users
-//     }, ws)
-//   })
-// })

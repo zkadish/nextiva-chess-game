@@ -54,6 +54,9 @@ WHERE time = (
 
 
 class Rooms {
+  /**
+   * Get all list rooms
+   * */
   static async getAllList() {
     let { rows, err } = await db.query(GET_ALL_LIST, []);
 
@@ -73,6 +76,11 @@ class Rooms {
   }
 
 
+  /**
+   * Crate game
+   * @param {string} token: token for authorization
+   * @param {string} state:
+   * */
   static async createGame({ token, state }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;

@@ -163,7 +163,7 @@ class Socket {
       curIo.emit('rooms', await Rooms.getAllList().data);
     }
 
-    curIo.emit('disconnect', curSocket.username);
+    curIo.emit('user.disconnect', curSocket.username);
   }
 
 

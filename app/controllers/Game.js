@@ -19,8 +19,17 @@ VALUES ($1, $2, $3, $4, $5)
 const UPDATE_GIVE_UP = `UPDATE games SET is_give_up = true WHERE id = $1`;
 
 
+/**
+ * Manipulate game of state
+ * */
 class Game {
-
+  /**
+   * Move figure for game
+   * @param {string} token: token for authorization
+   * @param {number} game_id: id game
+   * @param {string} state: state Game (FEN)
+   * @param {boolean} is_give_up: game is over or not
+   * */
   static async moveFigure({ token, game_id, state, is_give_up = false }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -57,12 +66,16 @@ class Game {
     }
 
     return {
-      data: { time: curTime, username, is_give_up },
+      data: { time: curTime, state, username, is_give_up },
       status: 201,
     }
   }
 
 
+  /**
+   *  Give up game
+   *  @param {number} id: id game
+   * */
   static async giveUp(id) {
     const { err } = await db.query(UPDATE_GIVE_UP, [id]);
 
@@ -70,7 +83,6 @@ class Game {
       console.log(err.message, id);
     }
   }
-
 }
 
 

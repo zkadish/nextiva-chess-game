@@ -65,7 +65,7 @@
     "socket.io-client": "^2.1.0"
   },
   "scripts": {
-    "server": "nodemon app/server.js",
+    "server": "nodemon app",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",

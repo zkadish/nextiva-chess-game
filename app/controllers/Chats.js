@@ -21,9 +21,17 @@ INSERT INTO messages
 VALUES ($1, $2, $3 ${ game_id ? ', $4' : '' })
 `;
 
-
+/**
+ * Users chat, general and local (game chat)
+ * */
 class Chats {
 
+  /**
+   * Get messages from general chat
+   * @param {string} token: token for authorization
+   * @param {number} limit: how many messages are getting from the database
+   * @param {number} offset: messages position in database
+   * */
   static async getMessagesGeneralChat({ token, limit = 50, offset = 0 }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -44,6 +52,13 @@ class Chats {
   }
 
 
+  /**
+   * Get messages from local chat
+   * @param {string} token: token for authorization
+   * @param {number} game_id: id game
+   * @param {number} limit: how many messages are getting from the database
+   * @param {number} offset: messages position in database
+   * */
   static async getMessagesLocalChat({ token, game_id, limit = 50, offset = 0 }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -71,6 +86,11 @@ class Chats {
   }
 
 
+  /**
+   * Get messages from general chat
+   * @param {string} token: token for authorization
+   * @param {string} message: message
+   * */
   static async insertMessageGeneralChat({ token, message }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
@@ -94,6 +114,12 @@ class Chats {
   }
 
 
+  /**
+   * Get messages from general chat
+   * @param {string} token: token for authorization
+   * @param {string} message: message
+   * @param {number} game_id: id game
+   * */
   static async insertMessageLocalChat({ token, message, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
