@@ -93,8 +93,8 @@ class Rooms {
       };
     }
 
-    const time = Helpers.getUnixTimeNow();
-    let { rows, err } = await db.query(CREATE_GAME, [per.id, state, time]);
+    const date = Helpers.getUnixTimeNow();
+    let { rows, err } = await db.query(CREATE_GAME, [per.id, state, date]);
 
     if (err) {
       return {
@@ -106,6 +106,8 @@ class Rooms {
     const { id } = rows[0];
 
     return {
+      date,
+      time: 0,
       data: { id },
       room: Helpers.getRoomStr(id),
       status: 201,
@@ -152,9 +154,9 @@ class Rooms {
       };
     }
 
-    const time = Helpers.getUnixTimeNow();
+    const date = Helpers.getUnixTimeNow();
 
-    let { err } = await db.query(CONNECT_TO_GAME, [per.id, time, game_id]);
+    let { err } = await db.query(CONNECT_TO_GAME, [per.id, date, game_id]);
 
     if (err) {
       return {
@@ -165,7 +167,8 @@ class Rooms {
 
     return {
       data: {
-        time,
+        date,
+        time: 0,
         state: game.initial_state,
         first_player: game.first_player,
         second_player: per.username,
@@ -204,22 +207,15 @@ class Rooms {
     let data = rows[0];
 
     if (rows.length === 0) {
-      let initState = await db.query(GET_GAME_BY_ID, [game_id]);
-
-      if (initState.err) {
-        return {
-          err: initState.err.message,
-          status: 400,
-        };
-      }
-
-      data = initState.rows[0];
+      data = game;
+      data.time = 0;
+      data.state = data.initial_state;
     }
 
     return {
       data: {
         time: data.time,
-        state: data.state ? data.state : data.initial_state,
+        state: data.state,
         first_player: game.first_player,
         second_player: game.second_player,
       },
