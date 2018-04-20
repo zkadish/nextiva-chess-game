@@ -1,4 +1,4 @@
-import { INIT_START, MAKE_MOVE, GIVE_UP, CREATE_ROOM, ROOM_MOVE_UPDATE } from "../constants/ActionTypes";
+import { INIT_START, MAKE_MOVE, GIVE_UP, CREATE_ROOM, MAKE_MOVE_UPDATE } from "../constants/ActionTypes";
 
 /* 
 {
@@ -27,7 +27,7 @@ export function fen(state = "", action) {
       //console.log("MAKE_MOVE:ChessboardReducer ", state, action.payload);
       return action.payload;
 
-      case ROOM_MOVE_UPDATE://payload is  {username, state, time, is_give_up }
+    case MAKE_MOVE_UPDATE://payload is  {username, state, time, is_give_up }
       const {username: makeMove, state: fen, time, is_give_up: isGiveUp} = action.payload;
       return {
         ...state,

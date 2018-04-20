@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
-import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST} from "../redux/constants/ActionTypes"
+import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE} from "../redux/constants/ActionTypes"
 import {LOGIN} from "../redux/constants/user"
 import {ROUTE} from "../redux/constants/route"
 
@@ -25,8 +25,8 @@ function subscribe(socket) {
     socket.on('room.connect', (data) => {
       emit(actions.updateRoomState(data));
     });
-    socket.on('room.move', (data) => {//return { username, state, time, is_give_up }
-      emit(actions.roomMoveUpdate(data));
+    socket.on('room.move', (data) => {//return { username, state, time, is_give_up } send {token, game_id, state, is_over}
+      emit(actions.makeMoveUpdate(data));
     });
     /* socket.on('chat.local', (data) => {
       emit(actions.updateRoomState(data));
@@ -56,6 +56,7 @@ function* write(socket, token) {
   yield fork(createRoomSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
+  yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE, actions.makeMove)
 }
 
 function* writeSaga(socket, token, emitType, actionType, action) {
@@ -109,6 +110,25 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
       })
       if(!data.err){
         yield put(actions.route("chessboard"))
+        yield put(action(payload))
+      }
+      else {
+        console.log("ERROR ", data.err)
+      }
+    } catch (error) {
+      console.log("CATCH TRIGGERED in saga.joinRoomSaga", error)
+    }
+  }
+}
+function* makeMoveSaga(socket, token, emitType, actionType, action) {
+  while (true) {
+    try {
+      const {payload} = yield take(actionType)
+      const data = yield new Promise(resolve => {
+        const {game_id, state, is_over} = payload
+        socket.emit(emitType, {token, game_id, state, is_over}, (data) => {resolve(data)})//send {token, game_id, state, is_over}
+      })
+      if(!data.err){
         yield put(action(payload))
       }
       else {
