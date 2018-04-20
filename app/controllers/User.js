@@ -107,7 +107,7 @@ class User {
    * */
   static async signInUser(req, res) {
     const { email, password } = req.body;
-    const { rows, err } = await db.query(GET_USER_DB('email'), [email]);
+    const { rows, err } = await db.query(GET_USER_DB('email', 'OR username = $1'), [email]);
 
     if (err) {
       res.status(400).json(err.message);
@@ -121,7 +121,7 @@ class User {
 
     const user = rows[0];
     if (bcrypt.compareSync(password + addSalt, user.hash)) {
-      res.json({ username: user.username, token: user.token }); // email: user.email,
+      res.json({ email: user.email, username: user.username, token: user.token }); // email: user.email,
     } else {
       res.status(400).json('Wrong password.');
     }
