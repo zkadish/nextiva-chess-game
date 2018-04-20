@@ -27,8 +27,9 @@ class Socket {
     });
 
     if (!res.err) {
+      const rooms = await Rooms.getAllList();
       await Socket._handleRoom(res.room);
-      curIo.emit('rooms', await Rooms.getAllList().data);
+      curIo.emit('rooms', rooms.data);
     }
   }
 
@@ -46,7 +47,8 @@ class Socket {
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
-      curIo.emit('rooms', await Rooms.getAllList().data);
+      const rooms = await Rooms.getAllList();
+      curIo.emit('rooms', rooms.data);
       curIo.sockets.in(res.room).emit('room.connect', res.data);
     }
   }
