@@ -28,12 +28,16 @@ function subscribe(socket) {
     socket.on('room.move', (data) => {//return { username, state, time, is_give_up } send {token, game_id, state, is_over}
       emit(actions.makeMoveUpdate(data));
     });
+    socket.on('room.disconnect', (data) => {//if player sigh out
+      // emit(actions.updateRoomState(data));
+    });
+    socket.on('user.disconnect', (data) => {//if watcher sign out
+      // emit(actions.updateRoomState(data));
+    });
     /* socket.on('chat.local', (data) => {
       emit(actions.updateRoomState(data));
     });
-    socket.on('user.disconnect', (data) => {
-      emit(actions.updateRoomState(data));
-    }); */
+     */
     socket.on('disconnect', e => {
       // TODO: handle
     });
@@ -124,6 +128,7 @@ function* makeMoveSaga(socket, token, emitType, actionType) {
       const {payload} = yield take(actionType)
       const data = yield new Promise(resolve => {
         const {game_id, state, is_over} = payload
+        debugger
         socket.emit(emitType, {token, game_id, state, is_over}, (data) => {resolve(data)})//send {token, game_id, state, is_over}
       })
       if(data.err){
