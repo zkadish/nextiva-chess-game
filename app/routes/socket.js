@@ -21,7 +21,11 @@ class Socket {
 
     const res = await Rooms.createGame(data);
 
-    callback(data);
+    callback({
+      data: res.data,
+      status: res.status,
+      err: res.err,
+    });
 
     if (!res.err) {
       const rooms = await Rooms.getAllList();
