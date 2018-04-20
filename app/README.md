@@ -44,6 +44,7 @@ Example: `/api/v1/socket` with headers Authorization.
 
 
 ####Socket
+
 Route                       | Params                                        | Return
 ----------------------------|-----------------------------------------------|------------------------
 connection (on)             |                                               | subscribe, *rooms emit

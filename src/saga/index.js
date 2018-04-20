@@ -31,14 +31,17 @@ function subscribe(socket) {
     /* socket.on('chat.local', (data) => {
       emit(actions.updateRoomState(data));
     });
-    socket.on('chat.general', (data) => {
-      emit(actions.updateRoomState(data));
-    });
     socket.on('user.disconnect', (data) => {
       emit(actions.updateRoomState(data));
     }); */
     socket.on('disconnect', e => {
       // TODO: handle
+    });
+    socket.emit('chat.general', {
+      token: 'yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhdnR5bUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6InF3ZXJ0eSIsImlhdCI6MTUyMjI0MzQ3M30.ZBPrfoudpTC4gLyg2pM07rEDUfqT-KlWPK7-0E5bSus',
+    }, (data) => {
+      // emit(actions.updateRoomState(data));
+      console.log(data)
     });
     return () => {};
   });
