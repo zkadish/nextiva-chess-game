@@ -1,4 +1,4 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM ,ROOMS_LIST, UPDATE_ROOM_STATE } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM ,ROOMS_LIST, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE } from "../constants/ActionTypes";
 import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE, } from "../constants/roles";
 
 export function playstate(state = "", action) {
@@ -37,6 +37,16 @@ export function playstate(state = "", action) {
         ...state,
         state: action.payload,
         role: ROLE_BLACK
+      };
+
+      case MAKE_MOVE_UPDATE: //payload is  {username, state, time, is_give_up }
+      const {username: makeMove, state: fen, time, is_over: isOver} = action.payload;
+      return {
+        ...state,
+        fen,
+        makeMove,
+        time,
+        isOver
       };
 
     default:

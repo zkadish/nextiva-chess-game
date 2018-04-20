@@ -8,9 +8,8 @@ import CancelConfirmComponent from './CancelConfirmComponent';
 import './game.scss';
 
 
-import { createRoom, joinRoom, watchRoom } from "../../redux/actions/entranceActions";
 import { ROLE_WATCHER } from "../../redux/constants/roles";
-import { initializeBoard, makeMove, giveUp } from "../../redux/actions/BoardActions";
+import { makeMove, giveUp } from "../../redux/actions/BoardActions";
 
 
 class Game extends React.Component {
@@ -64,8 +63,7 @@ class Game extends React.Component {
     createRoom(param) { this.props.createRoom(param); };
     joinRoom = name => { this.props.joinRoom(); };
     watchRoom = name => { this.props.watchRoom(); };
-    makeMove(param) { this.props.makeMove(param); }
-
+    makeMove(game_id, fen, is_over) {this.props.makeMove(game_id, fen, is_over);}
     tileHandler = (name) => {
         if (!this.isMyTurn())
             return;
@@ -127,7 +125,8 @@ class Game extends React.Component {
             <button onClick={this.createRoom.bind(this, { player1: 'Tihs is me', time: 0, token: 'UNIMPLEMENTED_TOKEN' })}>Create Room</button>
             <button onClick={this.joinRoom}>Join Room</button>
             <button onClick={this.watchRoom}>As Watcher</button>
-            <button onClick={this.makeMove.bind(this, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3')}>MakeMove</button>
+            {/* TODO: dummy, need send correct data */}
+            <button onClick={this.makeMove.bind(this, 666, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3', false)}>MakeMove</button>
             <div className="game_container">
                 <ChessboardHeader
                     back={this.props.currentPlayerRole === ROLE_WATCHER ?
@@ -162,19 +161,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        //TODO: unimplemented yet
-        createRoom: (params) => dispatch(createRoom(params)),
-        //runs, when user enter in previously created room. should recieve player1, player2 - strings, watchers - array of strings
-        joinRoom: () => dispatch(joinRoom()),
-        //currently same as previous
-        watchRoom: () => dispatch(watchRoom()),
+        makeMove: (game_id, fen, is_over) => dispatch(makeMove(game_id, fen, is_over)),
 
-        //create basic figure set on start position (runs one time)
-        initializeBoard: () => dispatch(initializeBoard()),
-        //sends to store move, which was confirmed by player by pressing the button
-        makeMove: (param) => dispatch(makeMove(param)),
-        //TODO: unimplemented yet
-        giveUp: () => dispatch(giveUp())
+        giveUp: () => dispatch(giveUp()), //TODO: unimplemented
+        exit: () => dispatch() //TODO: unimplemented
     };
 };
 
