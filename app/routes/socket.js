@@ -41,7 +41,10 @@ class Socket {
 
     const res = await Rooms.connectToGame(data);
 
-    callback(data);
+    callback({
+      err: res.err,
+      status: res.status,
+    });
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
