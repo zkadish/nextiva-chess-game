@@ -8,8 +8,8 @@ import CancelConfirmComponent from './CancelConfirmComponent';
 import './game.scss';
 
 
-import { ROLE_WATCHER } from "../../redux/constants/roles";
 import { makeMove, giveUp } from "../../redux/actions/BoardActions";
+import { ROLE_WATCHER, ROLE_WHITE } from "../../redux/constants/roles";
 
 
 class Game extends React.Component {
@@ -29,6 +29,10 @@ class Game extends React.Component {
         return this.chess.game_over();
     }
 
+    getCurTurnPlayerName() {
+        return this.chess.turn() == ROLE_WHITE ? this.props.player1 : this.props.player2;
+    }
+
     isMoveDone = () => {
         return !this.isMyTurn() && this.state.notConfirmedFEN;
     }
@@ -39,25 +43,7 @@ class Game extends React.Component {
         return movesSet;
     }
 
-    initTiles(value) {
-        let tiles = [];
-        this.chess.load(value);
-        let movesSet = this.getSimpleMoves(this.state.selectedTileID);
-        this.chess.SQUARES.forEach((element, index) => {
-            tiles.push(
-                {
-                    id: element,
-                    squareColor: this.chess.square_color(element),
-                    piece: this.chess.get(element),
-                    canMoveSquare: movesSet.has(element),
-                    isSelectedSquare: this.state.selectedTileID === element,
-                    onClick: this.tileHandler
-                }
-            );
-        });
 
-        return tiles;
-    }
 
     //Temporary functional. Mock for server resp
     createRoom(param) { this.props.createRoom(param); };
@@ -100,8 +86,75 @@ class Game extends React.Component {
     onConfirmClick = () => {
         if (this.state.notConfirmedFEN) {
             this.setNotConfirmedFEN();
-            this.props.makeMove(this.state.notConfirmedFEN);
+            this.props.makeMove(this.state.notConfirmedFEN, this.gameOver());
         }
+    }
+
+    initTiles(value) {
+        let tiles = [];
+        this.chess.load(value);
+        let movesSet = this.getSimpleMoves(this.state.selectedTileID);
+        this.chess.SQUARES.forEach((element, index) => {
+            tiles.push(
+                {
+                    id: element,
+                    squareColor: this.chess.square_color(element),
+                    piece: this.chess.get(element),
+                    canMoveSquare: movesSet.has(element),
+                    isSelectedSquare: this.state.selectedTileID === element,
+                    onClick: this.tileHandler
+                }
+            );
+        });
+
+        return tiles;
+    }
+    render() {
+        return (<div>
+            <div className="game_container">
+                {this.getHeader()}
+                {this.getBoard()}
+                {this.getConfirmCancel()}
+            </div>
+        </div>
+        );
+    }
+
+    getBoard() {
+        let tiles = this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen);
+        return (<Chessboard tiles={tiles} />);
+    }
+
+    getHeader() {
+        if (this.gameOver()) {
+            return (
+                <ChessboardHeader
+                    back={ {onClick: () => (console.log('Go back to Lobby')) } }
+                    backText={'Go back to Lobby'}
+                    playerName={`${this.getCurTurnPlayerName()} lost`}
+                />
+            );
+        }
+        return (
+            <ChessboardHeader
+                back={this.props.currentPlayerRole === ROLE_WATCHER ?
+                    { onClick: () => (console.log('Go back to Lobby')) } :
+                    { onClick: () => (console.log('Give Up!')) }
+                }
+                backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' : 'Give Up!'}
+                playerName={this.getCurTurnPlayerName()}
+                time={this.props.time}
+            />
+        );
+    }
+    getConfirmCancel() {
+        return (
+            !this.gameOver() && !this.state.observer && <CancelConfirmComponent
+                cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
+                confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
+            />
+
+        );
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -118,44 +171,15 @@ class Game extends React.Component {
             notConfirmedFEN: ''
         }
     }
-
-    render() {
-        let tiles = this.initTiles(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen)
-        return (<div>
-            <button onClick={this.createRoom.bind(this, { player1: 'Tihs is me', time: 0, token: 'UNIMPLEMENTED_TOKEN' })}>Create Room</button>
-            <button onClick={this.joinRoom}>Join Room</button>
-            <button onClick={this.watchRoom}>As Watcher</button>
-            {/* TODO: dummy, need send correct data */}
-            <button onClick={this.makeMove.bind(this, 666, 'rnb1kbnr/pppp1ppp/8/4p3/5PPq/8/PPPPP2P/RNBQKBNR w KQkq - 1 3', false)}>MakeMove</button>
-            <div className="game_container">
-                <ChessboardHeader
-                    back={this.props.currentPlayerRole === ROLE_WATCHER ?
-                        { onClick: () => (console.log('Go back to Lobby')) } :
-                        { onClick: () => (console.log('Give Up!')) }
-                    }
-                    backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' :'Give Up!'}
-                    playerName={this.props.player1}
-                    //TODO: don't update when move
-                    time={0}
-                />
-                <Chessboard tiles={tiles} />
-                {!this.gameOver()&&!this.state.observer && <CancelConfirmComponent
-                    cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
-                    confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
-                />}
-            </div>
-        </div>
-        );
-    }
 }
 
 const mapStateToProps = state => {
     return {
-        fen: state.playstate.fen  || 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19',
+        fen: state.playstate.fen || 'r1k4r/p2nb1p1/2b4p/1p1n1p2/2PP4/3Q1NB1/1P3PPP/R5K1 b - c3 0 19',
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
         currentPlayerRole: state.playstate.role,
-        time: state.time
+        time: state.playstate.time
     };
 };
 
