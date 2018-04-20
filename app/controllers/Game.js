@@ -3,6 +3,7 @@ const User = require('./User');
 const Helpers = require('../utils/helpers');
 
 const {
+  GET_GAME_BY_ID,
   GET_ALL_HISTORY,
   INSERT_STATE_CHESS,
   UPDATE_GIVE_UP,
@@ -45,9 +46,22 @@ class Game {
       };
     }
 
-    const { total, start_time } = history.rows[0];
-    const curTime = time - start_time - total;
+    let { total = 0, start_time = 0 } = history.rows.length !== 0 && history.rows[0];
 
+    if (history.rows.length === 0) {
+      const game = await db.query(GET_GAME_BY_ID, [game_id]);
+
+      if (game.err) {
+        return {
+          err: history.err.message,
+          status: 400,
+        };
+      }
+
+      start_time = game.rows[0].time;
+    }
+
+    const curTime = time - start_time - total;
     const { err } = await db.query(INSERT_STATE_CHESS, [game_id, id, state, curTime, is_over]);
 
     if (err) {

@@ -10,13 +10,13 @@ module.exports = {
     GROUP BY start_time
     `,
 
+  GET_GAME_BY_ID : `SELECT time FROM games WHERE id = $1`,
 
   INSERT_STATE_CHESS: `
     INSERT INTO history 
       (game_id, player_id, state, time, give_up) 
     VALUES ($1, $2, $3, $4, $5)
     `,
-
 
   UPDATE_GIVE_UP: `
     UPDATE games 

@@ -128,7 +128,6 @@ function* makeMoveSaga(socket, token, emitType, actionType) {
       const {payload} = yield take(actionType)
       const data = yield new Promise(resolve => {
         const {game_id, state, is_over} = payload
-        debugger
         socket.emit(emitType, {token, game_id, state, is_over}, (data) => {resolve(data)})//send {token, game_id, state, is_over}
       })
       if(data.err){

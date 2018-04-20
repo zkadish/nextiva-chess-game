@@ -6,6 +6,7 @@ const Rooms = require('../controllers/Rooms');
 const Chats = require('../controllers/Chats');
 const Helpers = require('../utils/helpers');
 
+
 let curIo;
 let curSocket;
 
@@ -94,8 +95,8 @@ class Socket {
       if (is_over) {
         await Game.giveUp({ game_id: data.game_id, token: data.token });
         curSocket.leave(curSocket.room);
+        curIo.sockets.in(curSocket.room).emit('room.disconnect', res.data);
         curSocket.room = null;
-        curIo.sockets.in(res.room).emit('room.disconnect', res.data);
       }
     }
   }
@@ -197,10 +198,8 @@ class Socket {
     if (curSocket.room) {
       const id = Helpers.getRoomId(curSocket.room);
       await Game.giveUp({ id, user_id: curSocket.user_id });
-
       curSocket.leave(curSocket.room);
       curSocket.room = null;
-
       const rooms = await Rooms.getAllList();
       curIo.emit('rooms', rooms.data);
     }
@@ -209,9 +208,9 @@ class Socket {
   }
 
 
-  static async _handleRoom(curRoom) {
-    curSocket.room = curRoom;
-    curSocket.join(curRoom);
+  static async _handleRoom(room) {
+    curSocket.room = room;
+    curSocket.join(room);
   }
 
 
