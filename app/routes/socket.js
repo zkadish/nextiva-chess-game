@@ -21,10 +21,7 @@ class Socket {
 
     const res = await Rooms.createGame(data);
 
-    callback({
-      err: res.err,
-      status: res.status,
-    });
+    callback(data);
 
     if (!res.err) {
       const rooms = await Rooms.getAllList();
@@ -40,10 +37,7 @@ class Socket {
 
     const res = await Rooms.connectToGame(data);
 
-    callback({
-      err: res.err,
-      status: res.status,
-    });
+    callback(data);
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
@@ -60,10 +54,7 @@ class Socket {
 
     const res = await Rooms.connectToGameVisitor(data);
 
-    callback({
-      err: res.err,
-      status: res.status,
-    });
+    callback(data);
 
     if (!res.err) {
       await Socket._handleRoom(res.room);
