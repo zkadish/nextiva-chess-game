@@ -18,13 +18,14 @@ export function playstate(state = "", action) {
       };
 
     case CREATE_ROOM: {
-    const {date, id, state: fen, time} = action.payload;
+      const {date, id, state: fen, time, first_player} = action.payload;
       return {
+        ...state,
         date,//when room was created
         id,//roomid
         fen,
         time,//main time for players
-        // first_player: action.payload.first_player, 
+        first_player, 
         role: ROLE_WHITE
       };
     }
@@ -42,15 +43,15 @@ export function playstate(state = "", action) {
       };
 
       case MAKE_MOVE_UPDATE: {//payload is  {username, state, time, is_give_up }
-      const {username: makeMove, state: fen, time, is_over: isOver} = action.payload;
-      return {
-        ...state,
-        fen,
-        makeMove,
-        time,
-        isOver
-      };
-    }
+        const {username: makeMove, state: fen, time, is_over: isOver} = action.payload;
+        return {
+          ...state,
+          fen,
+          makeMove,
+          time,
+          isOver
+        };
+      }
     default:
       return state;
   }

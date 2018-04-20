@@ -87,7 +87,7 @@ function* createRoomSaga(socket, token, emitType, actionType, action) {
       if(!data.err){//{id, date, time, status - 201}
         yield put(actions.route("chessboard"))
         
-        yield put(action(Object.assign({state: payload.fen}, data.data)))
+        yield put(action(Object.assign({state: payload.fen, first_player: payload.first_player}, data.data)))
       }
       else {
         console.log("ERROR ", data.err)
