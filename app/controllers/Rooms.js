@@ -10,7 +10,7 @@ const {
   GET_GAME_BY_PLAYER_ID,
   GET_GAME_BY_ID_PLAYER,
   GET_LAST_STATE_BY_ID_GAME,
-} = require('../db/game');
+} = require('../db/rooms');
 
 
 class Rooms {
