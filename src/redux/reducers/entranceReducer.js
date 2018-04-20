@@ -1,11 +1,8 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM ,ROOMS_LIST, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE } from "../constants/ActionTypes";
 import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE, } from "../constants/roles";
 
 export function playstate(state = "", action) {
   switch (action.type) {
-
-    case ROOMS_LIST:
-    return { ...state, state: action.payload };
 
     case UPDATE_ROOM_STATE:
       return {
