@@ -56,7 +56,7 @@ function* write(socket, token) {
   yield fork(createRoomSaga, socket, token, "room.create", CREATE_ROOM_REQUEST, actions.createRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
-  yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE, actions.makeMove)
+  yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE)
 }
 
 function* writeSaga(socket, token, emitType, actionType, action) {
@@ -120,7 +120,7 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
     }
   }
 }
-function* makeMoveSaga(socket, token, emitType, actionType, action) {
+function* makeMoveSaga(socket, token, emitType, actionType) {
   while (true) {
     try {
       const {payload} = yield take(actionType)
@@ -128,14 +128,11 @@ function* makeMoveSaga(socket, token, emitType, actionType, action) {
         const {game_id, state, is_over} = payload
         socket.emit(emitType, {token, game_id, state, is_over}, (data) => {resolve(data)})//send {token, game_id, state, is_over}
       })
-      if(!data.err){
-        yield put(action(payload))
-      }
-      else {
+      if(data.err){
         console.log("ERROR ", data.err)
       }
     } catch (error) {
-      console.log("CATCH TRIGGERED in saga.joinRoomSaga", error)
+      console.log("CATCH TRIGGERED in saga.makeMoveSaga", error)
     }
   }
 }
