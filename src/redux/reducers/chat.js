@@ -18,17 +18,15 @@ export const chat = (state = { messages: defaultValues, message: '' }, action) =
         case GET_ALL_MESSAGES_LOCAL:
             return {
                 ...state,
-                allMessages: [].concat(state.messages, action.payload)
+                messages: [].concat(state.messages, action.payload)
             }
         case INSERT_MESSAGE_GENERAL:
-            return {
-                ...state,
-                playermessage: `${state.message}${action.payload}`
-            }
+            return action.payload;
+            
         case INSERT_MESSAGE_LOCAL:
             return {
                 ...state,
-                playermessage: `${state.message}${action.payload}`
+                message: `${state.message}${action.payload}`
             }
         default:
             return state

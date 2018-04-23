@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Button } from '@nextiva/next-ui';
 
 import Message from './Message';
+import sendMessage from '../../../redux/actions/sendMessage';
+import {insertMessageGeneralChat} from '../../../redux/actions/chatActions';
 
 import './chat.scss';
 
@@ -29,6 +31,10 @@ class Chat extends React.Component {
         if (event.key === 'Enter' && event.shiftKey === false ) {
             this.handleSubmit(event);
         }
+    }
+
+    handleClickButton() {
+        this.props.insertMessageGeneralChat(this.state.userMessage);
     }
 
     render(){
@@ -58,6 +64,7 @@ class Chat extends React.Component {
                         <Button 
                             type="submit"
                             kind='success'
+                            onClick={this.handleClickButton.bind(this)}
                             disabled={!this.state.userMessage}
                             className='chat__textarea__send'>Send
                         </Button>
@@ -68,4 +75,10 @@ class Chat extends React.Component {
     }
 }
 
-export default Chat;
+const matStateToProps = (state) => ({
+    user: state.user.data
+});
+
+export default connect(matStateToProps, {
+    insertMessageGeneralChat,
+})(Chat);

@@ -34,9 +34,11 @@ function subscribe(socket) {
     socket.on('room.disconnect', (data) => {//if game is over, or giveup, or watcher is out (data = name of player)
       emit(actions.roomLeave(data));
     });
+
     socket.on('user.disconnect', (data) => {//if someone close the game, (data = name of player)
       emit(actions.roomLeave(data));//we can add another event in the feature
     });
+    
     socket.on('caht.general.insert', (data) => {
       emit(chatActions.insertMessageGeneralChat(data))
     })
@@ -44,13 +46,14 @@ function subscribe(socket) {
       emit(chatActions.insertMessageLocalChat(data))
     })
 
-    // socket.on('chat.local', (data)=>{
-    //   emit(chatActions.getMessagesLocalChat(data))
-    // })
-    /* socket.on('chat.local', (data) => {
-      emit(actions.updateRoomState(data));
-    });
-     */
+    socket.on('chat.general', (data)=>{
+      emit(chatActions.getMessagesGeneralChat(data));
+    })
+
+    socket.on('chat.local', (data)=>{
+      emit(chatActions.getMessagesLocalChat(data))
+    })
+
     socket.on('disconnect', e => {
       // TODO: handle
     });
@@ -74,12 +77,13 @@ function* write(socket, token) {
   yield fork(messages, socket, token, "chat.general.insert", INSERT_MESSAGE_GENERAL, chatActions.insertMessageGeneralChat)
   yield fork(giveUpSaga, socket, token, "room.give-up", GIVE_UP)
 }
+
 function* messages (socket, token){
   while (true) {
     try {
-      const { payload } = yield take(GET_ALL_MESSAGES_GENERAL)
+      const { payload } = yield take(INSERT_MESSAGE_GENERAL);
       const data = yield new Promise(resolve => {
-        socket.emit("message", { token, state: payload }, (data) => { resolve(data) })
+        socket.emit("chat.general.insert", { token, message: payload }, (data) => { resolve(data) })
       })
       if (data.err) { console.log(data.err)}
     } catch (error) {
@@ -87,6 +91,8 @@ function* messages (socket, token){
     }
   }
 }
+
+
 
 function* createRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {

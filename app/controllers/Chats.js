@@ -19,10 +19,14 @@ class Chats {
    * @param {number} limit: how many messages are getting from the database
    * @param {number} offset: messages position in database
    * */
-  static async getMessagesGeneralChat({ token, limit = 50, offset = 0 }) {
-    let per = await User.permissionsToken(token);
-    if (per.status) return per;
-console.log({ token, limit, offset})
+  static async getMessagesGeneralChat({ token, limit = 50, offset = 0 }, isEntered = false) {
+    let per;
+
+    if (!isEntered) {
+      let per = await User.permissionsToken(token);
+      if (per.status) return per;
+    }
+
     const { rows, err } = await db.query(GET_MESSAGES(), [limit, offset]);
 
     if (err) {
@@ -46,9 +50,13 @@ console.log({ token, limit, offset})
    * @param {number} limit: how many messages are getting from the database
    * @param {number} offset: messages position in database
    * */
-  static async getMessagesLocalChat({ token, game_id, limit = 50, offset = 0 }) {
-    let per = await User.permissionsToken(token);
-    if (per.status) return per;
+  static async getMessagesLocalChat({ token, game_id, limit = 50, offset = 0 }, isEntered = false) {
+    let per;
+
+    if (!isEntered) {
+      let per = await User.permissionsToken(token);
+      if (per.status) return per;
+    }
 
     if (game_id === undefined) {
       return {

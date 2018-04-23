@@ -66,7 +66,10 @@ class Socket {
     if (!res.err) {
       await this._handleRoom(res.room);
       const rooms = await Rooms.getAllList();
+      const messages = await Chats.getMessagesLocalChat(data, true);
+
       this.io.emit('rooms', rooms.data);
+      this.socket.emit('chat.local', messages.data);
       this.io.to(this.room).emit('room.connect', res.data);
     }
   }
@@ -80,6 +83,7 @@ class Socket {
 
     callback({
       err: res.err,
+      data: res.data,
       status: res.status,
     });
 
@@ -87,6 +91,10 @@ class Socket {
       this.isVisitor = true;
       await this._handleRoom(res.room);
       this.socket.emit('room.connect', res.data);
+      const messages = await Chats.getMessagesLocalChat(data, true);
+
+      this.socket.emit('chat.local', messages.data);
+      this.socket.emit('room.connect-visitor', this.user.username);
     }
   }
 
@@ -162,13 +170,15 @@ class Socket {
     const isExistRoom = this._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
-    callback(await Chats.getMessagesLocalChat(data));
+    const res = await Chats.getMessagesLocalChat(data);
+    callback(res);
   }
 
 
-  static async getMessageFromGeneral(data, callback) {
+  async getMessageFromGeneral(data, callback) {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
+
     const res = await Chats.getMessagesGeneralChat(data);
     callback(res);
   }
@@ -243,6 +253,20 @@ class Socket {
   }
 
 
+  async _handleRoom(room) {
+    this.room = room;
+    this.socket.join(room);
+    this.socket.emit('chat.local');
+  }
+
+
+  _roomDisconnect() {
+    this.socket.leave(this.room);
+    this.io.to(this.room).emit('room.disconnect', this.user.username);
+    this.room = null;
+  }
+
+
   _isExistRoom() {
     return this.room ? true : {
       err: `You don't have a room.`,
@@ -281,7 +305,11 @@ module.exports = (io) => {
       } = new Socket(socket, io, per);
 
       const res = await Rooms.getAllList();
-      socket.emit('rooms', res.data);
+      const messages = await Chats.getMessagesGeneralChat({}, true);
+
+      socket.emit('rooms', rooms.data);
+      socket.emit('chat.general', messages.data);
+
       socket.on('room.create', await createRoom);
       socket.on('room.connect', await connectToGame);
       socket.on('room.connect-visitor', await connectToGameVisitor);

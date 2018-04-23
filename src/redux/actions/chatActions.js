@@ -5,31 +5,31 @@ import {
     INSERT_MESSAGE_LOCAL
 } from '../constants/chat';
 
-export const getMessagesGeneralChat = (token, messages) => {
+export const getMessagesGeneralChat = (payload) => {
     return {
         type: GET_ALL_MESSAGES_GENERAL,
-        payload: messages
+        payload,
     }
 }
 
-export const getMessagesLocalChat = (gameId, token, messages) => {
+export const getMessagesLocalChat = (gameId, messages) => {
     return {
         type: GET_ALL_MESSAGES_LOCAL,
-        payload: messages
+        payload: { messages, gameId }
     }
 }
 
-export const insertMessageGeneralChat = (token, message) => {
+export const insertMessageGeneralChat = (payload) => {
+    return {
+        type: INSERT_MESSAGE_GENERAL,
+        payload,
+    }
+}
+
+export const insertMessageLocalChat = (message, gameId) => {
     return {
         type: INSERT_MESSAGE_LOCAL,
-        payload: message
-    }
-}
-
-export const insertMessageLocalChat = (token, message, gameId) => {
-    return {
-        type: insertMessageGeneralChat,
-        payload: message
+        payload: { message, gameId }
     }
 }
 
