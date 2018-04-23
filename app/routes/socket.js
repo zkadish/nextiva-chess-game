@@ -124,6 +124,9 @@ class Socket {
         this.socket.leave(this.room);
         this.io.to(this.room).emit('room.disconnect', res.data);
         this.room = null;
+
+        const rooms = await Rooms.getAllList();
+        this.io.emit('rooms', rooms.data);
       }
     }
   }
@@ -145,6 +148,9 @@ class Socket {
 
     if (!res.err) {
       this._roomDisconnect('room.disconnect');
+
+      const rooms = await Rooms.getAllList();
+      this.io.emit('rooms', rooms.data);
     }
   }
 
