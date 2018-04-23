@@ -80,7 +80,7 @@ class Game extends React.Component {
             if (moves.size > 0 && moves.has(name)) {
                 this.chess.move({ from: this.state.selectedTileID, to: name });
                 if (this.gameOver())
-                    this.props.makeMove(this.props.roomId, this.state.notConfirmedFEN, this.gameOver());
+                    this.props.makeMove(this.props.roomId, this.chess.fen(), this.gameOver());
                 this.setNotConfirmedFEN(this.chess.fen());
                 this.selectTile();
             } else {
