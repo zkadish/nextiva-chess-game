@@ -56,7 +56,7 @@ class Chats {
       if (per.status) return per;
     }
 
-    if (game_id === undefined) {
+    if (!game_id) {
       return {
         err: `game_id is undefined`,
         status: 404,
@@ -88,6 +88,13 @@ class Chats {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
+    if (!message) {
+      return {
+        err: `message is undefined.`,
+        status: 404,
+      }
+    }
+
     const { id, username } = per;
     const time = Helpers.getUnixTimeNow();
 
@@ -116,6 +123,13 @@ class Chats {
   static async insertMessageLocalChat({ token, message, game_id }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
+
+    if (!game_id || !message) {
+      return {
+        err: `game_id or message are undefined.`,
+        status: 404,
+      }
+    }
 
     const { id, username } = per;
     const time = Helpers.getUnixTimeNow();
