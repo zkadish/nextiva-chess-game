@@ -206,7 +206,7 @@ class Socket {
     });
 
     if (!res.err) {
-      this.io.to(this.room).emit('chat.general', res.data);
+      this.io.emit('chat.general', res.data);
     }
   }
 
@@ -282,19 +282,19 @@ module.exports = (io) => {
 
       const res = await Rooms.getAllList();
       socket.emit('rooms', res.data);
-      socket.once('room.create', await createRoom);
-      socket.once('room.connect', await connectToGame);
-      socket.once('room.connect-visitor', await connectToGameVisitor);
-      socket.once('room.move', await moveFigure);
-      socket.once('room.give-up', await giveUp);
-      socket.once('room.disconnect', await leaveRoom);
+      socket.on('room.create', await createRoom);
+      socket.on('room.connect', await connectToGame);
+      socket.on('room.connect-visitor', await connectToGameVisitor);
+      socket.on('room.move', await moveFigure);
+      socket.on('room.give-up', await giveUp);
+      socket.on('room.disconnect', await leaveRoom);
 
-      socket.once('chat.local', await getMessageFromLocal);
-      socket.once('chat.general', await Socket.getMessageFromGeneral);
-      socket.once('chat.local.insert', await insertMessageToLocal);
-      socket.once('chat.general.insert', await insertMessageToGeneral);
+      socket.on('chat.local', await getMessageFromLocal);
+      socket.on('chat.general', await Socket.getMessageFromGeneral);
+      socket.on('chat.local.insert', await insertMessageToLocal);
+      socket.on('chat.general.insert', await insertMessageToGeneral);
 
-      socket.once('disconnect', await disconnect);
+      socket.on('disconnect', await disconnect);
     });
 
     res.end();
