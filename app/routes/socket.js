@@ -84,6 +84,7 @@ class Socket {
     });
 
     if (!res.err) {
+      this.isVisitor = true;
       await this._handleRoom(res.room);
       this.socket.emit('room.connect', res.data);
     }
@@ -213,11 +214,16 @@ class Socket {
   async disconnect() {
     if (this.room) {
       const id = Helpers.getRoomId(this.room);
-      await Game.giveUp({ id, user_id: this.user.user_id });
+      await Game.giveUp({ id, user_id: this.user.id });
       this.socket.leave(this.room);
       this.room = null;
-      const rooms = await Rooms.getAllList();
-      this.io.emit('rooms', rooms.data);
+
+      if (!this.isVisitor) {
+        const rooms = await Rooms.getAllList();
+        this.io.emit('rooms', rooms.data);
+      } else {
+        this.isVisitor = false;
+      }
     }
 
     this.io.emit('user.disconnect', this.user.username);
