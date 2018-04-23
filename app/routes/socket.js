@@ -95,7 +95,7 @@ class Socket {
       const messages = await Chats.getMessagesLocalChat(data, true);
 
       this.socket.emit('chat.local', messages.data);
-      this.socket.emit('room.connect-visitor', this.user.username);
+      this.io.to(this.room).emit('room.connect-visitor', this.user.username);
     }
   }
 
@@ -122,7 +122,7 @@ class Socket {
       if (is_over) {
         await Game.giveUp({ id: data.game_id }, data.token);
         this.socket.leave(this.room);
-        this.io.to(this.room).emit('room.disconnect', this.user.username);
+        this.io.to(this.room).emit('room.win', this.user.username);
         this.room = null;
 
         const rooms = await Rooms.getAllList();
