@@ -47,12 +47,8 @@ module.exports = {
       h.time
     FROM history AS h
     JOIN users AS u ON u.id = h.player_id
-    WHERE time = (
-      SELECT 
-        max(time) 
-        FROM history
-        WHERE game_id = $1
-      )
+    WHERE game_id = $1
+      order by h.id desc limit 1
     `,
 
 };
