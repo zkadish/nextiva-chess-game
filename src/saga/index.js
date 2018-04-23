@@ -3,9 +3,11 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
-import {CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE} from "../redux/constants/ActionTypes"
-import {LOGIN} from "../redux/constants/user"
-import {ROUTE} from "../redux/constants/route"
+import { CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE } from "../redux/constants/ActionTypes"
+import { LOGIN } from "../redux/constants/user"
+import { ROUTE } from "../redux/constants/route"
+import * as chatActions from '../redux/actions/chatActions';
+import { GET_ALL_MESSAGES_GENERAL } from '../redux/constants/chat';
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -34,6 +36,23 @@ function subscribe(socket) {
     socket.on('user.disconnect', (data) => {//if watcher sign out
       // emit(actions.updateRoomState(data));
     });
+    socket.emit('chat.general', {
+    }, (data) => {
+      emit(chatActions.getMessagesGeneralChat(data))
+    })
+    socket.emit('chat.local', (data) => {
+      emit(chatActions.getMessagesLocalChat(data))
+    })
+    socket.on('caht.general.insert', (data) => {
+      emit(chatActions.insertMessageGeneralChat(data))
+    })
+    socket.on('chat.local.insert', (data) => {
+      emit(chatActions.insertMessageLocalChat(data))
+    })
+
+    // socket.on('chat.local', (data)=>{
+    //   emit(chatActions.getMessagesLocalChat(data))
+    // })
     /* socket.on('chat.local', (data) => {
       emit(actions.updateRoomState(data));
     });
@@ -41,7 +60,7 @@ function subscribe(socket) {
     socket.on('disconnect', e => {
       // TODO: handle
     });
-    return () => {};
+    return () => { };
   });
 }
 
@@ -58,16 +77,29 @@ function* write(socket, token) {
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
   yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE)
+  yield fork(messages, socket, token)
 }
-
+function* messages (socket, token){
+  while (true) {
+    try {
+      const { payload } = yield take(GET_ALL_MESSAGES_GENERAL)
+      const data = yield new Promise(resolve => {
+        socket.emit("message", { token, state: payload }, (data) => { resolve(data) })
+      })
+      if (data.err) { console.log(data.err)}
+    } catch (error) {
+      
+    }
+}
+}
 function* writeSaga(socket, token, emitType, actionType, action) {
   while (true) {
     try {
-      const {payload} = yield take(actionType)
+      const { payload } = yield take(actionType)
       const data = yield new Promise(resolve => {
-        socket.emit(emitType, {token, state: payload}, (data) => {resolve(data)})
+        socket.emit(emitType, { token, state: payload }, (data) => { resolve(data) })
       })
-      if(!data.err){
+      if (!data.err) {
         yield put(actions.route("chessboard"))
         yield put(action(payload))
       }
@@ -77,18 +109,18 @@ function* writeSaga(socket, token, emitType, actionType, action) {
     } catch (error) {
       console.log("CATCH TRIGGERED in saga.writeSaga", error)
     }
-    
+
   }
 }
 
 function* createRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {
     try {
-      const {payload} = yield take(actionType)
+      const { payload } = yield take(actionType)
       const data = yield new Promise(resolve => {
-        socket.emit(emitType, {token, state: payload.fen}, (data) => {resolve(data)})
+        socket.emit(emitType, { token, state: payload.fen }, (data) => { resolve(data) })
       })
-      if(!data.err){//{id, date, time, status - 201}
+      if (!data.err) {//{id, date, time, status - 201}
         yield put(actions.route("chessboard"))
         
         yield put(action(Object.assign({state: payload.fen, first_player: payload.first_player}, data.data)))
@@ -99,18 +131,18 @@ function* createRoomSaga(socket, token, emitType, actionType, action) {
     } catch (error) {
       console.log("CATCH TRIGGERED in saga.createRoomSaga", error)
     }
-    
+
   }
 }
 
 function* joinRoomSaga(socket, token, emitType, actionType, action) {
   while (true) {
     try {
-      const {payload} = yield take(actionType)
+      const { payload } = yield take(actionType)
       const data = yield new Promise(resolve => {
-        socket.emit(emitType, {token, game_id: payload}, (data) => {resolve(data)})
+        socket.emit(emitType, { token, game_id: payload }, (data) => { resolve(data) })
       })
-      if(!data.err){
+      if (!data.err) {
         yield put(actions.route("chessboard"))
         yield put(action(payload))
       }
@@ -125,12 +157,12 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
 function* makeMoveSaga(socket, token, emitType, actionType) {
   while (true) {
     try {
-      const {payload} = yield take(actionType)
+      const { payload } = yield take(actionType)
       const data = yield new Promise(resolve => {
-        const {game_id, state, is_over} = payload
-        socket.emit(emitType, {token, game_id, state, is_over}, (data) => {resolve(data)})//send {token, game_id, state, is_over}
+        const { game_id, state, is_over } = payload
+        socket.emit(emitType, { token, game_id, state, is_over }, (data) => { resolve(data) })//send {token, game_id, state, is_over}
       })
-      if(data.err){
+      if (data.err) {
         console.log("ERROR ", data.err)
       }
     } catch (error) {
@@ -153,7 +185,7 @@ function* flow() {
     const token = signIn.data.token
     // const { token } = yield call(Api.authorize, "user", "password") //get token from api.authorize
     yield call(Api.createSocket, token) //send requets for open socket
-  
+
     const socket = yield call(connect); // connect to sokket
 
     window.socket = socket;//for debug, remove after

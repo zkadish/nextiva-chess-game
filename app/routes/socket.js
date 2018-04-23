@@ -151,7 +151,6 @@ class Socket {
   static async getMessageFromGeneral(data, callback) {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
-
     const res = await Chats.getMessagesGeneralChat(data);
     callback(res);
   }
@@ -159,7 +158,7 @@ class Socket {
 
   static async insertMessageToLocal(data, callback) {
     const isExistCallback = Socket._isExistCallback(callback);
-    if (typeof(isExistCallback) !== 'boolean') return;
+    if (typeof(isExistCallback) !== 'boolean') return isExistCallback;
 
     const isExistRoom = Socket._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
@@ -179,7 +178,7 @@ class Socket {
 
   static async insertMessageToGeneral(data, callback) {
     const isExistCallback = Socket._isExistCallback(callback);
-    if (typeof(isExistCallback) !== 'boolean') return;
+    if (typeof(isExistCallback) !== 'boolean') return isExistCallback;
 
     const res = await Chats.insertMessageGeneralChat(data);
 

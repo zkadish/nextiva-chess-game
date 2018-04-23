@@ -22,7 +22,7 @@ class Chats {
   static async getMessagesGeneralChat({ token, limit = 50, offset = 0 }) {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
-
+console.log({ token, limit, offset})
     const { rows, err } = await db.query(GET_MESSAGES(), [limit, offset]);
 
     if (err) {

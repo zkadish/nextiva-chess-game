@@ -5,5 +5,6 @@ import user from './user';
 import route from './route';
 import signin from './signin';
 import signup from './signup';
+import {chat} from './chat'
 
-export default combineReducers({ playstate, user, signup, signin, route, rooms });
+export default combineReducers({ chat , playstate, user, signup, signin, route, rooms });
