@@ -2,15 +2,12 @@ module.exports = {
 
   GET_ALL_HISTORY: `
     SELECT
-      COALESCE(sum(h.time), 0) AS total,
-      g.time AS start_time
+      COALESCE(sum(h.time), 0) AS total
     FROM history AS h
-    JOIN games AS g ON g.id = h.game_id
     WHERE h.game_id = $1 AND h.player_id = $2
-    GROUP BY start_time
     `,
 
-  GET_GAME_BY_ID : `SELECT time FROM games WHERE id = $1`,
+  GET_GAME_BY_ID : `SELECT time, first_player_id, second_player_id FROM games WHERE id = $1`,
 
   INSERT_STATE_CHESS: `
     INSERT INTO history 

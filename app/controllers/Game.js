@@ -45,23 +45,34 @@ class Game {
       };
     }
 
-    let { total = 0, start_time = 0 } = history.rows.length !== 0 && history.rows[0];
+    let total = history.rows.length !== 0 ? history.rows[0].total : 0;
 
-    if (history.rows.length === 0) {
-      const game = await db.query(GET_GAME_BY_ID, [game_id]);
+    const game = await db.query(GET_GAME_BY_ID, [game_id]);
 
-      if (game.err) {
-        return {
-          err: history.err.message,
-          status: 400,
-        };
-      }
-
-      start_time = game.rows[0].time;
+    if (game.err) {
+      return {
+        err: history.err.message,
+        status: 400,
+      };
     }
 
+    const curGame = game.rows[0];
+    const start_time = curGame.time;
+    const secondPlayerId = curGame.first_player_id === id ? curGame.second_player_id : curGame.first_player_id;
+
+    const historySecond = await db.query(GET_ALL_HISTORY, [game_id, secondPlayerId]);
+
+    if (historySecond.err) {
+      return {
+        err: historySecond.err.message,
+        status: 400,
+      };
+    }
+
+    const secondTotal = historySecond.rows.length !== 0 ? historySecond.rows[0].total : 0;
+
     const time = Helpers.getUnixTimeNow();
-    const curTime = time - start_time - total;
+    const curTime = time - start_time - total - secondTotal;
     const { err } = await db.query(INSERT_STATE_CHESS, [game_id, id, state, curTime, is_over]);
 
     if (err) {
@@ -75,7 +86,7 @@ class Game {
       data: {
         is_over,
         username,
-        time: total + curTime,
+        time: secondTotal,
       },
       status: 201,
     }
