@@ -181,6 +181,7 @@ const mapStateToProps = state => {
         fen: state.playstate.fen || '',
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
+        leaved_player: state.playstate.leaved_player,
         currentPlayerRole: state.playstate.role,
         time: state.playstate.time,
         date: state.playstate.date,
