@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Rooms from './Rooms';
 import Chat from './Chat';
+import sendMessage from '../../redux/actions/sendMessage';
 
 import './lobby.scss';
 
@@ -24,7 +25,8 @@ class Lobby extends React.Component {
                 <Rooms />
                 <Chat
                     user={this.props.user}
-                    messages={messages}/>
+                    messages={messages}
+                    sendMessage={sendMessage}/>
             </div>
         )
     }

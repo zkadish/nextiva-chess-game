@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Button } from '@nextiva/next-ui';
 
 import Message from './Message';
-import sendMessage from '../../../redux/actions/sendMessage';
 
 import './chat.scss';
 
@@ -18,7 +17,7 @@ class Chat extends React.Component {
     handleSubmit(event){
         event.preventDefault();
         if (this.state.userMessage.trim()){
-            sendMessage(this.state.userMessage);
+            this.props.sendMessage(this.state.userMessage);
             this.setState({ userMessage: '' });
         }
     }
