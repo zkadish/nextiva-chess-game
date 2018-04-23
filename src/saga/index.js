@@ -7,7 +7,7 @@ import { CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE }
 import { LOGIN } from "../redux/constants/user"
 import { ROUTE } from "../redux/constants/route"
 import * as chatActions from '../redux/actions/chatActions';
-import { GET_ALL_MESSAGES_GENERAL } from '../redux/constants/chat';
+import { GET_ALL_MESSAGES_GENERAL, INSERT_MESSAGE_GENERAL } from '../redux/constants/chat';
 
 function connect() {
   const socket = io('http://0.0.0.0:8080/');
@@ -36,13 +36,6 @@ function subscribe(socket) {
     socket.on('user.disconnect', (data) => {//if watcher sign out
       // emit(actions.updateRoomState(data));
     });
-    socket.emit('chat.general', {
-    }, (data) => {
-      emit(chatActions.getMessagesGeneralChat(data))
-    })
-    socket.emit('chat.local', (data) => {
-      emit(chatActions.getMessagesLocalChat(data))
-    })
     socket.on('caht.general.insert', (data) => {
       emit(chatActions.insertMessageGeneralChat(data))
     })
@@ -77,7 +70,7 @@ function* write(socket, token) {
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
   yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE)
-  yield fork(messages, socket, token)
+  yield fork(messages, socket, token, "chat.general.insert", INSERT_MESSAGE_GENERAL, chatActions.insertMessageGeneralChat)
 }
 function* messages (socket, token){
   while (true) {
