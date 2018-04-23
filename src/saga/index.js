@@ -39,20 +39,20 @@ function subscribe(socket) {
       emit(actions.roomLeave(data));//we can add another event in the feature
     });
     
-    socket.on('caht.general.insert', (data) => {
-      emit(chatActions.insertMessageGeneralChat(data))
+    socket.on('chat.general', (data) => {
+      emit(chatActions.getMessagesGeneralChat(data))
     })
-    socket.on('chat.local.insert', (data) => {
-      emit(chatActions.insertMessageLocalChat(data))
-    })
-
-    socket.on('chat.general', (data)=>{
-      emit(chatActions.getMessagesGeneralChat(data));
-    })
-
-    socket.on('chat.local', (data)=>{
+    socket.on('chat.local', (data) => {
       emit(chatActions.getMessagesLocalChat(data))
     })
+
+    // socket.on('chat.general', (data)=>{
+    //   emit(chatActions.getMessagesGeneralChat(data));
+    // })
+    //
+    // socket.on('chat.local', (data)=>{
+    //   emit(chatActions.getMessagesLocalChat(data))
+    // })
 
     socket.on('disconnect', e => {
       // TODO: handle

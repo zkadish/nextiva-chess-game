@@ -18,12 +18,11 @@ class Chats {
    * @param {string} token: token for authorization
    * @param {number} limit: how many messages are getting from the database
    * @param {number} offset: messages position in database
+   * @param {boolean} isEntered: if don't need to check token
    * */
   static async getMessagesGeneralChat({ token, limit = 50, offset = 0 }, isEntered = false) {
-    let per;
-
     if (!isEntered) {
-      let per = await User.permissionsToken(token);
+      const per = await User.permissionsToken(token);
       if (per.status) return per;
     }
 
@@ -49,12 +48,11 @@ class Chats {
    * @param {number} game_id: id game
    * @param {number} limit: how many messages are getting from the database
    * @param {number} offset: messages position in database
+   * @param {boolean} isEntered: if don't need to check token
    * */
   static async getMessagesLocalChat({ token, game_id, limit = 50, offset = 0 }, isEntered = false) {
-    let per;
-
     if (!isEntered) {
-      let per = await User.permissionsToken(token);
+      const per = await User.permissionsToken(token);
       if (per.status) return per;
     }
 

@@ -27,6 +27,7 @@ class Socket {
     this.leaveRoom = this.leaveRoom.bind(this);
     this.disconnect = this.disconnect.bind(this);
 
+    this.getMessageFromLocal = this.getMessageFromLocal.bind(this);
     this.insertMessageToLocal = this.insertMessageToLocal.bind(this);
     this.insertMessageToGeneral = this.insertMessageToGeneral.bind(this);
   }
@@ -143,7 +144,7 @@ class Socket {
     });
 
     if (!res.err) {
-      this._roomDisconnect();
+      this._roomDisconnect('room.disconnect');
     }
   }
 
@@ -155,7 +156,7 @@ class Socket {
     const isExistRoom = this._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
-    this._roomDisconnect();
+    this._roomDisconnect('room.disconnect-visitor');
 
     callback({
       status: 201,
@@ -175,7 +176,7 @@ class Socket {
   }
 
 
-  async getMessageFromGeneral(data, callback) {
+  static async getMessageFromGeneral(data, callback) {
     const isExistCallback = Socket._isExistCallback(callback);
     if (typeof(isExistCallback) !== 'boolean') return;
 
@@ -240,15 +241,9 @@ class Socket {
   }
 
 
-  async _handleRoom(room) {
-    this.room = room;
-    this.socket.join(room);
-  }
-
-
-  _roomDisconnect() {
+  _roomDisconnect(nameEmit) {
     this.socket.leave(this.room);
-    this.io.to(this.room).emit('room.disconnect', this.user.username);
+    this.io.to(this.room).emit(nameEmit, this.user.username);
     this.room = null;
   }
 
@@ -257,13 +252,6 @@ class Socket {
     this.room = room;
     this.socket.join(room);
     this.socket.emit('chat.local');
-  }
-
-
-  _roomDisconnect() {
-    this.socket.leave(this.room);
-    this.io.to(this.room).emit('room.disconnect', this.user.username);
-    this.room = null;
   }
 
 
@@ -304,7 +292,7 @@ module.exports = (io) => {
         disconnect,
       } = new Socket(socket, io, per);
 
-      const res = await Rooms.getAllList();
+      const rooms = await Rooms.getAllList();
       const messages = await Chats.getMessagesGeneralChat({}, true);
 
       socket.emit('rooms', rooms.data);
