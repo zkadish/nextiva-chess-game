@@ -4,7 +4,10 @@ import { Button } from '@nextiva/next-ui';
 
 import Message from './Message';
 import sendMessage from '../../../redux/actions/sendMessage';
-import {insertMessageGeneralChat} from '../../../redux/actions/chatActions';
+import {
+    insertMessageGeneralChat,
+    addedMessageToGeneralChat
+} from '../../../redux/actions/chatActions';
 
 import './chat.scss';
 
@@ -83,4 +86,5 @@ const matStateToProps = (state) => ({
 
 export default connect(matStateToProps, {
     insertMessageGeneralChat,
+    addedMessageToGeneralChat
 })(Chat);

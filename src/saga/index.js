@@ -38,10 +38,15 @@ function subscribe(socket) {
     socket.on('user.disconnect', (data) => {//if someone close the game, (data = name of player)
       emit(actions.roomLeave(data));//we can add another event in the feature
     });
-    
+
     socket.on('chat.general', (data) => {
-      emit(chatActions.getMessagesGeneralChat(data))
+      if (data.is_insert) {
+        emit(chatActions.addedMessageToGeneralChat([data]))
+      } else {
+        emit(chatActions.getMessagesGeneralChat(data))
+      }
     })
+
     socket.on('chat.local', (data) => {
       emit(chatActions.getMessagesLocalChat(data))
     })
@@ -74,20 +79,20 @@ function* write(socket, token) {
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
   yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE)
-  yield fork(messages, socket, token, "chat.general.insert", INSERT_MESSAGE_GENERAL, chatActions.insertMessageGeneralChat)
+  yield fork(insertMessagesToGeneral, socket, token, "chat.general.insert", INSERT_MESSAGE_GENERAL, chatActions.insertMessageGeneralChat)
   yield fork(giveUpSaga, socket, token, "room.give-up", GIVE_UP)
 }
 
-function* messages (socket, token){
+function* insertMessagesToGeneral(socket, token) {
   while (true) {
     try {
       const { payload } = yield take(INSERT_MESSAGE_GENERAL);
       const data = yield new Promise(resolve => {
         socket.emit("chat.general.insert", { token, message: payload }, (data) => { resolve(data) })
       })
-      if (data.err) { console.log(data.err)}
+      if (data.err) { console.log(data.err) }
     } catch (error) {
-      
+
     }
   }
 }
@@ -103,8 +108,8 @@ function* createRoomSaga(socket, token, emitType, actionType, action) {
       })
       if (!data.err) {//{id, date, time, status - 201}
         yield put(actions.route("chessboard"))
-        
-        yield put(action(Object.assign({state: payload.fen, first_player: payload.first_player}, data.data)))
+
+        yield put(action(Object.assign({ state: payload.fen, first_player: payload.first_player }, data.data)))
       }
       else {
         console.log("ERROR ", data.err)
@@ -155,12 +160,12 @@ function* makeMoveSaga(socket, token, emitType, actionType) {
 function* giveUpSaga(socket, token, emitType, actionType) {
   while (true) {
     try {
-      const {payload} = yield take(actionType)
+      const { payload } = yield take(actionType)
       const data = yield new Promise(resolve => {
-        const {game_id} = payload
-        socket.emit(emitType, {token, game_id}, (data) => {resolve(data)})//send {token, game_id}
+        const { game_id } = payload
+        socket.emit(emitType, { token, game_id }, (data) => { resolve(data) })//send {token, game_id}
       })
-      if(data.err){
+      if (data.err) {
         console.log("ERROR ", data.err)
       }
     } catch (error) {
