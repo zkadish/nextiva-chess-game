@@ -200,7 +200,7 @@ class Socket {
     });
 
     if (!res.err) {
-      this.io.to(this.room).emit('chat.local', res.data);
+      this.io.to(this.room).emit('chat.local', Object.assign({is_insert: true}, res.data));
     }
   }
 
@@ -217,7 +217,7 @@ class Socket {
     });
 
     if (!res.err) {
-      this.io.emit('chat.general', res.data);
+      this.io.emit('chat.general', Object.assign({is_insert: true}, res.data));
     }
   }
 
