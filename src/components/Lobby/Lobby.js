@@ -5,7 +5,6 @@ import Rooms from './Rooms';
 import Chat from './Chat';
 import sendMessage from '../../redux/actions/sendMessage';
 import { insertMessageGeneralChat } from '../../redux/actions/chatActions';
-import messages from './messages.json';
 import './lobby.scss';
 
 class Lobby extends React.Component {
@@ -18,7 +17,7 @@ class Lobby extends React.Component {
                 <Rooms />
                 <Chat
                     user={this.props.user}
-                    messages={messages}
+                    messages={this.props.messages}
                     sendMessage={sendMessage}
                     insertMessageChat={this.props.insertMessageGeneralChat}/>
             </div>
@@ -27,7 +26,8 @@ class Lobby extends React.Component {
 }
 
 const matStateToProps = (state) => ({
-    user: state.user.data
+    user: state.user.data,
+    messages: state.chat.messages
 });
 
 export default connect(matStateToProps, {
