@@ -143,7 +143,7 @@ class Game extends React.Component {
             user={this.props.user}
             messages={messages}
             maxWidth={'450px'}
-            sendMessage={(msg) => console.log(msg)}
+            insertMessageChat={(msg) => console.log(msg)}
             />
     }
 
