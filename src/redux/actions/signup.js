@@ -15,27 +15,6 @@ const signUp = (dispatch, payload) => {
 
     dispatch({ type: LOADING });
 
-    // setTimeout(() => {
-    //     dispatch({
-    //         type: SUCCESS,
-    //         data: { 
-    //             email: payload.email, 
-    //             username: payload.username, 
-    //             ...{ token: 'abbqrb.qbqbab.bqbqe' } 
-    //         }
-    //     });
-
-    //     dispatch({
-    //         type: ROUTE,
-    //         payload: 'lobby'
-    //     });
-
-    //     // dispatch({
-    //     //     type: FAILURE,
-    //     //     data: 'my error name'
-    //     // })
-    // }, 1000);
-
     fetch(BASE_URL + URL, { 
         method: 'POST', 
         body: JSON.stringify(payload),
