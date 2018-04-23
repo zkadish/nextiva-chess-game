@@ -41,6 +41,10 @@ class Game extends React.Component {
         return this.chess.game_over();
     }
 
+    isPlayerLeaved = () => {
+        return !!this.props.leavedPlayer;
+    }
+
     getCurTurnPlayerName() {
         return this.chess.turn() === ROLE_WHITE ? this.props.player1 : this.props.player2;
     }
@@ -60,7 +64,7 @@ class Game extends React.Component {
     }
 
     tileHandler = (name) => {
-        if (!this.isMyTurn())
+        if (!this.isMyTurn() || this.isPlayerLeaved())
             return;
 
         if (!this.state.selectedTileID && this.chess.get(name)) {
@@ -137,8 +141,8 @@ class Game extends React.Component {
     }
 
     getHeader() {
-        if (this.gameOver() || this.state.waiting_for_opponent_join) {
-            let headerText = this.state.waiting_for_opponent_join ? "Wait for opponent" : `${this.getCurTurnPlayerName()} lost`;
+        if (this.gameOver() || this.state.waiting_for_opponent_join || this.isPlayerLeaved()) {
+            let headerText = this.state.waiting_for_opponent_join ? "Wait for opponent" : `${this.props.leavedPlayer||this.getCurTurnPlayerName()} lost`;
             return (
                 <ChessboardHeader
                     back={{ onClick: () => (this.props.exit()) }}
@@ -161,7 +165,7 @@ class Game extends React.Component {
     }
     getConfirmCancel() {
         return (
-            !this.gameOver() && !this.isCantMove() && <CancelConfirmComponent
+            !this.gameOver() &&!this.isPlayerLeaved()&& !this.isCantMove() && <CancelConfirmComponent
                 cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
                 confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
             />
@@ -170,9 +174,7 @@ class Game extends React.Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        const { fen, player1, player2 } = nextProps;
-
-        // var turn = fen.split(/\s+/)[1];
+        const { player1, player2 } = nextProps;
         return {
             waiting_for_opponent_join: player1 && !player2,
             selectedTileID: '',
@@ -186,11 +188,11 @@ const mapStateToProps = state => {
         fen: state.playstate.fen || '',
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
-        leaved_player: state.playstate.leaved_player,
+        leavedPlayer: state.playstate.leaved_player,
         currentPlayerRole: state.playstate.role,
         time: state.playstate.time,
         date: state.playstate.date,
-        roomId: state.playstate.state
+        roomId: state.playstate.state,
     };
 };
 
