@@ -58,8 +58,6 @@ class Game extends React.Component {
         return movesSet;
     }
 
-
-    makeMove(game_id, fen, is_over) { this.props.makeMove(game_id, fen, is_over); }
     tileHandler = (name) => {
         if (!this.isMyTurn())
             return;
@@ -190,7 +188,7 @@ const mapStateToProps = state => {
         currentPlayerRole: state.playstate.role,
         time: state.playstate.time,
         date: state.playstate.date,
-        roomId: state.playstate.id
+        roomId: state.playstate.state
     };
 };
 

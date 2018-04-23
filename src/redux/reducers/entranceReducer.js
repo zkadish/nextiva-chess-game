@@ -21,11 +21,11 @@ export function playstate(state = "", action) {
       };
 
     case CREATE_ROOM: {
-      const {date, id, state: fen, time, first_player} = action.payload;
+      const {date, id:state, state: fen, time, first_player} = action.payload;
       return {
         ...state,
         date,//when room was created
-        id,//roomid
+        state,//roomid
         fen,
         time,//main time for players
         first_player, 
