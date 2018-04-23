@@ -32,6 +32,6 @@ export default class Timer extends React.Component {
     render() {
         let date = new Date(this.state.elapsed);
         let time = date.toISOString().substr(11, 8);
-        return <b>{time}</b>;
+        return <h3>{time}</h3>;
     }
 }

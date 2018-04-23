@@ -1,4 +1,9 @@
-.chessboard_header {
+.chessboard-header {
     display: grid;
     grid-template-columns: repeat(3 , 1fr);  
+    align-items: center;
+    &__text{
+        display: flex;
+        justify-content: center;
+    }
 }

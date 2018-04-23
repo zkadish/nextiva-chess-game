@@ -122,7 +122,7 @@ class Game extends React.Component {
     render() {
         this.chess.load(this.state.notConfirmedFEN ? this.state.notConfirmedFEN : this.props.fen);
         return (<div>
-            <div className="game_container">
+            <div className="game-container">
                 {this.getHeader()}
                 {this.getBoard()}
                 {this.getConfirmCancel()}
