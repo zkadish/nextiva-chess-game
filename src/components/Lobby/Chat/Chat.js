@@ -15,6 +15,15 @@ class Chat extends React.Component {
         }
     }
 
+    _scrollDown(){
+        const chat = document.querySelector('.chat__messages');
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    componentDidUpdate(){
+        this._scrollDown();
+    }
+
     handleSubmit(event){
         event.preventDefault();
         if (this.state.userMessage.trim()){
