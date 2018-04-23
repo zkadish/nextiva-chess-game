@@ -1,8 +1,15 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE, ROOM_LEAVE } from "../constants/ActionTypes";
 import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE, } from "../constants/roles";
 
 export function playstate(state = "", action) {
   switch (action.type) {
+
+    case ROOM_LEAVE: {
+      return {
+        ...state,
+        leaved_player: action.payload
+      }
+    }
 
     case UPDATE_ROOM_STATE:
       return {
@@ -14,11 +21,11 @@ export function playstate(state = "", action) {
       };
 
     case CREATE_ROOM: {
-      const {date, id, state: fen, time, first_player} = action.payload;
+      const {date, id:state, state: fen, time, first_player} = action.payload;
       return {
         ...state,
         date,//when room was created
-        id,//roomid
+        state,//roomid
         fen,
         time,//main time for players
         first_player, 

@@ -26,6 +26,7 @@ export default class Timer extends React.Component {
                 startTime: new Date(),
                 elapsed: time * 1000
             }
+        return null;
     }
 
     render() {

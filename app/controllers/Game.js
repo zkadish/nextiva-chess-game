@@ -27,9 +27,9 @@ class Game {
     let per = await User.permissionsToken(token);
     if (per.status) return per;
 
-    if (state === undefined) {
+    if (state === undefined || !game_id) {
       return {
-        err: `State is undefined`,
+        err: `State or game_id are undefined`,
         status: 400,
       }
     }

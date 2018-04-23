@@ -11,14 +11,6 @@ class Chat extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            messages: [
-                { author: 'Jerry', time: '16:50', message: 'How are you?' },
-                { author: 'Tom', time: '16:50', message: "Hi, I'm fine." },
-                { author: 'Jerry', time: '16:50', message: "Let's play chess." },
-                { author: 'savtym1', time: '16:50', message: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and " },
-                { author: 'savtym1', time: '16:50', message: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and " },
-                { author: 'Jerry', time: '16:50', message: "when an unknown printer took a galley of type and scrambled it to make a type specimen book." },
-            ],
             userMessage: ''
         }
     }
@@ -44,7 +36,7 @@ class Chat extends React.Component {
         return (
             <div className="chat">
                 <div className="chat__messages">
-                    { this.state.messages.map((message, i) => <Message
+                    { this.props.messages.map((message, i) => <Message
                         key={i}
                         author={message.author}
                         time={message.time}
@@ -77,8 +69,4 @@ class Chat extends React.Component {
     }
 }
 
-const matStateToProps = (state) => ({
-    user: state.user.data
-});
-
-export default connect(matStateToProps)(Chat);
+export default Chat;
