@@ -46,8 +46,11 @@ class Socket {
     });
 
     if (!res.err) {
+      const messages = await Chats.getMessagesLocalChat(data, true);
       const rooms = await Rooms.getAllList();
       await this._handleRoom(res.room);
+
+      this.socket.emit('chat.local', messages.data);
       this.io.emit('rooms', rooms.data);
     }
   }
