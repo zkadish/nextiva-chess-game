@@ -25,6 +25,7 @@ function subscribe(socket) {
       emit(actions.roomsList(data));
     });
     socket.on('room.connect', (data) => {
+      console.log('room.connect', data);
       emit(actions.updateRoomState(data));
     });
     socket.on('room.move', (data) => {//return { username, state, time, is_give_up } send {token, game_id, state, is_over}
