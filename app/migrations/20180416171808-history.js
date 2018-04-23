@@ -5,9 +5,6 @@ var type;
 var seed;
 
 const defaultValues = [
-  [1, 1, '12', 2],
-  [1, 1, 'max', 22],
-  [1, 1, 'asdfgh', 1],
 ];
 
 /**

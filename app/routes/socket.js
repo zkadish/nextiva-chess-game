@@ -122,7 +122,7 @@ class Socket {
       if (is_over) {
         await Game.giveUp({ id: data.game_id }, data.token);
         this.socket.leave(this.room);
-        this.io.to(this.room).emit('room.disconnect', res.data);
+        this.io.to(this.room).emit('room.disconnect', this.user.username);
         this.room = null;
 
         const rooms = await Rooms.getAllList();

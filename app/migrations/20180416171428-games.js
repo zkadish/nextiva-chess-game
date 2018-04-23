@@ -7,7 +7,6 @@ var seed;
 const Helpers = require('../utils/helpers');
 
 const defaultValues = [
-  [1, 2, 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1', Helpers.getUnixTimeNow()],
 ];
 
 /**

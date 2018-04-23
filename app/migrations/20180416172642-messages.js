@@ -5,8 +5,6 @@ var type;
 var seed;
 
 const defaultValues = [
-  [1, 'qwrwer', 34234],
-  [1, 'qwertyu', 1111, 1],
 ];
 
 /**
