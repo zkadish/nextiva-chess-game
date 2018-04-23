@@ -26,11 +26,15 @@ class Game extends React.Component {
     }
 
     isMyTurn = () => {
-        return !this.isWatcher() && this.chess.turn() === this.props.currentPlayerRole;
+        return !this.isCantMove() && this.chess.turn() === this.props.currentPlayerRole;
     }
 
     isWatcher = () => {
-        return this.state.waiting_for_opponent_join || this.props.currentPlayerRole === ROLE_WATCHER;
+        return this.props.currentPlayerRole === ROLE_WATCHER;
+    }
+
+    isCantMove = () => {
+        return this.state.waiting_for_opponent_join || this.isWatcher();
     }
     gameOver = () => {
         return this.chess.game_over();
@@ -40,7 +44,7 @@ class Game extends React.Component {
         return this.chess.turn() === ROLE_WHITE ? this.props.player1 : this.props.player2;
     }
 
-    getPlayerName() {
+    getMyName() {
         return this.props.currentPlayerRole === ROLE_WHITE ? this.props.player1 : this.props.player2;
     }
 
@@ -133,30 +137,31 @@ class Game extends React.Component {
     }
 
     getHeader() {
-        if (this.gameOver()) {
+        if (this.gameOver() || this.state.waiting_for_opponent_join) {
+            let headerText = this.state.waiting_for_opponent_join ? "Wait for opponent" : `${this.getCurTurnPlayerName()} lost`;
             return (
                 <ChessboardHeader
                     back={{ onClick: () => (this.props.exit()) }}
                     backText={'Go back to Lobby'}
-                    playerName={`${this.getCurTurnPlayerName()} lost`}
+                    playerName={headerText}
                 />
             );
         }
         return (
             <ChessboardHeader
-                back={this.props.currentPlayerRole === ROLE_WATCHER ?
+                back={this.isWatcher()?
                     { onClick: () => (this.props.exit(this.props.roomId)) } :
                     { onClick: () => (this.props.giveUp(this.props.roomId)) }
                 }
-                backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' : 'Give Up!'}
-                playerName={this.getPlayerName()}
+                backText={this.isWatcher() ? 'Go back to Lobby' : 'Give Up!'}
+                playerName={this.isWatcher() ? this.getCurTurnPlayerName() : this.state.notConfirmedFEN ? this.getMyName() : this.getCurTurnPlayerName()}
                 time={this.props.time}
             />
         );
     }
     getConfirmCancel() {
         return (
-            !this.gameOver() && !this.isWatcher() && <CancelConfirmComponent
+            !this.gameOver() && !this.isCantMove() && <CancelConfirmComponent
                 cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
                 confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
             />

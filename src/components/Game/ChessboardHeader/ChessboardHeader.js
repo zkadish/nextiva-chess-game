@@ -8,7 +8,7 @@ const ChessboardHeader = ({ back, backText, playerName, time }) => {
         <div className="chessboard_header">
             <Button kind='danger' {...back} >{backText}</Button>
             <b>{playerName}</b>
-            {time&&<Timer time={time} playerName={playerName} />}
+            {time && <Timer time={time} playerName={playerName} />}
         </div>
     )
 };
