@@ -97,7 +97,6 @@ class Game extends React.Component {
     }
 
     onConfirmClick = () => {
-        // this.props.route('lobby');
         if (this.state.notConfirmedFEN) {
             this.setNotConfirmedFEN();
             this.props.makeMove(this.props.roomId, this.state.notConfirmedFEN, this.gameOver());
@@ -141,11 +140,17 @@ class Game extends React.Component {
     }
 
     getHeader() {
+        const lobby = 'lobby'
         if (this.gameOver() || this.state.waiting_for_opponent_join || this.isPlayerLeaved()) {
-            let headerText = this.state.waiting_for_opponent_join ? "Wait for opponent" : `${this.props.leavedPlayer||this.getCurTurnPlayerName()} lost`;
+            let headerText = this.state.waiting_for_opponent_join ? "Wait for opponent" : `${this.props.leavedPlayer || this.getCurTurnPlayerName()} lost`;
             return (
                 <ChessboardHeader
-                    back={{ onClick: () => (this.props.exit()) }}
+                    back={{
+                        onClick: () => {
+                            this.props.exit();
+                            this.props.route(lobby);
+                        }
+                    }}
                     backText={'Go back to Lobby'}
                     playerName={headerText}
                 />
@@ -153,9 +158,19 @@ class Game extends React.Component {
         }
         return (
             <ChessboardHeader
-                back={this.isWatcher()?
-                    { onClick: () => (this.props.exit(this.props.roomId)) } :
-                    { onClick: () => (this.props.giveUp(this.props.roomId)) }
+                back={this.isWatcher() ?
+                    {
+                        onClick: () => {
+                            this.props.exit(this.props.roomId);
+                            this.props.route(lobby);
+                        }
+                    } :
+                    {
+                        onClick: () => {
+                            this.props.giveUp(this.props.roomId);
+                            this.props.route(lobby);
+                        }
+                    }
                 }
                 backText={this.isWatcher() ? 'Go back to Lobby' : 'Give Up!'}
                 playerName={this.isWatcher() ? this.getCurTurnPlayerName() : this.state.notConfirmedFEN ? this.getMyName() : this.getCurTurnPlayerName()}
@@ -165,7 +180,7 @@ class Game extends React.Component {
     }
     getConfirmCancel() {
         return (
-            !this.gameOver() &&!this.isPlayerLeaved()&& !this.isCantMove() && <CancelConfirmComponent
+            !this.gameOver() && !this.isPlayerLeaved() && !this.isCantMove() && <CancelConfirmComponent
                 cancel={{ disabled: !this.isMoveDone(), onClick: this.onCancelClick }}
                 confirm={{ disabled: !this.isMoveDone(), onClick: this.onConfirmClick }}
             />
