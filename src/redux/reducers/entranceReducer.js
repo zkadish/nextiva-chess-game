@@ -7,10 +7,10 @@ export function playstate(state = "", action) {
     case ROOM_LEAVE: {
       return {
         ...state,
-        leaved_player: action.payload.leaved_player
+        leaved_player: action.payload
       }
     }
-    
+
     case UPDATE_ROOM_STATE:
       return {
         ...state,

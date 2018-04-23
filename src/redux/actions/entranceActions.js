@@ -73,6 +73,11 @@ export const exit = (game_id) => ({
   }
 })
 
+export  const roomLeave = (username) => ({
+  type:ROOM_LEAVE,
+  payload: username
+})
+
 export const updateRoomState = (payload) => ({
   type:UPDATE_ROOM_STATE,
   payload,

@@ -18,4 +18,4 @@ export const UPDATE_ROOM_STATE = 'UPDATE_ROOM_STATE';
 
 export const MAKE_MOVE_UPDATE = 'ROOM_MOVE_UPDATE';
 
-export const ROOM_LEAVE = 'LEAVE_ROOM';
+export const ROOM_LEAVE = 'ROOM_LEAVE';
