@@ -4,10 +4,6 @@ import { Button } from '@nextiva/next-ui';
 
 import Message from './Message';
 import sendMessage from '../../../redux/actions/sendMessage';
-import {
-    insertMessageGeneralChat,
-    addedMessageToGeneralChat
-} from '../../../redux/actions/chatActions';
 
 import './chat.scss';
 
@@ -22,7 +18,7 @@ class Chat extends React.Component {
     handleSubmit(event){
         event.preventDefault();
         if (this.state.userMessage.trim()){
-            this.props.sendMessage(this.state.userMessage);
+            this.props.insertMessageChat(this.state.userMessage);
             this.setState({ userMessage: '' });
         }
     }
@@ -35,9 +31,8 @@ class Chat extends React.Component {
             this.handleSubmit(event);
         }
     }
-
-    handleClickButton() {
-        this.props.insertMessageGeneralChat(this.state.userMessage);
+    handleClickButton(event) {
+        this.handleSubmit(event);
     }
     
     getMessages() {
@@ -58,7 +53,7 @@ class Chat extends React.Component {
                     {this.getMessages()}
                 </div>
                 <div className="chat__textarea">
-                    <form onSubmit={(event) => this.handleSubmit(event)}>
+                    <form>
                         <textarea 
                             value={this.state.userMessage}
                             form="usrform"
@@ -67,7 +62,6 @@ class Chat extends React.Component {
                             onChange={(event) => this.onChangeMessage(event)}>
                         </textarea>
                         <Button 
-                            type="submit"
                             kind='success'
                             onClick={this.handleClickButton.bind(this)}
                             disabled={!this.state.userMessage}
@@ -84,7 +78,4 @@ const matStateToProps = (state) => ({
     user: state.user.data
 });
 
-export default connect(matStateToProps, {
-    insertMessageGeneralChat,
-    addedMessageToGeneralChat
-})(Chat);
+export default connect(matStateToProps)(Chat);
