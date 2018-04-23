@@ -10,8 +10,20 @@ import {
 export const chat = (state = { messages: [], message: '' }, action) => {
     switch (action.type) {
         case GET_ALL_MESSAGES_GENERAL:
+            return {
+                ...state,
+                messages: [].concat(state.messages, action.payload)
+            }
         case GET_ALL_MESSAGES_LOCAL:
+            return {
+                ...state,
+                messages: [].concat(state.messages, action.payload)
+            }
         case ADDED_MESSAGE_GENERAL:
+            return {
+                ...state,
+                messages: [].concat(state.messages, action.payload)
+            }
         case ADDED_MESSAGE_LOCAL:
             return {
                 ...state,
@@ -19,6 +31,10 @@ export const chat = (state = { messages: [], message: '' }, action) => {
             }
 
         case INSERT_MESSAGE_GENERAL:
+            return {
+                ...state,
+                message: action.payload,
+            }
         case INSERT_MESSAGE_LOCAL:
             return {
                 ...state,
