@@ -3,7 +3,7 @@ import { eventChannel } from 'redux-saga';
 import io from 'socket.io-client';
 import * as Api from "../utils/Api"
 import * as actions from "../redux/actions/entranceActions"
-import { CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE } from "../redux/constants/ActionTypes"
+import { CREATE_ROOM_REQUEST, JOIN_ROOM_REQUEST, WATCH_ROOM_REQUEST, MAKE_MOVE, GIVE_UP } from "../redux/constants/ActionTypes"
 import { LOGIN } from "../redux/constants/user"
 import { ROUTE } from "../redux/constants/route"
 import * as chatActions from '../redux/actions/chatActions';
@@ -30,10 +30,10 @@ function subscribe(socket) {
     socket.on('room.move', (data) => {//return { username, state, time, is_give_up } send {token, game_id, state, is_over}
       emit(actions.makeMoveUpdate(data));
     });
-    socket.on('room.disconnect', (data) => {//if player sigh out
+    socket.on('room.disconnect', (data) => {//if game is over, or giveup, or watcher is out (data = name of player)
       // emit(actions.updateRoomState(data));
     });
-    socket.on('user.disconnect', (data) => {//if watcher sign out
+    socket.on('user.disconnect', (data) => {//if someone close the game
       // emit(actions.updateRoomState(data));
     });
     socket.emit('chat.general', {
@@ -77,6 +77,7 @@ function* write(socket, token) {
   yield fork(joinRoomSaga, socket, token, "room.connect", JOIN_ROOM_REQUEST, actions.joinRoom)
   yield fork(joinRoomSaga, socket, token, "room.connect-visitor", WATCH_ROOM_REQUEST, actions.watchRoom)
   yield fork(makeMoveSaga, socket, token, "room.move", MAKE_MOVE)
+  yield fork(giveUpSaga, socket, token, "room.give-up", GIVE_UP)
   yield fork(messages, socket, token)
 }
 function* messages (socket, token){
@@ -90,26 +91,6 @@ function* messages (socket, token){
     } catch (error) {
       
     }
-}
-}
-function* writeSaga(socket, token, emitType, actionType, action) {
-  while (true) {
-    try {
-      const { payload } = yield take(actionType)
-      const data = yield new Promise(resolve => {
-        socket.emit(emitType, { token, state: payload }, (data) => { resolve(data) })
-      })
-      if (!data.err) {
-        yield put(actions.route("chessboard"))
-        yield put(action(payload))
-      }
-      else {
-        console.log("ERROR ", data.err)
-      }
-    } catch (error) {
-      console.log("CATCH TRIGGERED in saga.writeSaga", error)
-    }
-
   }
 }
 
@@ -167,6 +148,23 @@ function* makeMoveSaga(socket, token, emitType, actionType) {
       }
     } catch (error) {
       console.log("CATCH TRIGGERED in saga.makeMoveSaga", error)
+    }
+  }
+}
+
+function* giveUpSaga(socket, token, emitType, actionType) {
+  while (true) {
+    try {
+      const {payload} = yield take(actionType)
+      const data = yield new Promise(resolve => {
+        const {game_id} = payload
+        socket.emit(emitType, {token, game_id}, (data) => {resolve(data)})//send {token, game_id}
+      })
+      if(data.err){
+        console.log("ERROR ", data.err)
+      }
+    } catch (error) {
+      console.log("CATCH TRIGGERED in saga.giveUpSaga", error)
     }
   }
 }
