@@ -1,6 +1,7 @@
 import React from "react";
 import Chess from "chess.js";
 import { connect } from "react-redux";
+import route from '../../redux/actions/route';
 
 import Chessboard from './Chessboard';
 import ChessboardHeader from './ChessboardHeader';
@@ -92,6 +93,7 @@ class Game extends React.Component {
     }
 
     onConfirmClick = () => {
+        // this.props.route('lobby');
         if (this.state.notConfirmedFEN) {
             this.setNotConfirmedFEN();
             this.props.makeMove(this.props.roomId, this.state.notConfirmedFEN, this.gameOver());
@@ -196,7 +198,9 @@ const mapDispatchToProps = dispatch => {
     return {
         makeMove: (game_id, fen, is_over) => dispatch(makeMove(game_id, fen, is_over)),
         giveUp: (game_id, fen, is_over) => dispatch(giveUp(game_id)),
-        exit: (game_id, fen, is_over) => dispatch(exit(game_id))
+        exit: (game_id, fen, is_over) => dispatch(exit(game_id)),
+
+        route: (payload) => route(dispatch, payload),
     };
 };
 
