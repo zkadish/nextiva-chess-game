@@ -120,7 +120,7 @@ class Socket {
       this.io.to(this.room).emit('room.move', { username, state, time, is_over });
 
       if (is_over) {
-        await Game.giveUp({ game_id: data.game_id, token: data.token });
+        await Game.giveUp({ id: data.game_id }, data.token);
         this.socket.leave(this.room);
         this.io.to(this.room).emit('room.disconnect', res.data);
         this.room = null;
@@ -136,7 +136,7 @@ class Socket {
     const isExistRoom = this._isExistRoom();
     if (typeof(isExistRoom) !== 'boolean') return callback(isExistRoom);
 
-    const res = await Game.giveUp({ game_id: data.game_id, token: data.token });
+    const res = await Game.giveUp({ id: data.game_id }, data.token);
 
     callback({
       err: res.err,
@@ -226,8 +226,8 @@ class Socket {
     if (this.room) {
       const id = Helpers.getRoomId(this.room);
       await Game.giveUp({ id, user_id: this.user.id });
-      this.socket.leave(this.room);
-      this.room = null;
+
+      this._roomDisconnect('room.disconnect');
 
       if (!this.isVisitor) {
         const rooms = await Rooms.getAllList();

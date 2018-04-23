@@ -88,7 +88,7 @@ class Game {
    *  @param {number} id: id game
    *  @param {number} user_id: id user
    * */
-  static async giveUp({ id, user_id, token }) {
+  static async giveUp({ id, user_id = 0 }, token = '') {
     let per;
 
     if (token) {
