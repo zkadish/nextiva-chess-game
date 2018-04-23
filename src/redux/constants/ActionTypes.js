@@ -1,6 +1,7 @@
 export const INIT_START = 'INITIALIZE_FROM_START';
 export const MAKE_MOVE = 'MAKE_MOVE';
 export const GIVE_UP = 'GIVE_UP';
+export const EXIT = 'EXIT';
 
 export const JOIN_ROOM_REQUEST = 'JOIN_ROOM_REQUEST';
 export const JOIN_ROOM = 'JOIN_ROOM';

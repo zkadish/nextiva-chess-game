@@ -8,8 +8,7 @@ import CancelConfirmComponent from './CancelConfirmComponent';
 import './game.scss';
 
 
-import { giveUp } from "../../redux/actions/BoardActions";
-import { makeMove } from "../../redux/actions/entranceActions";
+import { makeMove, exit, giveUp } from "../../redux/actions/entranceActions";
 
 import { ROLE_WATCHER, ROLE_WHITE } from "../../redux/constants/roles";
 
@@ -146,8 +145,8 @@ class Game extends React.Component {
         return (
             <ChessboardHeader
                 back={this.props.currentPlayerRole === ROLE_WATCHER ?
-                    { onClick: () => (this.props.exit()) } :
-                    { onClick: () => (this.props.giveUp()) }
+                    { onClick: () => (this.props.exit(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver())) } :
+                    { onClick: () => (this.props.giveUp(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver())) }
                 }
                 backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' : 'Give Up!'}
                 playerName={this.getPlayerName()}
@@ -192,9 +191,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         makeMove: (game_id, fen, is_over) => dispatch(makeMove(game_id, fen, is_over)),
-
-        giveUp: () => dispatch(giveUp()), //TODO: unimplemented
-        exit: () => dispatch() //TODO: unimplemented
+        //dispatched when user hits giveup button
+        giveUp: (game_id, fen, is_over) => dispatch(giveUp(game_id, fen, is_over)), //TODO: unimplemented
+        //dispatched when user wants exit to lobby during game
+        exit: (game_id, fen, is_over) => dispatch(exit(game_id, fen, is_over)) //TODO: unimplemented
     };
 };
 
