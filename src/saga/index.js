@@ -34,8 +34,8 @@ function subscribe(socket) {
     socket.on('room.disconnect', (data) => {//if game is over, or giveup, or watcher is out (data = name of player)
       emit(actions.roomLeave(data));
     });
-    socket.on('user.disconnect', (data) => {//if someone close the game
-      // emit(actions.updateRoomState(data));
+    socket.on('user.disconnect', (data) => {//if someone close the game, (data = name of player)
+      emit(actions.roomLeave(data));//we can add another event in the feature
     });
     socket.emit('chat.general', {
     }, (data) => {
