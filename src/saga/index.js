@@ -34,7 +34,9 @@ function subscribe(socket) {
     socket.on('room.disconnect', (data) => {//if game is over, or giveup, or watcher is out (data = name of player)
       emit(actions.roomLeave(data));
     });
-
+    socket.on('room.win', (data) => {//all users from the room will receive, when someone has won the game
+      // emit(actions.roomLeave(data));
+    });
     socket.on('user.disconnect', (data) => {//if someone close the game, (data = name of player)
       emit(actions.roomLeave(data));//we can add another event in the feature
     });
