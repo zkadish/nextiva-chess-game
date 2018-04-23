@@ -50,8 +50,8 @@ class Socket {
       const rooms = await Rooms.getAllList();
       await this._handleRoom(res.room);
 
-      this.socket.emit('chat.local', messages.data);
       this.io.emit('rooms', rooms.data);
+      this.socket.emit('chat.local', messages.data);
     }
   }
 

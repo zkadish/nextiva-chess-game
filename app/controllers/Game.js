@@ -35,9 +35,8 @@ class Game {
     }
 
     const { id, username } = per;
-    const time = Helpers.getUnixTimeNow();
 
-    const history = await db.query(GET_ALL_HISTORY, [game_id]);
+    const history = await db.query(GET_ALL_HISTORY, [game_id, id]);
 
     if (history.err) {
       return {
@@ -61,6 +60,7 @@ class Game {
       start_time = game.rows[0].time;
     }
 
+    const time = Helpers.getUnixTimeNow();
     const curTime = time - start_time - total;
     const { err } = await db.query(INSERT_STATE_CHESS, [game_id, id, state, curTime, is_over]);
 
@@ -75,7 +75,7 @@ class Game {
       data: {
         is_over,
         username,
-        time: curTime,
+        time: total + curTime,
       },
       status: 201,
     }

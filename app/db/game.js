@@ -6,7 +6,7 @@ module.exports = {
       g.time AS start_time
     FROM history AS h
     JOIN games AS g ON g.id = h.game_id
-    WHERE h.game_id = $1
+    WHERE h.game_id = $1 AND h.player_id = $2
     GROUP BY start_time
     `,
 
