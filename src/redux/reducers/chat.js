@@ -5,7 +5,7 @@ export const chat = (state = { messages: [] , message: ''}, action) => {
         case GET_ALL_MESSAGES_GENERAL:
             return {
                 ...state,
-                allMessages: [state.messages.push(action.payload)]
+                messages: [state.messages.push(action.payload)]
             }
         case GET_ALL_MESSAGES_LOCAL : 
         return {
