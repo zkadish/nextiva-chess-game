@@ -1,4 +1,4 @@
-import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, UPDATE_ROOM_STATE, MAKE_MOVE_UPDATE, ROOM_LEAVE } from "../constants/ActionTypes";
+import { CREATE_ROOM, JOIN_ROOM, WATCH_ROOM, UPDATE_ROOM_STATE, MAKE_MOVE, MAKE_MOVE_UPDATE, ROOM_LEAVE } from "../constants/ActionTypes";
 import { ROLE_WATCHER, ROLE_BLACK, ROLE_WHITE, } from "../constants/roles";
 
 export function playstate(state = "", action) {
@@ -19,7 +19,12 @@ export function playstate(state = "", action) {
         second_player: action.payload.second_player,
         time: action.payload.time,
       };
-
+    case MAKE_MOVE: 
+      return {
+        ...state,
+        fen: action.payload.state
+      }
+      
     case CREATE_ROOM: {
       const {date, id:state, state: fen, time, first_player} = action.payload;
       return {
