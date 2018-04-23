@@ -212,11 +212,12 @@ class Game extends React.Component {
 }
 
 const mapStateToProps = state => {
+    
     return {
         fen: state.playstate.fen || '',
         player1: state.playstate.first_player,
         player2: state.playstate.second_player,
-        leavedPlayer: state.playstate.leaved_player,
+        leavedPlayer: state.playstate.leaved_player == state.playstate.first_player || state.playstate.leaved_player == state.playstate.second_player ? state.playstate.leaved_player:'',
         currentPlayerRole: state.playstate.role,
         time: state.playstate.time,
         date: state.playstate.date,
