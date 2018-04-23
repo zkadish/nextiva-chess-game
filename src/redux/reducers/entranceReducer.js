@@ -18,6 +18,7 @@ export function playstate(state = "", action) {
         first_player: action.payload.first_player,
         second_player: action.payload.second_player,
         time: action.payload.time,
+        leaved_player: ''
       };
     case MAKE_MOVE: 
       return {
@@ -34,7 +35,8 @@ export function playstate(state = "", action) {
         fen,
         time,//main time for players
         first_player, 
-        role: ROLE_WHITE
+        role: ROLE_WHITE,
+        leaved_player: ''
       };
     }
     case WATCH_ROOM:
@@ -47,7 +49,8 @@ export function playstate(state = "", action) {
       return {
         ...state,
         state: action.payload,
-        role: ROLE_BLACK
+        role: ROLE_BLACK,
+        leaved_player: ''
       };
 
       case MAKE_MOVE_UPDATE: {//payload is  {username, state, time, is_give_up }
