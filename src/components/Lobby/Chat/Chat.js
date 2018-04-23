@@ -36,27 +36,29 @@ class Chat extends React.Component {
     handleClickButton() {
         this.props.insertMessageGeneralChat(this.state.userMessage);
     }
+    
+    getMessages() {
+        if(!this.props.messages) return false;
+        return this.props.messages.map((message, i) => <Message
+            key={i}
+            author={message.username}
+            time={message.time}
+            message={message.message}
+            isMine={message.username == this.props.user.username}
+        />)
+    }
 
     render(){
         return (
-            <div className="chat">
+            <div className="chat" style={{ maxWidth: this.props.maxWidth || '480px'}}>
                 <div className="chat__messages">
-                    { this.props.messages.map((message, i) => <Message
-                        key={i}
-                        author={message.author}
-                        time={message.time}
-                        message={message.message}
-                        isMine={message.author == this.props.user.username}
-                        />
-                    )}
+                    {this.getMessages()}
                 </div>
                 <div className="chat__textarea">
                     <form onSubmit={(event) => this.handleSubmit(event)}>
                         <textarea 
                             value={this.state.userMessage}
                             form="usrform"
-                            cols="64"
-                            rows="4"
                             className="chat__textarea__message"
                             onKeyPress={(event) => this.onKeyPress(event)}
                             onChange={(event) => this.onChangeMessage(event)}>

@@ -6,6 +6,8 @@ import route from '../../redux/actions/route';
 import Chessboard from './Chessboard';
 import ChessboardHeader from './ChessboardHeader';
 import CancelConfirmComponent from './CancelConfirmComponent';
+import Chat from '../Lobby/Chat';
+import messages from './messages.json';
 import './game.scss';
 
 
@@ -129,9 +131,19 @@ class Game extends React.Component {
                 {this.getHeader()}
                 {this.getBoard()}
                 {this.getConfirmCancel()}
+                {this.getChat()}
             </div>
         </div>
         );
+    }
+
+    getChat(){
+        return <Chat 
+            user={this.props.user}
+            messages={messages}
+            maxWidth={'450px'}
+            sendMessage={(msg) => console.log(msg)}
+            />
     }
 
     getBoard() {
@@ -208,6 +220,7 @@ const mapStateToProps = state => {
         time: state.playstate.time,
         date: state.playstate.date,
         roomId: state.playstate.state,
+        user: state.user.data
     };
 };
 

@@ -1,7 +1,6 @@
 .chat {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
     background-color: #fff;
-    max-width: 480px;
     border-radius: 5px;
     margin: 0 auto;
     padding: 20px 15px;
@@ -21,6 +20,8 @@
             border: 1px solid #eee;
             line-height: 18px;
             padding: 2px 5px;
+            width: 97%;
+            height: 55px;
         }
         &__send {
             margin-top: 10px;
