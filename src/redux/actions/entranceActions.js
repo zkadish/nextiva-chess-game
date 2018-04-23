@@ -55,23 +55,21 @@ export const makeMove = (game_id, fen, is_over) => ({
   }
 });
 
-//TODO: unimplemented yet
-export const giveUp = (game_id, fen, is_over) => ({
+export const giveUp = (game_id) => ({
   type: GIVE_UP,
   payload: {
     game_id,
-    state: fen,
-    is_over
+    // state: fen,
+    // is_over
   }
 })
 
-//TODO: unimplemented yet
-export const exit = (game_id, fen, is_over) => ({
+export const exit = (game_id) => ({
   type: EXIT,
   payload: {
     game_id,
-    state: fen,
-    is_over
+    // state: fen,
+    // is_over
   }
 })
 

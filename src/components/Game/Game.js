@@ -145,8 +145,8 @@ class Game extends React.Component {
         return (
             <ChessboardHeader
                 back={this.props.currentPlayerRole === ROLE_WATCHER ?
-                    { onClick: () => (this.props.exit(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver())) } :
-                    { onClick: () => (this.props.giveUp(this.props.roomId ,this.state.notConfirmedFEN, this.gameOver())) }
+                    { onClick: () => (this.props.exit(this.props.roomId)) } :
+                    { onClick: () => (this.props.giveUp(this.props.roomId)) }
                 }
                 backText={this.props.currentPlayerRole === ROLE_WATCHER ? 'Go back to Lobby' : 'Give Up!'}
                 playerName={this.getPlayerName()}
@@ -191,10 +191,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         makeMove: (game_id, fen, is_over) => dispatch(makeMove(game_id, fen, is_over)),
-        //dispatched when user hits giveup button
-        giveUp: (game_id, fen, is_over) => dispatch(giveUp(game_id, fen, is_over)), //TODO: unimplemented
-        //dispatched when user wants exit to lobby during game
-        exit: (game_id, fen, is_over) => dispatch(exit(game_id, fen, is_over)) //TODO: unimplemented
+        giveUp: (game_id, fen, is_over) => dispatch(giveUp(game_id)),
+        exit: (game_id, fen, is_over) => dispatch(exit(game_id))
     };
 };
 
