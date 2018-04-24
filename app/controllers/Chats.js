@@ -134,7 +134,6 @@ class Chats {
     const { id, username } = per;
     const time = Helpers.getUnixTimeNow();
 
-    console.log({id, message, time, game_id})
     const { err } = await db.query(INSERT_MESSAGE(true), [id, message, time, game_id]);
 
     if (err) {
