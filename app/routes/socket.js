@@ -49,9 +49,7 @@ class Socket {
       const messages = await Chats.getMessagesLocalChat(data, true);
       const rooms = await Rooms.getAllList();
       await this._handleRoom(res.room);
-
       this.io.emit('rooms', rooms.data);
-      this.socket.emit('chat.local', messages.data);
     }
   }
 
@@ -260,7 +258,6 @@ class Socket {
   async _handleRoom(room) {
     this.room = room;
     this.socket.join(room);
-    this.socket.emit('chat.local');
   }
 
 
