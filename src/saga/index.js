@@ -87,7 +87,7 @@ function* insertMessagesToGeneral(socket, token) {
     try {
       const { payload } = yield take(INSERT_MESSAGE_GENERAL);
       const data = yield new Promise(resolve => {
-        socket.emit("chat.general.insert", { token, message: payload }, (data) => { resolve(data) })
+        socket.emit("chat.general.insert", { token, message: payload.message }, (data) => { resolve(data) })
       })
       if (data.err) { console.log(data.err) }
     } catch (error) {
