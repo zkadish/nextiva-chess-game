@@ -13,7 +13,7 @@ import './game.scss';
 
 import { makeMove, exit, giveUp } from "../../redux/actions/entranceActions";
 
-import { ROLE_WATCHER, ROLE_WHITE } from "../../redux/constants/roles";
+import { ROLE_WATCHER, ROLE_WHITE, ROLE_BLACK } from "../../redux/constants/roles";
 
 
 class Game extends React.Component {
@@ -122,7 +122,8 @@ class Game extends React.Component {
                 }
             );
         });
-
+        if (this.props.currentPlayerRole === ROLE_BLACK)
+            tiles.reverse();
         return tiles;
     }
     render() {
