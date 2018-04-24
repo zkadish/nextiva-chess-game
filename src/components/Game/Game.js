@@ -9,7 +9,7 @@ import CancelConfirmComponent from './CancelConfirmComponent';
 import Chat from '../Lobby/Chat';
 import messages from './messages.json';
 import './game.scss';
-
+import {insertMessageLocalChat} from '../../redux/actions/chatActions'
 
 import { makeMove, exit, giveUp } from "../../redux/actions/entranceActions";
 
@@ -27,6 +27,7 @@ class Game extends React.Component {
             notConfirmedFEN: ''
         };
     }
+    
 
     isMyTurn = () => {
         return !this.isCantMove() && this.chess.turn() === this.props.currentPlayerRole;
@@ -141,9 +142,10 @@ class Game extends React.Component {
     getChat(){
         return <Chat 
             user={this.props.user}
-            messages={messages}
+            messages={this.props.messages}
             maxWidth={'450px'}
-            insertMessageChat={(msg) => console.log(msg)}
+            roomId={this.props.roomId}
+            insertMessageChat={this.props.insertLocal}
             />
     }
 
@@ -224,7 +226,8 @@ const mapStateToProps = state => {
         time: state.playstate.time,
         date: state.playstate.date,
         roomId: state.playstate.state,
-        user: state.user.data
+        user: state.user.data,
+        messages: state.chat.localMessages
     };
 };
 
@@ -233,8 +236,8 @@ const mapDispatchToProps = dispatch => {
         makeMove: (game_id, fen, is_over) => dispatch(makeMove(game_id, fen, is_over)),
         giveUp: (game_id, fen, is_over) => dispatch(giveUp(game_id)),
         exit: (game_id, fen, is_over) => dispatch(exit(game_id)),
-
         route: (payload) => route(dispatch, payload),
+        insertLocal: (game_id, message) => dispatch(insertMessageLocalChat(game_id, message))
     };
 };
 

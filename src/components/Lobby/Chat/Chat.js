@@ -27,7 +27,7 @@ class Chat extends React.Component {
     handleSubmit(event){
         event.preventDefault();
         if (this.state.userMessage.trim()){
-            this.props.insertMessageChat(this.state.userMessage);
+            this.props.insertMessageChat({game_id: this.props.roomId, message: this.state.userMessage});
             this.setState({ userMessage: '' });
         }
     }

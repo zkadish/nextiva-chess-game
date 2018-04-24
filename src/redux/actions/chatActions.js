@@ -14,10 +14,10 @@ export const getMessagesGeneralChat = (payload) => {
     }
 }
 
-export const getMessagesLocalChat = (gameId, messages) => {
+export const getMessagesLocalChat = (payload) => {
     return {
         type: GET_ALL_MESSAGES_LOCAL,
-        payload: { messages, gameId }
+        payload 
     }
 }
 
@@ -35,16 +35,16 @@ export const addedMessageToGeneralChat = (payload) => {
     }
 }
 
-export const insertMessageLocalChat = (message, gameId) => {
+export const insertMessageLocalChat = (payload) => {
     return {
         type: INSERT_MESSAGE_LOCAL,
-        payload: { message, gameId }
+        payload
     }
 }
 
 export const addedMessageToLocalChat = (payload) => {
     return {
         type: ADDED_MESSAGE_LOCAL,
-        payload
+        payload 
     }
 }
