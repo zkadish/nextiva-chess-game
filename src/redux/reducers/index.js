@@ -7,4 +7,11 @@ import signin from './signin';
 import signup from './signup';
 import {chat} from './chat'
 
-export default combineReducers({ chat , playstate, user, signup, signin, route, rooms });
+const appReducer = combineReducers({ chat , playstate, user, signup, signin, route, rooms });
+const rootReducer = (state, action) => {
+  if (action.type === 'LOGOUT') {
+    state = undefined;
+  }
+  return appReducer(state, action)
+}
+export default rootReducer;
