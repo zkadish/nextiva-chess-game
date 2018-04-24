@@ -20,7 +20,7 @@ const io = require('socket.io')(server);
 
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URI || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URI || 'http://localhost:8081',
   optionsSuccessStatus: 200,
 }));
 
