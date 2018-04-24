@@ -1,1 +1,2 @@
-export const BASE_URL = 'http://localhost:8080';
+import config from '../../config';
+export const BASE_URL = config.apiDomain;

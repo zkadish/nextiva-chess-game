@@ -8,9 +8,10 @@ import { LOGIN } from "../redux/constants/user"
 import { ROUTE } from "../redux/constants/route"
 import * as chatActions from '../redux/actions/chatActions';
 import { GET_ALL_MESSAGES_GENERAL, INSERT_MESSAGE_GENERAL, INSERT_MESSAGE_LOCAL } from '../redux/constants/chat';
+import config from '../config';
 
 function connect() {
-  const socket = io('http://0.0.0.0:8080/');
+  const socket = io(config.apiDomain);
   window.socket = socket
   return new Promise(resolve => {
     socket.on('connect', () => {
@@ -105,7 +106,7 @@ function* inserMessagesToLocal(socket, token ){
       })
       if(data.err){console.log(data.err)}
     } catch (error) {
-      
+
     }
   }
 }

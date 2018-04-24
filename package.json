@@ -81,9 +81,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack -d",
-    "start": "webpack-dev-server -d",
+    "build": "cross-env NODE_ENV=production webpack -d",
+    "start": "cross-env NODE_ENV=development webpack-dev-server -d",
     "server": "nodemon app",
+    "server:prod": "cross-env HOST=10.51.162.178 NODE_ENV=production nodemon app",
     "db:refresh": "npm-run-all db:reset db:up",
     "db:reset": "db-migrate -m app/migrations --config app/config/db.json reset",
     "db:up": "db-migrate -m app/migrations --config app/config/db.json up"
@@ -131,6 +132,7 @@
     "extends": "react-app"
   },
   "devDependencies": {
+    "cross-env": "^5.1.3",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
     "babel-polyfill": "^6.26.0",

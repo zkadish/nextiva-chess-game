@@ -1,11 +1,15 @@
+import config from '../config';
+
+
 export const authorize = async (user, password) => {
   try{
     const body = JSON.stringify({
       "email" : "savtym@gmail.com",
       "password": "qwerty123"
     });
+    console.log(config)
   
-    const response = await fetch("http://localhost:8080/api/v1/user/signin", {
+    const response = await fetch(config.apiDomain + "/api/v1/user/signin", {
       method: 'POST',
       body: JSON.stringify({
         "email" : "savtym@gmail.com",
@@ -26,7 +30,7 @@ export const authorize = async (user, password) => {
 
 export const createSocket = async (token) => {
   try{
-    const response = await fetch("http://localhost:8080/api/v1/socket", {
+    const response = await fetch(config.apiDomain + "/api/v1/socket", {
       method: 'POST',
       body: JSON.stringify({test: 'test'}),
       headers: new Headers({
