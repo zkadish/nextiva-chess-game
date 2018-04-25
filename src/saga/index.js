@@ -12,7 +12,6 @@ import config from '../config';
 
 function connect() {
   const socket = io(config.apiDomain);
-  window.socket = socket
   return new Promise(resolve => {
     socket.on('connect', () => {
       resolve(socket);
@@ -152,6 +151,7 @@ function* joinRoomSaga(socket, token, emitType, actionType, action) {
     }
   }
 }
+
 function* makeMoveSaga(socket, token, emitType, actionType) {
   while (true) {
     try {
@@ -192,20 +192,17 @@ function* handleIO(socket, token) {
 }
 
 function* flow() {
+  let socket
   while (true) {
     const signIn = yield take(LOGIN);
-
-
-
     const token = signIn.data.token
-    // const { token } = yield call(Api.authorize, "user", "password") //get token from api.authorize
-    yield call(Api.createSocket, token) //send requets for open socket
-
-    const socket = yield call(connect); // connect to sokket
-
-    window.socket = socket;//for debug, remove after
-
-    const task = yield fork(handleIO, socket, token);
+    if(!socket){
+      //send requets for open socket
+      yield call(Api.createSocket, token)
+      socket = yield call(connect); // connect to sokket
+      const task = yield fork(handleIO, socket, token);
+    }
+    // window.socket = socket;//for debug, remove after
   }
 }
 
